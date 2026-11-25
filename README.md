@@ -110,3 +110,6 @@ Gerenciador offline de pacote ZIP portátil, manifesto versionado, SHA-256, vali
 
 ### Trust & Privacy
 Desktop usa token aleatório por execução, validação de origem e bloqueio de requisições sem autorização na API; o navegador remove o token da URL e o mantém na sessão da aba. Doze testes de política aprovados localmente, cinco testes integrados adicionados (execução pendente). Modo direto de desenvolvimento sem proteção; sem contas, criptografia de arquivos ou certificação de conformidade. [Privacidade e limites](docs/trust-privacy.md).
+
+### Quality Assurance — histórico e sessões
+Corrigida falha de histórico inconsistente: leitura, exportação e recuperação com conflito retornam erro estruturado, sem reparo automático ou exclusão. Sete novos testes integrados. Nesta revisão, 83 testes Python passaram em Linux (Python 3.13.5, cópia local com backend e testes conferidos por hash; 12 casos dependentes de assets excluídos, testes Desktop não executados) e 307 verificações JavaScript/estáticas passaram em V8 a partir do GitHub. A compilação Windows, Chromium e validação final continuam pendentes. [Registro QA e critérios do piloto](docs/pilot-readiness.md).
