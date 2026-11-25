@@ -1,13 +1,13 @@
 # Lilium — controlled pilot preparation
 
-Status: v0.14.0 development preview; not a V1.0 release. Free pilot is planned, not open. Synthetic data only.
+Status: v0.14.0 development preview; first verified Windows CI artifact produced on 2026-11-25. Not a V1.0 release. Free pilot is planned, not open. Synthetic data only.
 
 ## Release gates
-- [ ] Windows CI succeeds, including Python regression, JavaScript regression, source/bundled server smoke tests and Chromium pilot test.
+- [x] Windows CI succeeds, including Python regression, JavaScript regression, source/bundled server smoke tests and Chromium pilot test. Evidence: run 45721198729.
 - [ ] Download the Windows x64 build artifact; test on a clean Windows machine without Python, without bypassing OS security warnings.
 - [ ] Check startup, shutdown, repeated launch, saved history across restart, backup/restore and upgrade behavior.
 - [ ] Test keyboard navigation, narrow layout, import errors, downloads and report printing; review accessibility.
-- [ ] Review local threat model and dependency vulnerabilities. Loopback alone is not authentication. The app is unsigned and lacks app-level encryption, tenant isolation and durable audit logging.
+- [ ] Review local threat model and dependency vulnerabilities. Desktop adds a process-scoped API token; loopback alone is not authentication. The app is unsigned and lacks app-level encryption, tenant isolation and durable audit logging.
 - [ ] Document remaining defects, support/feedback route and known limitations. No business or personal data until privacy and security readiness is separately established.
 
 ## Suggested free pilot
@@ -57,3 +57,6 @@ Re-executed 342 module tests (295 previous + 47 starter) and 36 static/UX/Help c
 Public browser-only Interactive Lab reuses Finance, Starter, Sales and Forecast for pricing, monthly scenario, break-even and synthetic business comparison/forecast and CSV download. 12 computation checks and 11 simulated DOM-contract checks passed in V8 against published source. Actual Pages deployment and real Chromium remain unconfirmed. Public site tests are separate from Windows packaging. Updated ecosystem README links and bilingual status. Feature freeze for Desktop remains in force. The Windows gate is still open: no successful run or verified portable executable has been obtained. The public demo does not establish release readiness.
 
 Public-lab Chromium acceptance workflow added independently of the Windows gate. The Insights demo now rejects invalid UTF-8 and invalid CSV file extensions, and ignores superseded asynchronous imports. Re-ran the live lifecycle smoke test successfully on the available Linux source copy. Public website and Windows Actions URLs could not be fetched from this environment; neither deployment nor CI success is confirmed. Next release gate requires a verified Windows workflow run and artifact; keep feature freeze.
+
+## Final phase 1 — verified successful Windows build (2026-11-25)
+GitHub Pages [deployment 45720830801](https://github.com/Kgasil/lilium/actions/runs/45720830801) succeeded. Public lab workflow [45721205322](https://github.com/Kgasil/lilium/actions/runs/45721205322) passed all 23 JS checks and actual Chromium acceptance after pinning Ubuntu 24.04. The previous Windows regression ran 100 tests with one failure due to short/long Windows path aliases; corrected to compare file identity. The next [Windows run 45721198729](https://github.com/Kgasil/lilium/actions/runs/45721198729) at commit 0406e0085d197a2d67b91d08fd7475efb70caa01 completed successfully. Logs show 100 Python tests, 401 Node checks, source and bundled HTTP/lifecycle, actual Chromium against both, executable self-test, readiness diagnostics, ZIP verification and smoke test of staged copy. Artifact [15071758237](https://github.com/Kgasil/lilium/actions/runs/45721198729/artifacts/15071758237) is 23,596,812 bytes (outer artifact), expires 2026-12-09 23:27 UTC, and contains the inner portable ZIP, manifest and SHA256SUMS. Verified inner archive SHA-256: `03c7ab11739089087fc77315a8a3a14216c37beaeda047595a7003a6f4b5ff1b` (only for this run). The archive is unsigned. The agent inspected CI logs and artifact metadata, not a local execution of the downloaded ZIP. Phase 1 complete for this candidate. Phase 2: [clean Windows acceptance](clean-machine-validation.md), dependency/security review and manual accessibility/printing/upgrade validation. No release or real data yet.
