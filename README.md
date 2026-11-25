@@ -98,3 +98,6 @@ Official visual lockup: **K&G** above **Vision**; individual project symbols are
 
 ### Validação técnica da prévia v0.14
 295 testes de módulos e 12 verificações estáticas do Workspace aprovados em V8 (307 verificações). Controlador JavaScript separado do HTML, CSP bloqueando scripts inline, aviso de inicialização e cobertura adicional no workflow. A execução Python, Chromium e Windows ainda precisa ser confirmada. [Critérios do piloto](docs/pilot-readiness.md).
+
+### Backup e recuperação do histórico
+Exporte e recupere análises salvas no Workspace. JSON versionado de até 16 MiB, validação de consistência, recuperação por adição sem sobrescrita, deduplicação e reversão transacional em caso de conflito. Nove novos testes Python aprovados localmente (arquivos idênticos aos publicados); testes da API e do navegador da versão atual ainda pendentes. Não inclui os dados originais nem os resultados de outros módulos; arquivo sem criptografia. [Guia Desktop](desktop/README.md).
