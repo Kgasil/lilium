@@ -18,3 +18,6 @@ Version / Windows version / module / steps to reproduce / expected result / actu
 
 ## Acceptance flow
 Insights import and quality → save and reopen aggregate → Finance scenario → Sales → Operations → Strategy → Forecast → Flow review → Connect mapping → Copilot → Reports export → reset session. Automated Chromium coverage is configured, but the run result has not been confirmed. Manual installation, print and security checks remain open.
+
+## Hardening pass — v0.14.0
+The Workspace controller is now a separate same-origin asset. CSP blocks inline scripts; inline styles remain permitted for current chart rendering. A startup message remains visible if controller initialization fails. All 295 existing JS checks and 12 new static integration checks passed in V8 against repository contents (307 total). Static checks cover syntax, IDs, navigation anchors, local asset routes, script order, packaging inclusion and CSP. Python, real Chromium and Windows build results remain unconfirmed. No public release.
