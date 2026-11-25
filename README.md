@@ -6,7 +6,7 @@
 ## Português
 Lilium é uma iniciativa independente da K&G Vision para desenvolver uma aplicação web de inteligência empresarial, com foco inicial em pequenas e médias empresas. A proposta é transformar planilhas em indicadores verificáveis, relatórios executivos e apoio a decisões. 
 
-**Status:** website institucional e conceito de produto. Não há aplicação comercial disponível, integração de IA ativa, consultoria oferecida ou data de lançamento anunciada. O site pode incluir demonstrações locais com dados fictícios.
+**Status:** website institucional e primeiro protótipo local de indicadores. [Experimente Lilium Insights](https://kgasil.github.io/lilium/demo.html). Não há aplicação comercial disponível, backend, integração de IA ativa, consultoria oferecida ou data de lançamento anunciada.
 
 ### Lilium Business Suite
 | Módulo planejado | Escopo |
@@ -33,7 +33,7 @@ Python/FastAPI, DuckDB para análise local inicial, PostgreSQL para futura opera
 5. Avaliação comercial; eventual SaaS e serviços de implantação.
 
 ## English
-Lilium is an independent K&G Vision initiative exploring a modular business intelligence web application. The initial focus is validated spreadsheet analytics and executive reporting; future AI capabilities will explain verified metrics, with source references and human oversight. The proposed modules and architecture above are planned, not production-ready. No commercial services or public application release are currently offered.
+Lilium is an independent K&G Vision initiative exploring a modular business intelligence web application. The initial focus is validated spreadsheet analytics and executive reporting; future AI capabilities will explain verified metrics, with source references and human oversight. The proposed modules and architecture above are planned, not production-ready. A local metrics prototype is available; no commercial services or production application release are currently offered.
 
 ## Ecosystem / Ecossistema
 | Project | Website | Repository |
@@ -46,5 +46,19 @@ Lilium is an independent K&G Vision initiative exploring a modular business inte
 
 **Learn · Build · Simplify · Transform / Aprender · Construir · Simplificar · Transformar**
 
+## Protótipo local / Local prototype
+
+- `demo.html`: CSV restrito (`date,revenue,cost`), valores BRL não negativos com até duas casas decimais, datas ISO, agregação mensal, receita, custos, resultado, margem e exportação TXT. Processamento no navegador, sem conexão com IA. Use dados sintéticos.
+- Oito verificações unitárias do cálculo executadas antes do commit: totais, receita zero, precisão decimal, data inválida, cabeçalho inválido, valores negativos, precisão inválida e agregação mensal. Não são testes de segurança ou de interface no navegador.
+- Próximo marco: backend Python/FastAPI, validação de dados, contratos de métricas e testes automatizados versionados.
+
 ## Repository
 `index.html` — bilingual responsive website. GitHub Pages: main / root (requires activation in repository settings). Future commercial implementation may be maintained privately. License terms are not yet specified.
+
+## Identidade K&G Vision / K&G Vision identity
+
+[![K&G Vision — Four-project identity](https://raw.githubusercontent.com/Kgasil/kgasil.github.io/main/assets/brand-banner.svg)](https://kgasil.github.io/)
+
+**Genesis (purple) · Vision (blue) · Aeris (green) · Lilium (rose)**
+
+[Experimentar Lilium Insights / Try Lilium Insights (PT-BR)](https://kgasil.github.io/lilium/demo.html) — local prototype, no connected AI or commercial offering.
