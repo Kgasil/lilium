@@ -58,3 +58,6 @@ Open the private launch link printed by the Desktop launcher, not just the bare 
 
 ## History inconsistency troubleshooting
 If History reports an inconsistent database, stop Lilium and preserve the original database and any existing backup files. Do not overwrite it, delete records to hide the error, or repeatedly attempt to merge a conflicting backup. The application returns a structured error and does not repair corrupted snapshots automatically. Request support with the error code and version, not business data or personal paths. QA covered invalid JSON, inconsistent totals, authorized backup recovery, token renewal and transactional rollback; no clean Windows installation has yet been confirmed.
+
+## Workspace navigation
+The sidebar groups the existing modules by business purpose. Start with the guided task cards and glossary in Comece por aqui. The skip link goes directly to the main content; module links focus their destination and mark the selected anchor. Tables have named focusable scroll regions. The page remains a single document and retains session results when navigating. Browser and assistive-technology validation are still required.
