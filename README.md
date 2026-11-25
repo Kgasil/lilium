@@ -67,7 +67,7 @@ Lilium is built around a clear ambition: empower small businesses to make smarte
 - **Lilium Connect:** mapeamento de colunas CSV/TSV, conversão decimal opcional, validação de destino, prévia, exportação CSV/pacote JSON v1.0 e transferência confirmada para Insights, Sales ou Forecast. Sem conectores externos ou persistência. [Testes Connect](tests/connect.test.js).
 - **Lilium Copilot:** assistente determinístico local com oito tópicos guiados, indicadores com fontes e escopos, limites de alerta configuráveis, sugestões com evidências, encaminhamento confirmado ao Flow com revalidação e exportação JSON. Sem IA generativa, voz ou conexão externa. [Testes Copilot](tests/copilot.test.js).
 - **Lilium Desktop v0.14:** inicializador local com abertura automática no navegador, porta dinâmica loopback, histórico em `%LOCALAPPDATA%`, ícone oficial e receita de empacotamento portátil Windows x64 com PyInstaller. [Instruções Desktop](desktop/README.md) · [Validação Windows](https://github.com/Kgasil/lilium/actions/workflows/desktop-windows.yml). Executável ainda não confirmado, sem instalador assinado ou lançamento público.
-- Próximo marco: validar o pacote e a interface em Windows, corrigir falhas e preparar piloto gratuito controlado.
+- **Preparação do piloto:** tela inicial guiada, reinício da sessão sem apagar histórico, cabeçalhos de segurança do Workspace, teste de navegador Chromium configurado no workflow e [critérios de liberação e feedback](docs/pilot-readiness.md). Ainda não há V1.0 pública; testes Windows e navegador pendentes de confirmação.
 
 ## Lilium Mini — extensão gratuita / free extension
 
