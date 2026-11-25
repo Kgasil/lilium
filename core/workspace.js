@@ -258,4 +258,32 @@ $('copilot-export').onclick=()=>{if(copilotResponse)stExport(copilotResponse,'li
 cpDefaults();
 $('pilot-reset').onclick=()=>{if(confirm("Descartar os dados e resultados em memória? O histórico salvo será mantido."))location.reload();};
 
+
+let backupBusy=false;
+async function backupAction(fn){
+ if(backupBusy)return;
+ backupBusy=true;$('backup-export').disabled=$('backup-merge').disabled=$('backup-file').disabled=true;
+ $('backup-status').textContent='Processando...';
+ try{await fn();}catch(e){$('backup-status').textContent=e.message||'Falha no backup.';}
+ finally{backupBusy=false;$('backup-export').disabled=$('backup-merge').disabled=$('backup-file').disabled=false;}
+}
+$('backup-export').onclick=()=>backupAction(async()=>{
+ const res=await fetch('/api/v1/backup',{cache:'no-store'});
+ if(!res.ok)throw Error('Não foi possível exportar o histórico.');
+ const raw=await res.text();repDownload(raw,'application/json','lilium-history.json');
+ $('backup-status').textContent='Backup gerado. Guarde o arquivo em local seguro.';
+});
+$('backup-merge').onclick=()=>{
+ const file=$('backup-file').files[0];
+ if(!file||file.size>16*1024*1024){$('backup-status').textContent='Selecione um backup JSON de até 16 MiB.';return;}
+ if(!confirm('Adicionar análises deste arquivo ao histórico? Registros atuais não serão substituídos.'))return;
+ backupAction(async()=>{
+ const res=await fetch('/api/v1/backup/merge',{method:'POST',headers:{'Content-Type':'application/json'},body:file});
+ const data=await res.json();
+ if(!res.ok)throw Error(data.error?.code==='backup_invalid'?'Backup inválido, conflito ou limite atingido. Nenhuma análise importada.':'Não foi possível recuperar o backup.');
+ $('backup-file').value='';await refreshHistory();
+ $('backup-status').textContent=data.added+' análises recuperadas; '+data.skipped+' cópias idênticas ignoradas.';
+ });
+};
+
 $('workspace-loading').hidden=true;
