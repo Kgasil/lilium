@@ -29,9 +29,11 @@ def data_directory():
 def configure_app(directory):
     from core.api import app
     from core.store import HistoryStore
+    from core.session import new_token
     directory = Path(directory)
     directory.mkdir(parents=True, exist_ok=True)
     app.state.history = HistoryStore(directory / "lilium.sqlite3")
+    app.state.session_token = new_token()
     return app
 
 
@@ -53,10 +55,11 @@ def self_test(quiet=False):
     from fastapi.testclient import TestClient
     from core.api import app
     previous = app.state.history
+    previous_token = app.state.session_token
     try:
         with tempfile.TemporaryDirectory(prefix="lilium-check-") as folder:
             app = configure_app(folder)
-            with TestClient(app, base_url="http://127.0.0.1") as client:
+            with TestClient(app, base_url="http://127.0.0.1", headers={"X-Lilium-Session": app.state.session_token}) as client:
                 def require(condition, label):
                     if not condition:
                         raise RuntimeError("Self-test failed: " + label)
@@ -77,21 +80,25 @@ def self_test(quiet=False):
                 key = saved.json()["id"]
                 require(len(client.get("/api/v1/history").json()["items"]) == 1, "history")
                 require(client.delete("/api/v1/history/" + key, headers=headers).status_code == 200, "delete")
+                require(client.get("/api/v1/history", headers={"X-Lilium-Session": "invalid"}).status_code == 403, "session")
                 require(client.get("/health", headers={"Host": "example.com"}).status_code == 400, "host")
                 require(client.post("/api/v1/analyze", content=csv, headers={**headers, "Origin": "https://example.com"}).status_code == 403, "origin")
     finally:
         app.state.history = previous
+        app.state.session_token = previous_token
     if not quiet:
         print("Lilium Desktop self-test OK", flush=True)
 
 
 def serve(no_browser=False):
     import uvicorn
+    from core.session import access_url
     directory = data_directory()
     app = configure_app(directory)
     # Reserve the actual socket instead of probing and reopening a free port.
     with reserve_socket() as sock:
         url = "http://127.0.0.1:" + str(sock.getsockname()[1])
+        launch_url = access_url(url, app.state.session_token)
         config = uvicorn.Config(app, host="127.0.0.1", port=sock.getsockname()[1],
                                loop="asyncio", http="h11", ws="none",
                                proxy_headers=False, access_log=False,
@@ -103,10 +110,11 @@ def serve(no_browser=False):
             deadline = time.monotonic() + 30
             while not stop.is_set() and time.monotonic() < deadline:
                 if server.started and not stop.is_set():
-                    print("LILIUM_READY " + url, flush=True)
+                    print("LILIUM_READY " + launch_url, flush=True)
+                    print("Link privado desta sessao; nao compartilhe.", flush=True)
                     if not no_browser:
                         try:
-                            if not webbrowser.open(url):
+                            if not webbrowser.open(launch_url):
                                 print("Abra o endereco acima no navegador.", flush=True)
                         except Exception:
                             print("Abra o endereco acima no navegador.", flush=True)
