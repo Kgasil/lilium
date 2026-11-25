@@ -1,5 +1,6 @@
 # Project Lilium
-**Estratégia e Inteligência · Strategy & Intelligence.**
+**Strategy & Growth · Estratégia e Crescimento**  
+*Make smarter decisions. Grow with confidence.*
 
 [Website](https://kgasil.github.io/lilium/) · [K&G Vision](https://kgasil.github.io/) · [Português](#português) · [English](#english)
 
@@ -33,16 +34,16 @@ Python/FastAPI, DuckDB para análise local inicial, PostgreSQL para futura opera
 5. Avaliação comercial; eventual SaaS e serviços de implantação.
 
 ## English
-Lilium is an independent K&G Vision initiative exploring a modular business intelligence web application. The initial focus is validated spreadsheet analytics and executive reporting; future AI capabilities will explain verified metrics, with source references and human oversight. The proposed modules and architecture above are planned, not production-ready. A local metrics prototype is available; no commercial services or production application release are currently offered.
+Lilium is built around a clear ambition: empower small businesses to make smarter decisions, operate with confidence and grow sustainably. This independent K&G Vision initiative is developing a modular business intelligence web application. The initial focus is validated spreadsheet analytics and executive reporting; future AI capabilities will explain verified metrics, with source references and human oversight. The proposed modules and architecture above are planned, not production-ready. A local metrics prototype is available; no commercial services or production application release are currently offered.
 
 ## Ecosystem / Ecossistema
 | Project | Website | Repository |
 | --- | --- | --- |
 | K&G Vision | [Institutional](https://kgasil.github.io/) | [Source](https://github.com/Kgasil/kgasil.github.io) |
-| Genesis | [Sabedoria e Aplicação](https://kgasil.github.io/genesis/) | [Source](https://github.com/Kgasil/genesis) |
+| Genesis | [Wisdom & Application / Sabedoria e Aplicação](https://kgasil.github.io/genesis/) | [Source](https://github.com/Kgasil/genesis) |
 | Vision | [Security & Efficiency](https://kgasil.github.io/vision/) | [Source](https://github.com/Kgasil/vision) |
 | Aeris | [Discreto e Eficiente.](https://kgasil.github.io/aeris/) | [Source](https://github.com/Kgasil/aeris) |
-| Lilium | [Strategy & Intelligence.](https://kgasil.github.io/lilium/) | [Source](https://github.com/Kgasil/lilium) |
+| Lilium | [Strategy & Growth / Estratégia e Crescimento](https://kgasil.github.io/lilium/) | [Source](https://github.com/Kgasil/lilium) |
 
 **Learn · Build · Simplify · Transform / Aprender · Construir · Simplificar · Transformar**
 
