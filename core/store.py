@@ -13,6 +13,21 @@ class HistoryFull(ValueError):
     pass
 
 
+class HistoryCorrupt(RuntimeError):
+    """A stored aggregate cannot be trusted; leave the database untouched."""
+
+
+def read_snapshot(row):
+    # Local import avoids the store/backup module initialization cycle.
+    from .backup import validate_item
+    try:
+        item = {'id': row['id'], 'created_at': row['created_at'], 'analysis': json.loads(row['payload'])}
+        validate_item(item)
+        return item
+    except (ValueError, TypeError, RecursionError, OverflowError, KeyError, IndexError):
+        raise HistoryCorrupt('Stored history is inconsistent.') from None
+
+
 class HistoryStore:
     def __init__(self, path):
         self.path = Path(path)
@@ -39,13 +54,13 @@ class HistoryStore:
     def list(self):
         with closing(self.connect()) as db:
             rows = db.execute('SELECT * FROM snapshots ORDER BY created_at DESC, id DESC').fetchall()
-        return [{'id': row['id'], 'created_at': row['created_at'], 'rows': data['rows'],
-                 'totals': data['totals']} for row in rows for data in [json.loads(row['payload'])]]
+        return [{'id': item['id'], 'created_at': item['created_at'], 'rows': item['analysis']['rows'],
+                 'totals': item['analysis']['totals']} for row in rows for item in [read_snapshot(row)]]
 
     def get(self, key):
         with closing(self.connect()) as db:
             row = db.execute('SELECT * FROM snapshots WHERE id=?', (key,)).fetchone()
-        return None if row is None else {'id': row['id'], 'created_at': row['created_at'], 'analysis': json.loads(row['payload'])}
+        return None if row is None else read_snapshot(row)
 
     def delete(self, key):
         with closing(self.connect()) as db, db:
