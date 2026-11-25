@@ -318,4 +318,25 @@ $('backup-merge').onclick=()=>{
  });
 };
 
+
+function markWorkspaceLocation(hash){
+ const links=Array.from($('module-nav').querySelectorAll('a[href^="#"]'));
+ const active=hash||'#getting-started';
+ for(const a of links){
+  if(a.getAttribute('href')===active)a.setAttribute('aria-current','location');
+  else a.removeAttribute('aria-current');
+ }
+}
+markWorkspaceLocation(location.hash);
+window.addEventListener('hashchange',()=>markWorkspaceLocation(location.hash));
+document.addEventListener('click',event=>{
+ if(event.defaultPrevented||event.button!==0||event.altKey||event.ctrlKey||event.metaKey||event.shiftKey)return;
+ const a=event.target.closest?.('a[href^="#"]');
+ if(!a)return;
+ const target=document.getElementById(a.getAttribute('href').slice(1));
+ if(!target||target.hidden)return;
+ // Keep the browser's native history and anchor behavior; focus the destination.
+ if(target.hasAttribute('tabindex'))requestAnimationFrame(()=>target.focus({preventScroll:true}));
+});
+
 $('workspace-loading').hidden=true;
