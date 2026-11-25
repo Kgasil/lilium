@@ -48,7 +48,7 @@ def reserve_socket():
         raise
 
 
-def self_test():
+def self_test(quiet=False):
     """Exercise bundled HTML, all module assets, and temporary SQLite; no user data."""
     from fastapi.testclient import TestClient
     from core.api import app
@@ -81,7 +81,8 @@ def self_test():
                 require(client.post("/api/v1/analyze", content=csv, headers={**headers, "Origin": "https://example.com"}).status_code == 403, "origin")
     finally:
         app.state.history = previous
-    print("Lilium Desktop self-test OK", flush=True)
+    if not quiet:
+        print("Lilium Desktop self-test OK", flush=True)
 
 
 def serve(no_browser=False):
@@ -131,9 +132,17 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description="Lilium Desktop local preview")
     parser.add_argument("--version", action="version", version=VERSION)
     parser.add_argument("--no-browser", action="store_true")
-    parser.add_argument("--self-test", action="store_true")
+    modes = parser.add_mutually_exclusive_group()
+    modes.add_argument("--self-test", action="store_true")
+    modes.add_argument("--diagnostics", action="store_true")
     args = parser.parse_args(argv)
     try:
+        if args.diagnostics:
+            import json
+            from desktop.diagnostics import report
+            result = report(VERSION, ASSETS, data_directory, reserve_socket, lambda: self_test(quiet=True))
+            print(json.dumps(result, indent=2), flush=True)
+            return 0 if result["ready"] else 1
         if args.self_test:
             self_test()
             return 0
