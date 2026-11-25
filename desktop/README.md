@@ -61,3 +61,6 @@ If History reports an inconsistent database, stop Lilium and preserve the origin
 
 ## Workspace navigation
 The sidebar groups the existing modules by business purpose. Start with the guided task cards and glossary in Comece por aqui. The skip link goes directly to the main content; module links focus their destination and mark the selected anchor. Tables have named focusable scroll regions. The page remains a single document and retains session results when navigating. Browser and assistive-technology validation are still required.
+
+## Final validation procedure
+The source and portable executable must both pass live lifecycle testing, including restart persistence, token rotation and backup recovery. Run `python tests/smoke_lifecycle.py` from the source root, or pass the full executable path as its argument. The lifecycle test passed on Linux against the current source launcher. For the complete Windows workflow, open Actions > Lilium Desktop - Windows validation > Run workflow, select main, and inspect the job results. If the workflow fails, use the failed step log; do not publish a package or bypass checks. Only a confirmed successful run produces the preview artifact. Full browser and Windows checks remain unconfirmed.
