@@ -95,3 +95,6 @@ Official visual lockup: **K&G** above **Vision**; individual project symbols are
 ## Product direction / Direção do produto
 
 [Product vision and roadmap](docs/product-vision.md) — proposed product scope, MVP, integration and AI principles; not available features.
+
+### Validação técnica da prévia v0.14
+295 testes de módulos e 12 verificações estáticas do Workspace aprovados em V8 (307 verificações). Controlador JavaScript separado do HTML, CSP bloqueando scripts inline, aviso de inicialização e cobertura adicional no workflow. A execução Python, Chromium e Windows ainda precisa ser confirmada. [Critérios do piloto](docs/pilot-readiness.md).
