@@ -21,4 +21,7 @@ This is a bearer capability, not a user/password system, not full authentication
 - Define real-data handling, retention, deletion, support and incident-response requirements before a public release.
 - Independent security review and applicable legal/privacy assessment are still pending. No claim of LGPD compliance, security certification or data encryption is made.
 
-Validation: 12 policy unit tests passed on Linux; tested blobs match GitHub. Workspace syntax and static references verified. Five new integrated API tests are committed but not yet run against the full current version. Actual Chromium, Windows and complete regression remain unconfirmed.
+Validation: the earlier Windows builds passed full functional regression and Chromium, but are blocked by the dependency audit. The remediated environment passed independent known-vulnerability review; full replacement executable validation and independent manual security review are distinct gates.
+
+## Known-vulnerability review
+[Audit 45722053818](https://github.com/Kgasil/lilium/actions/runs/45722053818) identified known advisories in earlier versions of Pillow, Starlette and pip. Prior portable previews are superseded and must not be used for the pilot. [Audit 45722416001](https://github.com/Kgasil/lilium/actions/runs/45722416001) found no known vulnerabilities in the current resolved environment after remediation, without advisory exclusions. CI additionally checks the actual build environment before packaging. This does not cover every embedded native library, zero-day, OS/browser issue, malicious dependency, or application logic weakness. No independent penetration test, LGPD certification or security guarantee.
