@@ -125,6 +125,20 @@ def main():
                 page.locator("#backup-merge").click()
                 expect(page.locator("#backup-status")).to_contain_text("1 cópias idênticas ignoradas")
                 expect(page.locator("#history-rows tr")).to_have_count(1)
+                page.locator("#starter-scenario").select_option("restaurant")
+                page.locator("#starter-target").select_option("all")
+                with page.expect_download() as sample_download:
+                    page.locator("#starter-export").click()
+                assert sample_download.value.suggested_filename == "lilium-restaurant-starter.json"
+                page.locator("#starter-load").click()
+                expect(page.locator("#starter-status")).to_contain_text("7 conjunto(s)")
+                expect(page.locator("#sales-csv")).to_contain_text("Prato executivo")
+                expect(page.locator("#ops-csv")).to_contain_text("Preparação")
+                expect(page.locator("#results")).to_be_hidden()
+                expect(page.locator("#history-rows tr")).to_have_count(1)
+                page.locator("#run").click()
+                expect(page.locator("#results")).to_be_visible()
+                expect(page.locator("#rows tr")).to_have_count(9)
                 page.set_viewport_size({"width": 390, "height": 844})
                 expect(page.locator("#getting-started")).to_be_visible()
                 assert page.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), "Mobile page overflows"
