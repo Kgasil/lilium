@@ -1,0 +1,14 @@
+const assert=require("node:assert/strict");const api=require("./math.js");
+assert.ok((()=>api.profit("100","60").result===4000&&api.profit("100","60").margin===40)(),"profit");
+assert.ok((()=>api.profit("20","30").result===-1000)(),"loss");
+assert.ok((()=>api.profit("0","1").margin===null)(),"zero revenue");
+assert.ok((()=>api.profit("0,10","0,02").result===8)(),"precision");
+assert.ok((()=>api.pricing("60","40").price===10000)(),"pricing");
+assert.ok((()=>api.pricing("1","33.33").price===150)(),"round upward");
+assert.ok((()=>api.breakeven("1000","100","60").units===25)(),"break even");
+assert.ok((()=>api.breakeven("1001","100","60").units===26)(),"ceil");
+assert.ok((()=>api.breakeven("100","40","40").units===null)(),"no contribution");
+assert.ok((()=>{try{api.cents("-1");return false}catch{return true}})(),"reject negative");
+assert.ok((()=>{try{api.cents("1.001");return false}catch{return true}})(),"reject extra precision");
+assert.ok((()=>{try{api.pricing("100","100");return false}catch{return true}})(),"reject 100% margin");
+console.log("12 checks passed");
