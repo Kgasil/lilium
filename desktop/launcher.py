@@ -38,6 +38,8 @@ def configure_app(directory):
 def reserve_socket():
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
+        if sys.platform == "win32" and hasattr(socket, "SO_EXCLUSIVEADDRUSE"):
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
         sock.bind(("127.0.0.1", 0))
         sock.listen(128)
         return sock
