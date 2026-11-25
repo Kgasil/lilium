@@ -43,9 +43,11 @@ jobs:
             New-Item -ItemType Directory -Path $env:LOCALAPPDATA | Out-Null
             # Restrict PATH only for the acceptance process, not for the runner itself.
             # Python is installed on hosted runners; this is not a no-Python machine claim.
-            $env:Path = "$env:SystemRoot\System32;$env:SystemRoot"
+            $emptyPath = Join-Path $root "empty-path"
+            New-Item -ItemType Directory -Path $emptyPath | Out-Null
+            $env:Path = $emptyPath
             Remove-Item Env:PYTHONPATH,Env:PYTHONHOME -ErrorAction SilentlyContinue
-            if (Get-Command python,py -ErrorAction SilentlyContinue) { throw "Unexpected Python launcher on restricted PATH" }
+            if (Get-Command python,py -CommandType Application -ErrorAction SilentlyContinue) { throw "Unexpected Python launcher on restricted PATH" }
             $version = & $exe --version
             if ($LASTEXITCODE -ne 0 -or $version -ne "0.14.0") { throw "Version check failed" }
             $raw = & $exe --diagnostics
