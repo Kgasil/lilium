@@ -43,6 +43,14 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(self.client.get('/health').json()['status'], 'ok')
         self.assertIn('Workspace', self.client.get('/').text)
 
+    def test_dashboard_asset(self):
+        r = self.client.get('/assets/dashboard.js')
+        self.assertEqual(r.status_code, 200)
+        self.assertIn('LiliumDashboard', r.text)
+        self.assertIn('application/javascript', r.headers['content-type'])
+        self.assertEqual(r.headers['cache-control'], 'no-store')
+        self.assertEqual(self.client.get('/health').json()['version'], '0.4.0')
+
     def test_success(self):
         response = self.client.post('/api/v1/analyze', content=SAMPLE, headers={'Content-Type':'text/csv','Origin':'http://localhost'})
         self.assertEqual(response.status_code, 200)
