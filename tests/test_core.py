@@ -43,6 +43,13 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(self.client.get('/health').json()['status'], 'ok')
         self.assertIn('Workspace', self.client.get('/').text)
 
+    def test_workspace_security_headers(self):
+        response = self.client.get('/')
+        self.assertEqual(response.headers['x-frame-options'], 'DENY')
+        self.assertEqual(response.headers['referrer-policy'], 'no-referrer')
+        self.assertIn("connect-src 'self'", response.headers['content-security-policy'])
+        self.assertIn("frame-ancestors 'none'", response.headers['content-security-policy'])
+
     def test_dashboard_asset(self):
         r = self.client.get('/assets/dashboard.js')
         self.assertEqual(r.status_code, 200)
