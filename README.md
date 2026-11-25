@@ -128,3 +128,5 @@ Central de ajuda offline com 15 guias, busca local sem acentos, atalhos para os 
 
 ### Interactive Lab / Laboratório público
 Formação de preços, simulação mensal, ponto de equilíbrio e metas, cinco cenários sintéticos com receita, custos, resultado, previsão e CSV para testar Insights. Reutiliza os motores Finance, Starter, Sales e Forecast; funciona no navegador sem API. 12 testes de cálculo e 11 verificações simuladas de DOM aprovados em V8. Publicação Pages e Chromium real ainda não confirmados. O laboratório é uma demonstração separada do Desktop; não é uma oferta comercial.
+
+[Public lab validation workflow](https://github.com/Kgasil/lilium/actions/workflows/public-lab.yml) · [Windows validation workflow](https://github.com/Kgasil/lilium/actions/workflows/desktop-windows.yml). The two gates are independent; a successful public demo does not validate the executable. Insights demo now rejects invalid UTF-8 and prevents a stale file read from replacing newer input.
