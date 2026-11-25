@@ -1,4 +1,4 @@
-# Lilium Core v0.11.0 — local development preview
+# Lilium Core v0.12.0 — local development preview
 
 **Strategy & Growth · Estratégia e Crescimento**
 
@@ -29,6 +29,13 @@ date,revenue,cost
 2026-02-01,11200,7440
 2026-03-01,12000,7800
 ```
+
+## Lilium Connect
+- Local data interchange for Insights, Sales and Forecast. Paste or open simple UTF-8 CSV/TSV; delimiters comma, semicolon or tab, up to 1 MiB, 10,000 rows and 50 columns. No quoted fields or multiline cells. Headers must be unique. Map required fields explicitly to different source columns; unmapped columns are omitted in the normalized copy.
+- Optional decimal-comma conversion for numeric fields only; no automatic date, currency or thousands-separator conversion. Destination validation uses existing Sales and Forecast parsers; Insights checks required header, ISO dates and monetary syntax locally, then its API revalidates when the user runs analysis. Forecast unit is chosen in its destination module.
+- Preview up to ten normalized rows; export CSV or versioned JSON dataset package (`schema_version: 1.0`, `kind: lilium.dataset`, target, UTF-8 encoding, CSV format, row count and CSV content). Import strictly checks envelope fields and revalidates CSV and row count; not a cryptographic authenticity check. JSON packages also have a 1 MiB limit including overhead; use CSV if the package is too large.
+- Explicit confirmation before transferring data into a module; clears its existing calculated result, not stored Insights history. No automatic analysis, external connections, credentials, persistence or execution. Exports contain normalized raw records, not anonymized aggregates. Use synthetic data.
+- `node tests/connect.test.js`: 31 new checks passed in V8; 265 total JS checks passed from published GitHub source. Python regression, browser and Windows testing remain pending.
 
 ## Lilium Flow
 - Local, manually triggered rule evaluation on six allowlisted metrics from the current Insights, Finance, Sales, Operations, Strategy and Forecast session results. Paste simple CSV: `rule_id,metric,operator,threshold,action`; up to 50 rules, 32,768 characters. Operators: lt, lte, gt, gte, eq. Money compares exact integer cents; other metrics compare rounded two-decimal values. Missing sources are unavailable, not zero.
@@ -83,7 +90,7 @@ date,revenue,cost
 - Navigation between overview, import/quality and local history. Responsive graphite/rose/gold layout with local JavaScript served by the API.
 - Inclusive month filters over validated monthly aggregates. Totals are recomputed from the selected months; margin uses integer arithmetic with half-up rounding. Missing months are not invented. An empty interval has no indicators.
 - Revenue/cost chart displays up to the latest 24 months in the filter; the accessible table contains all selected months. Export monthly CSV for the active period or full JSON for the original analysis. Saving always persists the complete analysis, not a filtered subset.
-- Run the dashboard tests with `node tests/dashboard.test.js` (Node.js optional for development only; no Node dependency for users). Fourteen pure JS checks passed in a V8 execution environment. The Python regression suite now includes an additional asset-route test; the full Python suite and browser UI have not been rerun for v0.11.
+- Run the dashboard tests with `node tests/dashboard.test.js` (Node.js optional for development only; no Node dependency for users). Fourteen pure JS checks passed in a V8 execution environment. The Python regression suite now includes an additional asset-route test; the full Python suite and browser UI have not been rerun for v0.12.
 
 ## Smart Import & Data Quality
 - `POST /api/v1/quality` — diagnostic only, no persistence. Counts valid/invalid rows, possible duplicates and zero-revenue rows; returns row number and issue code (first 100 issues). Invalid rows block analysis; warnings do not. No automatic corrections or deduplication.
@@ -98,6 +105,6 @@ date,revenue,cost
 - Full history returns 409; storage failure returns 503 without exposing local paths. Back up exported JSON if needed; deleting a snapshot does not delete external exports or backups.
 
 ## Boundaries
-The UI sends CSV or XLSX only to the loopback API. Optional local persistence; no telemetry, account, external AI or payments. Do not expose the service to the LAN or internet; there is no authentication. Host and Origin validation are limited defenses, not a security audit. Result is revenue minus supplied costs, not necessarily accounting profit. No general spreadsheet mapping, multi-tenant isolation, desktop packaging or production deployment yet. Thirty unittest cases passed in the previous v0.3 local Linux Python environment; the v0.11 Python regression run (including dashboard, Finance, Sales, Operations, Strategy, Reports, Forecast and Flow asset tests), Windows installation and full browser UI remain untested.
+The UI sends CSV or XLSX only to the loopback API. Optional local persistence; no telemetry, account, external AI or payments. Do not expose the service to the LAN or internet; there is no authentication. Host and Origin validation are limited defenses, not a security audit. Result is revenue minus supplied costs, not necessarily accounting profit. No general quoted CSV/XLSX mapping, multi-tenant isolation, desktop packaging or production deployment yet. Thirty unittest cases passed in the previous v0.3 local Linux Python environment; the v0.12 Python regression run (including module asset tests), Windows installation and full browser UI remain untested.
 
-Next: Lilium Connect — validated local data exchange and integration contracts. SQLite is chosen for the lightweight local preview; analytical and multi-organization stores remain future work.
+Next: Lilium Copilot — evidence-grounded local assistant foundation. SQLite is chosen for the lightweight local preview; analytical and multi-organization stores remain future work.
