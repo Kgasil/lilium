@@ -1,0 +1,62 @@
+name: Lilium portable artifact acceptance
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/portable-acceptance.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  portable-acceptance:
+    runs-on: windows-2025
+    timeout-minutes: 15
+    steps:
+      - name: Download exact remediated candidate from successful build
+        uses: actions/download-artifact@v4
+        with:
+          name: Lilium-Desktop-0.14.0-windows-x64-preview
+          run-id: 45722415976
+          github-token: ${{ github.token }}
+          path: candidate
+      - name: Verify candidate, extract into new folder and test bundled executable
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $expected = "95ef0b0b96824b47c87e3784e8c9985796cefdfb76e1bea445b3e09ab0efe392"
+          $commit = "e34b2f5a7a2f928ac6b2aea80bfea23a78d258c0"
+          $name = "Lilium-0.14.0-windows-x64-preview.zip"
+          $zip = Join-Path (Resolve-Path candidate).Path $name
+          $manifest = Get-Content candidate/manifest.json -Raw | ConvertFrom-Json
+          if ($manifest.commit -ne $commit -or $manifest.version -ne "0.14.0" -or $manifest.platform -ne "windows-x64" -or $manifest.channel -ne "preview" -or $manifest.filename -ne $name -or $manifest.sha256 -ne $expected) { throw "Candidate metadata mismatch" }
+          if ((Get-Item -LiteralPath $zip).Length -ne $manifest.bytes) { throw "Archive size mismatch" }
+          if ((Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected) { throw "Archive hash mismatch" }
+          $root = Join-Path $env:RUNNER_TEMP ("lilium-acceptance-" + [guid]::NewGuid())
+          $dest = Join-Path $root "portable copy"
+          New-Item -ItemType Directory -Path $root | Out-Null
+          try {
+            Expand-Archive -LiteralPath $zip -DestinationPath $dest
+            $exe = Join-Path $dest "Lilium.exe"
+            if (!(Test-Path -LiteralPath $exe -PathType Leaf) -or !(Test-Path -LiteralPath (Join-Path $dest "_internal") -PathType Container)) { throw "Incomplete portable bundle" }
+            $env:LOCALAPPDATA = Join-Path $root "test-profile"
+            New-Item -ItemType Directory -Path $env:LOCALAPPDATA | Out-Null
+            # Restrict PATH only for the acceptance process, not for the runner itself.
+            # Python is installed on hosted runners; this is not a no-Python machine claim.
+            $env:Path = "$env:SystemRoot\System32;$env:SystemRoot"
+            Remove-Item Env:PYTHONPATH,Env:PYTHONHOME -ErrorAction SilentlyContinue
+            if (Get-Command python,py -ErrorAction SilentlyContinue) { throw "Unexpected Python launcher on restricted PATH" }
+            $version = & $exe --version
+            if ($LASTEXITCODE -ne 0 -or $version -ne "0.14.0") { throw "Version check failed" }
+            $raw = & $exe --diagnostics
+            if ($LASTEXITCODE -ne 0) { throw "Bundled diagnostic failed" }
+            $diagnostic = ($raw -join "`n") | ConvertFrom-Json
+            if (!$diagnostic.ready -or !$diagnostic.bundled -or $diagnostic.checks.Count -ne 6 -or @($diagnostic.checks | Where-Object { $_.status -ne "pass" }).Count -ne 0) { throw "Diagnostic evidence incomplete" }
+            & $exe --self-test
+            if ($LASTEXITCODE -ne 0) { throw "Bundled self-test failed" }
+            $diagnostic | ConvertTo-Json -Depth 5
+            "Verified exact archive from run 45722415976, extracted in a different Windows runner with restricted PATH, all six bundled diagnostics and self-test passed."
+            "No Python interpreter invoked; hosted runner may still have Python installed. Manual device acceptance remains pending."
+          } finally {
+            Remove-Item -LiteralPath $root -Recurse -Force -ErrorAction Stop
+          }
