@@ -30,3 +30,6 @@ Added source setup fingerprint, explicit repair, local redacted readiness checks
 
 ## Release packaging pass
 Added offline portable ZIP packaging, version manifest, SHA-256 verification against an independently trusted digest and safe staging into a unique folder. Nine Python tests passed locally on Linux using synthetic bundle files; published blobs verified identical. Windows workflow now packages only after preceding checks, then validates and smoke-tests the staged executable before artifact upload. No run or real executable confirmed. Version folders are preserved, but the user history is shared; backup and compatibility review required before switching. No signed package, auto-update, public release or claim of authenticity from hashes alone.
+
+## Trust & Privacy pass
+Added Desktop process-scoped session token, same-origin and Fetch Metadata checks, no-store API responses, private launch fragment with browser cleanup and test-log redaction. Twelve policy unit tests passed locally; static Workspace syntax/references verified. Five integrated API tests added but current full API/Chromium/Windows validation remains pending. Direct development mode is unguarded; no multi-user accounts, encryption or compliance certification. See [Trust & Privacy](trust-privacy.md).
