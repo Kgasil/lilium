@@ -49,6 +49,16 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(response.headers['referrer-policy'], 'no-referrer')
         self.assertIn("connect-src 'self'", response.headers['content-security-policy'])
         self.assertIn("frame-ancestors 'none'", response.headers['content-security-policy'])
+        self.assertIn("script-src 'self';", response.headers['content-security-policy'])
+        self.assertIn('src="/assets/workspace.js"', response.text)
+        self.assertNotIn("<script>", response.text)
+
+    def test_workspace_controller_asset(self):
+        response = self.client.get("/assets/workspace.js")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("workspace-loading", response.text)
+        self.assertIn("application/javascript", response.headers["content-type"])
+        self.assertEqual(response.headers["x-content-type-options"], "nosniff")
 
     def test_dashboard_asset(self):
         r = self.client.get('/assets/dashboard.js')
