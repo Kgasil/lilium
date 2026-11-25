@@ -138,3 +138,6 @@ Formação de preços, simulação mensal, ponto de equilíbrio e metas, cinco c
 
 ### Candidato atual — CI e auditoria aprovadas
 [Execução Windows #45722415976](https://github.com/Kgasil/lilium/actions/runs/45722415976) · [Prévia portátil corrigida](https://github.com/Kgasil/lilium/actions/runs/45722415976/artifacts/15071874653) · [Conferência SHA-256 e roteiro de teste](docs/clean-machine-validation.md). 100 testes Python e 401 verificações Node aprovados, Chromium real no código-fonte e executável, auditoria do build sem vulnerabilidades conhecidas detectadas. Artefato expira em 09/12/2026 UTC. Os anteriores continuam desaconselhados. Não é V1.0 pública nem instalador assinado; não use dados reais. Aceitação manual permanece pendente.
+
+### Preparação final do piloto
+[Manual do piloto controlado](docs/pilot-handbook.md) · [Aceitação do pacote em runner Windows independente](https://github.com/Kgasil/lilium/actions/workflows/portable-acceptance.yml) · [Roteiro manual em máquina limpa](docs/clean-machine-validation.md). A publicação Pages e os testes do site e Windows após a atualização de documentação foram confirmados. A prévia de referência continua sendo a execução 45722415976, com seu hash próprio. Nenhum piloto público foi aberto; a decisão depende da aceitação manual.
