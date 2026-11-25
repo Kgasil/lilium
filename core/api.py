@@ -9,7 +9,7 @@ from .metrics import MAX_BYTES, DataError, analyze_csv
 from .store import HistoryStore, HistoryFull
 from .imports import XLSX, normalize, quality
 
-app = FastAPI(title="Lilium Core", version="0.8.0", docs_url=None, redoc_url=None)
+app = FastAPI(title="Lilium Core", version="0.9.0", docs_url=None, redoc_url=None)
 app.state.history = HistoryStore(Path(__file__).resolve().parent.parent / "data" / "lilium.sqlite3")
 app.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1"])
 
@@ -20,7 +20,7 @@ def error(code, message, status, row=None):
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "version": "0.8.0", "mode": "local-preview"}
+    return {"status": "ok", "version": "0.9.0", "mode": "local-preview"}
 
 
 @app.get("/", include_in_schema=False)
@@ -51,6 +51,11 @@ def operations_asset():
 @app.get("/assets/strategy.js", include_in_schema=False)
 def strategy_asset():
     return FileResponse(Path(__file__).with_name("strategy.js"), media_type="application/javascript", headers={"Cache-Control": "no-store", "X-Content-Type-Options": "nosniff"})
+
+
+@app.get("/assets/reports.js", include_in_schema=False)
+def reports_asset():
+    return FileResponse(Path(__file__).with_name("reports.js"), media_type="application/javascript", headers={"Cache-Control": "no-store", "X-Content-Type-Options": "nosniff"})
 
 
 async def analyze_input(request: Request, diagnostic=False):
