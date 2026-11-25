@@ -27,3 +27,6 @@ Versioned JSON export and transactional merge recovery added to History. Nine Py
 
 ## Setup and diagnostics pass
 Added source setup fingerprint, explicit repair, local redacted readiness checks and bundled diagnostics gate in Windows CI. Eight Python tests passed locally on Linux with mocked subprocess installation; tested source blobs verified against GitHub. Diagnostic storage uses disposable SQLite in the data directory, not real history. No automatic updater, Windows validation or release approval. Full current API and browser regression remains pending.
+
+## Release packaging pass
+Added offline portable ZIP packaging, version manifest, SHA-256 verification against an independently trusted digest and safe staging into a unique folder. Nine Python tests passed locally on Linux using synthetic bundle files; published blobs verified identical. Windows workflow now packages only after preceding checks, then validates and smoke-tests the staged executable before artifact upload. No run or real executable confirmed. Version folders are preserved, but the user history is shared; backup and compatibility review required before switching. No signed package, auto-update, public release or claim of authenticity from hashes alone.
