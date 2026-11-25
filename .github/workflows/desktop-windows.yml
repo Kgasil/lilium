@@ -41,6 +41,8 @@ jobs:
           }
       - name: Live source smoke test
         run: python tests/smoke_desktop.py
+      - name: Live source lifecycle and recovery
+        run: python tests/smoke_lifecycle.py
       - name: Build portable preview and run executable self-test
         run: python -m desktop.build_windows
       - name: Bundled readiness diagnostics
@@ -51,10 +53,14 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Live bundled smoke test
         run: python tests/smoke_desktop.py dist/Lilium/Lilium.exe
+      - name: Live bundled lifecycle and recovery
+        run: python tests/smoke_lifecycle.py dist/Lilium/Lilium.exe
       - name: Install browser test dependency
         run: python -m pip install playwright==1.56.0
       - name: Install Chromium
         run: python -m playwright install chromium
+      - name: Browser pilot smoke test against source
+        run: python tests/browser_pilot.py
       - name: Browser pilot smoke test against bundled application
         run: python tests/browser_pilot.py dist/Lilium/Lilium.exe
       - name: Package versioned preview and verify staged copy
