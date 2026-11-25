@@ -55,3 +55,6 @@ Require successful Windows build and smoke tests, browser interaction tests beyo
 
 ## Desktop access and privacy
 Open the private launch link printed by the Desktop launcher, not just the bare local URL. It contains a temporary capability that Workspace removes from the address bar and retains in tab sessionStorage. Stop Desktop to invalidate it. Never share it. Direct development API mode is unguarded and intended only for tests. See [Trust & Privacy](../docs/trust-privacy.md).
+
+## History inconsistency troubleshooting
+If History reports an inconsistent database, stop Lilium and preserve the original database and any existing backup files. Do not overwrite it, delete records to hide the error, or repeatedly attempt to merge a conflicting backup. The application returns a structured error and does not repair corrupted snapshots automatically. Request support with the error code and version, not business data or personal paths. QA covered invalid JSON, inconsistent totals, authorized backup recovery, token renewal and transactional rollback; no clean Windows installation has yet been confirmed.
