@@ -3,7 +3,7 @@
 **Strategy & Growth · Estratégia e Crescimento**
 *Make smarter decisions. Grow with confidence.*
 
-**Status:** planning, except for the local CSV metrics demonstration in `demo.html` the Lilium Mini development preview in `extension/`, and the local Core/Workspace v0.1.0 in `core/`. No commercial availability or connected AI.
+**Status:** planning, except for the local CSV metrics demonstration in `demo.html` the Lilium Mini development preview in `extension/`, and the local Core/Workspace v0.2.0 in `core/`. No commercial availability or connected AI.
 
 ## Product thesis
 A modular web application for small and midsize organizations that need business intelligence and decision support without deploying a full ERP. Start with spreadsheet-heavy workflows, then integrate existing systems. The product should complement, not replace, accounting systems or professional judgment.
@@ -37,7 +37,7 @@ Import synthetic sales and cost data → map and validate columns → compute ve
 6. Commercial validation: interview target customers, test willingness to pay, benchmark actual workflow outcomes, define support and deployment costs. Only then decide subscription plans and pricing.
 
 ## Proposed deployment
-Public GitHub Pages for institutional presentation and synthetic demonstrations; commercial application source and secrets separated from public site. React/TypeScript UI, Python/FastAPI API, DuckDB for local analysis, PostgreSQL for future transactional multi-tenant storage. Authentication, tenant boundaries and permissions enforced on the backend. Deployment and hosting choices remain subject to feasibility, cost and security.
+Public GitHub Pages for institutional presentation and synthetic demonstrations; commercial application source and secrets separated from public site. React/TypeScript UI, Python/FastAPI API, SQLite for current local aggregate history, DuckDB for future local analytics, PostgreSQL for future transactional multi-tenant storage. Authentication, tenant boundaries and permissions enforced on the backend. Deployment and hosting choices remain subject to feasibility, cost and security.
 
 ## AI capabilities and limitations
 AI interprets verified calculations rather than generating authoritative financial figures. Forecasts use statistical or ML models with backtesting; language models communicate results and uncertainty. Agents propose workflows, with explicit human approval for consequential actions. Do not send customer identifiers or confidential data to external providers without authorization and appropriate safeguards.
