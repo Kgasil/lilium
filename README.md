@@ -1,5 +1,5 @@
 # Project Lilium
-**Where strategy meets intelligence.** · Business Intelligence & Innovation
+**Estratégia e Inteligência · Strategy & Intelligence.**
 
 [Website](https://kgasil.github.io/lilium/) · [K&G Vision](https://kgasil.github.io/) · [Português](#português) · [English](#english)
 
@@ -42,7 +42,7 @@ Lilium is an independent K&G Vision initiative exploring a modular business inte
 | Genesis | [Sabedoria e Aplicação](https://kgasil.github.io/genesis/) | [Source](https://github.com/Kgasil/genesis) |
 | Vision | [Security & Efficiency](https://kgasil.github.io/vision/) | [Source](https://github.com/Kgasil/vision) |
 | Aeris | [Discreto e Eficiente.](https://kgasil.github.io/aeris/) | [Source](https://github.com/Kgasil/aeris) |
-| Lilium | [Where strategy meets intelligence.](https://kgasil.github.io/lilium/) | [Source](https://github.com/Kgasil/lilium) |
+| Lilium | [Strategy & Intelligence.](https://kgasil.github.io/lilium/) | [Source](https://github.com/Kgasil/lilium) |
 
 **Learn · Build · Simplify · Transform / Aprender · Construir · Simplificar · Transformar**
 
