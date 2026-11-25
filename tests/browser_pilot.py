@@ -50,6 +50,7 @@ def main():
                 page.on("dialog", lambda dialog: dialog.accept())
                 page.goto(url, wait_until="networkidle")
                 expect(page.locator("#getting-started")).to_be_visible()
+                expect(page.locator("#workspace-loading")).to_be_hidden()
                 expect(page.locator("#results")).to_be_hidden()
                 page.locator("#run").click()
                 expect(page.locator("#results")).to_be_visible()
@@ -88,6 +89,7 @@ def main():
                 assert dl.value.suggested_filename == "lilium-executive-report.json"
                 page.locator("#pilot-reset").click()
                 page.wait_for_load_state("networkidle")
+                expect(page.locator("#workspace-loading")).to_be_hidden()
                 expect(page.locator("#results")).to_be_hidden()
                 expect(page.locator("#history-rows tr")).to_have_count(1)
                 page.locator("#history-rows").get_by_role("button", name="Abrir").click()
