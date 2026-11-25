@@ -5,7 +5,7 @@ This is a development preview, not a signed installer or a commercial release. T
 ## Run from source (Windows)
 1. Install 64-bit Python 3.12 with the Windows Python launcher.
 2. Download/extract the repository and double-click `start-lilium.bat`.
-3. The first run creates a virtual environment and installs dependencies (internet required). The SHA-256 fingerprint of requirements.txt determines whether installation must run again; subsequent launches reuse the environment. This fingerprint tracks the manifest, not installed file integrity.
+3. The first run creates a virtual environment, updates pip to the pinned setup version and installs dependencies (internet required). The SHA-256 fingerprint of requirements.txt determines whether installation must run again; subsequent launches reuse the environment. This fingerprint tracks the manifest, not installed file integrity.
 4. The launcher opens a local browser address, using a port reserved directly on 127.0.0.1. If the browser does not open, use the printed address. No fixed port is required. Keep the console open.
 
 ## Setup, diagnosis and recovery
@@ -13,7 +13,7 @@ This is a development preview, not a signed installer or a commercial release. T
 - **diagnose-lilium.bat**: does not install packages or start a browser. Prints a local JSON report with runtime/platform, app version, pinned dependency versions (match status), bundled asset presence, temporary SQLite write, loopback socket and API self-test status. No personal paths or history contents appear in the JSON. Other console output is not part of the report. `Lilium.exe --diagnostics` runs the same checks in a portable build.
 - **repair-lilium.bat**: close all running Lilium instances first. Explicit confirmation is required before reinstalling pinned dependencies (internet required). It runs pip check and then diagnostics; no user data or environment directories are deleted. If .venv is incomplete or uses the wrong Python version, close Lilium, rename .venv to a spare name, then run start-lilium.bat. Keep backups of saved history. Repair is not an atomic package upgrade.
 - Portable executable problems: obtain a fresh complete build folder from a verified successful workflow; do not replace individual DLLs or bypass Windows warnings.
-- A passing diagnosis does not establish Windows compatibility, actual history integrity, browser behavior, or security certification. No automatic update or telemetry.
+- A passing diagnosis does not establish compatibility with every Windows device, actual history integrity, browser behavior, or security certification. No automatic update or telemetry.
 
 ## Build a portable Windows folder
 Use Windows x64 and 64-bit Python 3.12. Run `build-lilium.bat`, or from the repository root:
@@ -64,3 +64,6 @@ The sidebar groups the existing modules by business purpose. Start with the guid
 
 ## Final validation procedure
 The source and portable executable must both pass live lifecycle testing, including restart persistence, token rotation and backup recovery. Run `python tests/smoke_lifecycle.py` from the source root, or pass the full executable path as its argument. The lifecycle test passed on Linux against the current source launcher. For the complete Windows workflow, open Actions > Lilium Desktop - Windows validation > Run workflow, select main, and inspect the job results. If the workflow fails, use the failed step log; do not publish a package or bypass checks. Only a confirmed successful run produces the preview artifact. Full browser and Windows checks remain unconfirmed.
+
+## Security remediation and candidate acceptance (2026-11-25)
+The earlier v0.14.0 portable packages are superseded due to reported dependency vulnerabilities. Do not install them. FastAPI 0.165.0, Starlette 1.10.0, Pillow 13.0.0 and pip 26.3 are the remediation candidate. [Independent audit 45722416001](https://github.com/Kgasil/lilium/actions/runs/45722416001) reports no known vulnerabilities in its current resolved environment. The actual Windows build is separately audited before packaging; full build status must be verified. These are known-advisory checks only, not a binary security audit or assurance of absence of vulnerabilities. See [clean-machine validation](../docs/clean-machine-validation.md). Use synthetic data only. For non-sensitive feedback, [open a public issue](https://github.com/Kgasil/lilium/issues/new/choose); never disclose private links or vulnerability exploitation details in public.
