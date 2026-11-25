@@ -1,4 +1,4 @@
-# Lilium Core v0.5.0 — local development preview
+# Lilium Core v0.6.0 — local development preview
 
 **Strategy & Growth · Estratégia e Crescimento**
 
@@ -30,6 +30,12 @@ date,revenue,cost
 2026-03-01,12000,7800
 ```
 
+## Lilium Sales
+- Independent local browser analytics: restricted UTF-8 CSV, header `date,order_id,product,quantity,unit_price`, 1–10,000 rows and 1 MiB. No quotes, embedded commas, XLSX or automatic column mapping. ISO date, positive integer units up to 1,000,000, nonnegative BRL unit price (9 integer and 2 decimal digits). Each order ID must have one date.
+- Gross revenue = quantity × unit price. Distinct order count and average order ticket (half-up cents), unit volume, product ranking by gross revenue, inclusive monthly filters and monthly breakdown. Product labels are case-sensitive. Possible exact duplicate lines are flagged, not removed. No automatic refunds, discount, tax or cost calculations.
+- BigInt cents internally; JSON aggregate export uses integer strings for money and quantity, excludes individual order IDs. Sales input stays in browser memory, no SQLite persistence or external requests. Exported product names and aggregates may be confidential; use synthetic data.
+- Run `node tests/sales.test.js`: 30 checks passed in V8. Browser UI and Python regression, including the new asset route test, remain untested.
+
 ## Lilium Finance
 - Local browser module, independent of imported datasets. Pricing computes the minimum cent-rounded selling price for a desired contribution margin using monetary variable cost only (no fixed costs or percentage fees).
 - Single-product monthly simulation: unit price, variable cost, fixed monthly cost, integer sales volume, sale fee (percentage) and desired nonnegative result. Fee rounds half-up per unit. Result = sales − variable costs − fees − fixed costs. Break-even and target volume use ceiling division where contribution is positive. Zero or negative contribution may make the target infeasible; zero revenue yields no result margin.
@@ -41,7 +47,7 @@ date,revenue,cost
 - Navigation between overview, import/quality and local history. Responsive graphite/rose/gold layout with local JavaScript served by the API.
 - Inclusive month filters over validated monthly aggregates. Totals are recomputed from the selected months; margin uses integer arithmetic with half-up rounding. Missing months are not invented. An empty interval has no indicators.
 - Revenue/cost chart displays up to the latest 24 months in the filter; the accessible table contains all selected months. Export monthly CSV for the active period or full JSON for the original analysis. Saving always persists the complete analysis, not a filtered subset.
-- Run the dashboard tests with `node tests/dashboard.test.js` (Node.js optional for development only; no Node dependency for users). Fourteen pure JS checks passed in a V8 execution environment. The Python regression suite now includes an additional asset-route test; the full Python suite and browser UI have not been rerun for v0.5.
+- Run the dashboard tests with `node tests/dashboard.test.js` (Node.js optional for development only; no Node dependency for users). Fourteen pure JS checks passed in a V8 execution environment. The Python regression suite now includes an additional asset-route test; the full Python suite and browser UI have not been rerun for v0.6.
 
 ## Smart Import & Data Quality
 - `POST /api/v1/quality` — diagnostic only, no persistence. Counts valid/invalid rows, possible duplicates and zero-revenue rows; returns row number and issue code (first 100 issues). Invalid rows block analysis; warnings do not. No automatic corrections or deduplication.
@@ -56,6 +62,6 @@ date,revenue,cost
 - Full history returns 409; storage failure returns 503 without exposing local paths. Back up exported JSON if needed; deleting a snapshot does not delete external exports or backups.
 
 ## Boundaries
-The UI sends CSV or XLSX only to the loopback API. Optional local persistence; no telemetry, account, external AI or payments. Do not expose the service to the LAN or internet; there is no authentication. Host and Origin validation are limited defenses, not a security audit. Result is revenue minus supplied costs, not necessarily accounting profit. No general spreadsheet mapping, multi-tenant isolation, desktop packaging or production deployment yet. Thirty unittest cases passed in the previous v0.3 local Linux Python environment; the v0.5 Python regression run (including the new Finance asset test), Windows installation and full browser UI remain untested.
+The UI sends CSV or XLSX only to the loopback API. Optional local persistence; no telemetry, account, external AI or payments. Do not expose the service to the LAN or internet; there is no authentication. Host and Origin validation are limited defenses, not a security audit. Result is revenue minus supplied costs, not necessarily accounting profit. No general spreadsheet mapping, multi-tenant isolation, desktop packaging or production deployment yet. Thirty unittest cases passed in the previous v0.3 local Linux Python environment; the v0.6 Python regression run (including dashboard, Finance and Sales asset tests), Windows installation and full browser UI remain untested.
 
-Next: Lilium Sales — structured sales analytics. SQLite is chosen for the lightweight local preview; analytical and multi-organization stores remain future work.
+Next: Lilium Operations — operational analytics. SQLite is chosen for the lightweight local preview; analytical and multi-organization stores remain future work.
