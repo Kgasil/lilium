@@ -1,4 +1,4 @@
-# Lilium Core v0.3.0 — local development preview
+# Lilium Core v0.4.0 — local development preview
 
 **Strategy & Growth · Estratégia e Crescimento**
 
@@ -30,6 +30,12 @@ date,revenue,cost
 2026-03-01,12000,7800
 ```
 
+## Professional Workspace
+- Navigation between overview, import/quality and local history. Responsive graphite/rose/gold layout with local JavaScript served by the API.
+- Inclusive month filters over validated monthly aggregates. Totals are recomputed from the selected months; margin uses integer arithmetic with half-up rounding. Missing months are not invented. An empty interval has no indicators.
+- Revenue/cost chart displays up to the latest 24 months in the filter; the accessible table contains all selected months. Export monthly CSV for the active period or full JSON for the original analysis. Saving always persists the complete analysis, not a filtered subset.
+- Run the dashboard tests with `node tests/dashboard.test.js` (Node.js optional for development only; no Node dependency for users). Fourteen pure JS checks passed in a V8 execution environment. The Python regression suite now includes an additional asset-route test; the full Python suite and browser UI were not rerun for v0.4.
+
 ## Smart Import & Data Quality
 - `POST /api/v1/quality` — diagnostic only, no persistence. Counts valid/invalid rows, possible duplicates and zero-revenue rows; returns row number and issue code (first 100 issues). Invalid rows block analysis; warnings do not. No automatic corrections or deduplication.
 - XLSX: exactly one worksheet, three columns with the same CSV header, ISO dates or native Excel date values, numeric BRL values. Replace formulas with values; macros and external links are unsupported. Input 1 MiB, expanded archive 12 MiB, at most 100 archive entries, 10,000 data rows. Corrupt or unsupported files are rejected. This is a restricted importer, not a general Excel editor; XLS/XLSM are unsupported.
@@ -43,6 +49,6 @@ date,revenue,cost
 - Full history returns 409; storage failure returns 503 without exposing local paths. Back up exported JSON if needed; deleting a snapshot does not delete external exports or backups.
 
 ## Boundaries
-The UI sends CSV or XLSX only to the loopback API. Optional local persistence; no telemetry, account, external AI or payments. Do not expose the service to the LAN or internet; there is no authentication. Host and Origin validation are limited defenses, not a security audit. Result is revenue minus supplied costs, not necessarily accounting profit. No general spreadsheet mapping, multi-tenant isolation, desktop packaging or production deployment yet. Thirty unittest cases passed (20 previous and 10 import/quality tests) in a local Linux Python environment; Windows installation and full browser UI remain untested.
+The UI sends CSV or XLSX only to the loopback API. Optional local persistence; no telemetry, account, external AI or payments. Do not expose the service to the LAN or internet; there is no authentication. Host and Origin validation are limited defenses, not a security audit. Result is revenue minus supplied costs, not necessarily accounting profit. No general spreadsheet mapping, multi-tenant isolation, desktop packaging or production deployment yet. Thirty unittest cases passed in the previous v0.3 local Linux Python environment; the v0.4 Python regression run, Windows installation and full browser UI remain untested.
 
-Next: richer dashboard, navigation and export. SQLite is chosen for the lightweight local preview; analytical and multi-organization stores remain future work.
+Next: Lilium Finance — operational finance metrics and scenario tools. SQLite is chosen for the lightweight local preview; analytical and multi-organization stores remain future work.
