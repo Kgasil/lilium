@@ -1,4 +1,4 @@
-# Lilium Core v0.9.0 — local development preview
+# Lilium Core v0.10.0 — local development preview
 
 **Strategy & Growth · Estratégia e Crescimento**
 
@@ -29,6 +29,14 @@ date,revenue,cost
 2026-02-01,11200,7440
 2026-03-01,12000,7800
 ```
+
+## Lilium Forecast
+- Local monthly time-series module. Paste simple CSV `month,value`, 6–120 consecutive ordered months (YYYY-MM), nonnegative values with up to 9 integer digits and 2 decimal places. For sales units, historical values must be integers. Optionally load full monthly revenue from the current Insights analysis; gaps and insufficient histories are rejected, not silently filled.
+- Compare last-value baseline, recursive three-month moving average, and ordinary least-squares linear trend. Predictions are clipped at zero. Choose manually or select smallest validation MAE, with deterministic model-order tie-breaking. Forecast horizon 1–12 months.
+- Expanding-window rolling-origin one-step validation: last min(6, floor(n/3)) months, same months for every model, training only on preceding observations. MAE, RMSE and WAPE (undefined when validation actuals sum to zero). Model selection and evaluation share validation data; no independent test or multi-step error estimate.
+- Show historical and predicted values separately; export JSON including unit, history, forecast, validation pairs, comparison and limitations. Forecasts use floating-point statistical arithmetic and display rounded values; they are not accounting calculations.
+- No prediction intervals, seasonality, external predictors, persistence, connected AI or Reports integration yet. Use synthetic data.
+- `node tests/forecast.test.js`: 36 new checks passed in V8; 201 total JS checks passed from published GitHub source. Python regression, browser and Windows testing remain pending.
 
 ## Lilium Reports
 - Executive report builder from currently computed Insights (active month filter), Finance simulation, Sales (active month filter), Operations scenario, Strategy and action rankings. Select any of six sources; missing sources are listed, and at least one computed source is required.
@@ -68,7 +76,7 @@ date,revenue,cost
 - Navigation between overview, import/quality and local history. Responsive graphite/rose/gold layout with local JavaScript served by the API.
 - Inclusive month filters over validated monthly aggregates. Totals are recomputed from the selected months; margin uses integer arithmetic with half-up rounding. Missing months are not invented. An empty interval has no indicators.
 - Revenue/cost chart displays up to the latest 24 months in the filter; the accessible table contains all selected months. Export monthly CSV for the active period or full JSON for the original analysis. Saving always persists the complete analysis, not a filtered subset.
-- Run the dashboard tests with `node tests/dashboard.test.js` (Node.js optional for development only; no Node dependency for users). Fourteen pure JS checks passed in a V8 execution environment. The Python regression suite now includes an additional asset-route test; the full Python suite and browser UI have not been rerun for v0.9.
+- Run the dashboard tests with `node tests/dashboard.test.js` (Node.js optional for development only; no Node dependency for users). Fourteen pure JS checks passed in a V8 execution environment. The Python regression suite now includes an additional asset-route test; the full Python suite and browser UI have not been rerun for v0.10.
 
 ## Smart Import & Data Quality
 - `POST /api/v1/quality` — diagnostic only, no persistence. Counts valid/invalid rows, possible duplicates and zero-revenue rows; returns row number and issue code (first 100 issues). Invalid rows block analysis; warnings do not. No automatic corrections or deduplication.
@@ -83,6 +91,6 @@ date,revenue,cost
 - Full history returns 409; storage failure returns 503 without exposing local paths. Back up exported JSON if needed; deleting a snapshot does not delete external exports or backups.
 
 ## Boundaries
-The UI sends CSV or XLSX only to the loopback API. Optional local persistence; no telemetry, account, external AI or payments. Do not expose the service to the LAN or internet; there is no authentication. Host and Origin validation are limited defenses, not a security audit. Result is revenue minus supplied costs, not necessarily accounting profit. No general spreadsheet mapping, multi-tenant isolation, desktop packaging or production deployment yet. Thirty unittest cases passed in the previous v0.3 local Linux Python environment; the v0.9 Python regression run (including dashboard, Finance, Sales, Operations, Strategy and Reports asset tests), Windows installation and full browser UI remain untested.
+The UI sends CSV or XLSX only to the loopback API. Optional local persistence; no telemetry, account, external AI or payments. Do not expose the service to the LAN or internet; there is no authentication. Host and Origin validation are limited defenses, not a security audit. Result is revenue minus supplied costs, not necessarily accounting profit. No general spreadsheet mapping, multi-tenant isolation, desktop packaging or production deployment yet. Thirty unittest cases passed in the previous v0.3 local Linux Python environment; the v0.10 Python regression run (including dashboard, Finance, Sales, Operations, Strategy, Reports and Forecast asset tests), Windows installation and full browser UI remain untested.
 
-Next: Lilium Forecast — baseline forecasts and backtesting. SQLite is chosen for the lightweight local preview; analytical and multi-organization stores remain future work.
+Next: Lilium Flow — local human-approved workflow planning. SQLite is chosen for the lightweight local preview; analytical and multi-organization stores remain future work.
