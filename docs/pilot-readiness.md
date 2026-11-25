@@ -21,3 +21,6 @@ Insights import and quality → save and reopen aggregate → Finance scenario �
 
 ## Hardening pass — v0.14.0
 The Workspace controller is now a separate same-origin asset. CSP blocks inline scripts; inline styles remain permitted for current chart rendering. A startup message remains visible if controller initialization fails. All 295 existing JS checks and 12 new static integration checks passed in V8 against repository contents (307 total). Static checks cover syntax, IDs, navigation anchors, local asset routes, script order, packaging inclusion and CSP. Python, real Chromium and Windows build results remain unconfirmed. No public release.
+
+## History recovery pass
+Versioned JSON export and transactional merge recovery added to History. Nine Python backup tests passed locally using identical GitHub blobs for backup, metrics and store. Three API tests and a Chromium export/delete/restore/reimport sequence are configured but not yet executed against the current published application. Backup is unencrypted and limited to 16 MiB; only saved Insights aggregates, not original inputs or other module sessions. Validation checks consistency, not authenticity. Pilot release remains blocked on full current Python/Windows/browser validation.
