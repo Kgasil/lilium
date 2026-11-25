@@ -106,6 +106,11 @@ def workspace_asset():
     return FileResponse(Path(__file__).with_name("workspace.js"), media_type="application/javascript", headers={"Cache-Control": "no-store", "X-Content-Type-Options": "nosniff"})
 
 
+@app.get("/assets/starter.js", include_in_schema=False)
+def starter_asset():
+    return FileResponse(Path(__file__).with_name("starter.js"), media_type="application/javascript", headers={"Cache-Control": "no-store", "X-Content-Type-Options": "nosniff"})
+
+
 async def analyze_input(request: Request, diagnostic=False):
     origin = request.headers.get("origin")
     if origin and origin != str(request.base_url).rstrip("/"):
