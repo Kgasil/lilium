@@ -24,3 +24,6 @@ The Workspace controller is now a separate same-origin asset. CSP blocks inline 
 
 ## History recovery pass
 Versioned JSON export and transactional merge recovery added to History. Nine Python backup tests passed locally using identical GitHub blobs for backup, metrics and store. Three API tests and a Chromium export/delete/restore/reimport sequence are configured but not yet executed against the current published application. Backup is unencrypted and limited to 16 MiB; only saved Insights aggregates, not original inputs or other module sessions. Validation checks consistency, not authenticity. Pilot release remains blocked on full current Python/Windows/browser validation.
+
+## Setup and diagnostics pass
+Added source setup fingerprint, explicit repair, local redacted readiness checks and bundled diagnostics gate in Windows CI. Eight Python tests passed locally on Linux with mocked subprocess installation; tested source blobs verified against GitHub. Diagnostic storage uses disposable SQLite in the data directory, not real history. No automatic updater, Windows validation or release approval. Full current API and browser regression remains pending.
