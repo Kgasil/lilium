@@ -5,8 +5,15 @@ This is a development preview, not a signed installer or a commercial release. T
 ## Run from source (Windows)
 1. Install 64-bit Python 3.12 with the Windows Python launcher.
 2. Download/extract the repository and double-click `start-lilium.bat`.
-3. The first run for this version creates a virtual environment and installs dependencies (internet required). Later runs reuse it. If dependencies fail, delete the `.venv/.lilium-0.14-ready` marker and retry.
+3. The first run creates a virtual environment and installs dependencies (internet required). The SHA-256 fingerprint of requirements.txt determines whether installation must run again; subsequent launches reuse the environment. This fingerprint tracks the manifest, not installed file integrity.
 4. The launcher opens a local browser address, using a port reserved directly on 127.0.0.1. If the browser does not open, use the printed address. No fixed port is required. Keep the console open.
+
+## Setup, diagnosis and recovery
+- **start-lilium.bat**: Windows x64 with 64-bit Python 3.12. Runs setup, checks the environment interpreter, installs requirements when the manifest changes and opens the application.
+- **diagnose-lilium.bat**: does not install packages or start a browser. Prints a local JSON report with runtime/platform, app version, pinned dependency versions (match status), bundled asset presence, temporary SQLite write, loopback socket and API self-test status. No personal paths or history contents appear in the JSON. Other console output is not part of the report. `Lilium.exe --diagnostics` runs the same checks in a portable build.
+- **repair-lilium.bat**: close all running Lilium instances first. Explicit confirmation is required before reinstalling pinned dependencies (internet required). It runs pip check and then diagnostics; no user data or environment directories are deleted. If .venv is incomplete or uses the wrong Python version, close Lilium, rename .venv to a spare name, then run start-lilium.bat. Keep backups of saved history. Repair is not an atomic package upgrade.
+- Portable executable problems: obtain a fresh complete build folder from a verified successful workflow; do not replace individual DLLs or bypass Windows warnings.
+- A passing diagnosis does not establish Windows compatibility, actual history integrity, browser behavior, or security certification. No automatic update or telemetry.
 
 ## Build a portable Windows folder
 Use Windows x64 and 64-bit Python 3.12. Run `build-lilium.bat`, or from the repository root:
