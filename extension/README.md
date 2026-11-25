@@ -1,4 +1,8 @@
 # Lilium Mini v0.1.0
+
+**Strategy & Growth · Estratégia e Crescimento**
+*Make smarter decisions. Grow with confidence.*
+
 Development preview — not a Chrome Web Store or Edge Add-ons release. No connected AI.
 
 ## Test on Windows (Chrome / Edge)
