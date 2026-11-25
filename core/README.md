@@ -1,4 +1,4 @@
-# Lilium Core v0.7.0 — local development preview
+# Lilium Core v0.8.0 — local development preview
 
 **Strategy & Growth · Estratégia e Crescimento**
 
@@ -30,6 +30,13 @@ date,revenue,cost
 2026-03-01,12000,7800
 ```
 
+## Lilium Strategy
+- Local browser OKR tracker, restricted pasted CSV: `objective,kr,baseline,target,actual,scenario,weight,due`. Up to 100 KRs and 65,536 characters. Numeric values in consistent units, decimal point, 2 decimal places, baseline distinct from target, weight 1–10, ISO due date. Explicit evaluation date; achieved KRs are marked achieved regardless of deadline (no completion-date history). Increasing and decreasing goals supported.
+- Progress = (actual − baseline)/(target − baseline), expressed as a percentage. Raw progress retained; aggregate weighted progress clamps each KR to 0–100%. All KRs contribute using their weights, not equal objective weighting. Scenario is a user-supplied hypothetical value, not a forecast.
+- Action prioritization: `action,impact,urgency,effort` CSV, up to 100 actions, scores 1–5. Rank by impact × urgency / effort, ties by action name. Subjective decision aid, not autonomous recommendations.
+- JSON export for goals/scenarios and action rankings. No persistence, automatic module integration, file upload or external AI. Use synthetic data.
+- `node tests/strategy.test.js`: 34 new checks passed in V8; 138 total JS checks passed from published GitHub source. Python regression, browser and Windows testing pending.
+
 ## Lilium Operations
 - Local browser CSV module: one comparable sequential resource per stage, same measurement period, 1–100 unique stages, up to 64 KiB. Exact header: `stage,planned_min,downtime_min,cycle_sec,total_units,good_units,rework_units,lead_min`. Integer minutes, ideal cycle seconds per unit, total units, first-pass good units, rework subset of nonconforming units, optional observed mean lead time per stage. No automatic deduplication or general spreadsheet mapping.
 - Availability = runtime/planned time; performance = total units × ideal cycle/runtime (consistent seconds); quality = first-pass good/total. OEE is the product of these factors; undefined denominators or performance over 100% yield no OEE. Runtime = planned minus downtime. Throughput per runtime hour, nonconforming count and rework rate are shown. Nonconforming does not imply scrap, and lead time is supplied, not derived or summed.
@@ -54,7 +61,7 @@ date,revenue,cost
 - Navigation between overview, import/quality and local history. Responsive graphite/rose/gold layout with local JavaScript served by the API.
 - Inclusive month filters over validated monthly aggregates. Totals are recomputed from the selected months; margin uses integer arithmetic with half-up rounding. Missing months are not invented. An empty interval has no indicators.
 - Revenue/cost chart displays up to the latest 24 months in the filter; the accessible table contains all selected months. Export monthly CSV for the active period or full JSON for the original analysis. Saving always persists the complete analysis, not a filtered subset.
-- Run the dashboard tests with `node tests/dashboard.test.js` (Node.js optional for development only; no Node dependency for users). Fourteen pure JS checks passed in a V8 execution environment. The Python regression suite now includes an additional asset-route test; the full Python suite and browser UI have not been rerun for v0.7.
+- Run the dashboard tests with `node tests/dashboard.test.js` (Node.js optional for development only; no Node dependency for users). Fourteen pure JS checks passed in a V8 execution environment. The Python regression suite now includes an additional asset-route test; the full Python suite and browser UI have not been rerun for v0.8.
 
 ## Smart Import & Data Quality
 - `POST /api/v1/quality` — diagnostic only, no persistence. Counts valid/invalid rows, possible duplicates and zero-revenue rows; returns row number and issue code (first 100 issues). Invalid rows block analysis; warnings do not. No automatic corrections or deduplication.
@@ -69,6 +76,6 @@ date,revenue,cost
 - Full history returns 409; storage failure returns 503 without exposing local paths. Back up exported JSON if needed; deleting a snapshot does not delete external exports or backups.
 
 ## Boundaries
-The UI sends CSV or XLSX only to the loopback API. Optional local persistence; no telemetry, account, external AI or payments. Do not expose the service to the LAN or internet; there is no authentication. Host and Origin validation are limited defenses, not a security audit. Result is revenue minus supplied costs, not necessarily accounting profit. No general spreadsheet mapping, multi-tenant isolation, desktop packaging or production deployment yet. Thirty unittest cases passed in the previous v0.3 local Linux Python environment; the v0.7 Python regression run (including dashboard, Finance, Sales and Operations asset tests), Windows installation and full browser UI remain untested.
+The UI sends CSV or XLSX only to the loopback API. Optional local persistence; no telemetry, account, external AI or payments. Do not expose the service to the LAN or internet; there is no authentication. Host and Origin validation are limited defenses, not a security audit. Result is revenue minus supplied costs, not necessarily accounting profit. No general spreadsheet mapping, multi-tenant isolation, desktop packaging or production deployment yet. Thirty unittest cases passed in the previous v0.3 local Linux Python environment; the v0.8 Python regression run (including dashboard, Finance, Sales, Operations and Strategy asset tests), Windows installation and full browser UI remain untested.
 
-Next: Lilium Strategy — goals and scenario comparisons. SQLite is chosen for the lightweight local preview; analytical and multi-organization stores remain future work.
+Next: Lilium Reports — executive report composition and export. SQLite is chosen for the lightweight local preview; analytical and multi-organization stores remain future work.
