@@ -124,6 +124,13 @@ class ApiTests(unittest.TestCase):
         self.assertIn('application/javascript', r.headers['content-type'])
         self.assertEqual(r.headers['cache-control'], 'no-store')
 
+    def test_starter_asset(self):
+        r = self.client.get('/assets/starter.js')
+        self.assertEqual(r.status_code, 200)
+        self.assertIn('LiliumStarter', r.text)
+        self.assertIn('application/javascript', r.headers['content-type'])
+        self.assertEqual(r.headers['cache-control'], 'no-store')
+
     def test_copilot_asset(self):
         r = self.client.get('/assets/copilot.js')
         self.assertEqual(r.status_code, 200)
