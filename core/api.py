@@ -6,7 +6,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, FileResponse, Response
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from .metrics import MAX_BYTES, DataError, analyze_csv
-from .store import HistoryStore, HistoryFull
+from .store import HistoryStore, HistoryFull, HistoryCorrupt
 from .backup import MAX_BACKUP, export_history, merge_history
 from .imports import XLSX, normalize, quality
 from .session import HEADER, authorized, protected
@@ -146,6 +146,8 @@ async def save_history(request: Request):
         return JSONResponse(app.state.history.save(result), status_code=201)
     except HistoryFull:
         return error("history_full", "History is full. Delete a snapshot first.", 409)
+    except HistoryCorrupt:
+        return error("history_corrupt", "Stored history is inconsistent. Preserve the database and contact support.", 503)
     except (sqlite3.Error, OSError):
         return error("storage", "Local storage unavailable.", 503)
 
@@ -154,6 +156,8 @@ async def save_history(request: Request):
 def list_history():
     try:
         return {"items": app.state.history.list()}
+    except HistoryCorrupt:
+        return error("history_corrupt", "Stored history is inconsistent. Preserve the database and contact support.", 503)
     except (sqlite3.Error, OSError):
         return error("storage", "Local storage unavailable.", 503)
 
@@ -163,6 +167,8 @@ def get_history(key: UUID):
     try:
         item = app.state.history.get(str(key))
         return item if item is not None else error("not_found", "Snapshot not found.", 404)
+    except HistoryCorrupt:
+        return error("history_corrupt", "Stored history is inconsistent. Preserve the database and contact support.", 503)
     except (sqlite3.Error, OSError):
         return error("storage", "Local storage unavailable.", 503)
 
@@ -174,6 +180,8 @@ def delete_history(key: UUID, request: Request):
         return error("origin", "Only same-origin requests are allowed.", 403)
     try:
         return {"deleted": True} if app.state.history.delete(str(key)) else error("not_found", "Snapshot not found.", 404)
+    except HistoryCorrupt:
+        return error("history_corrupt", "Stored history is inconsistent. Preserve the database and contact support.", 503)
     except (sqlite3.Error, OSError):
         return error("storage", "Local storage unavailable.", 503)
 
@@ -186,6 +194,8 @@ def get_backup():
                         headers={"Cache-Control": "no-store", "Content-Disposition": 'attachment; filename="lilium-history.json"'})
     except ValueError:
         return error("backup_invalid", "History cannot be exported in this format or exceeds 16 MiB.", 422)
+    except HistoryCorrupt:
+        return error("history_corrupt", "Stored history is inconsistent. Preserve the database and contact support.", 503)
     except (sqlite3.Error, OSError):
         return error("storage", "Local storage unavailable.", 503)
 
@@ -205,5 +215,7 @@ async def restore_backup(request: Request):
         return merge_history(app.state.history, bytes(raw))
     except ValueError:
         return error("backup_invalid", "Invalid backup, conflicting ID or history limit exceeded. No snapshots imported.", 422)
+    except HistoryCorrupt:
+        return error("history_corrupt", "Stored history is inconsistent. Preserve the database and contact support.", 503)
     except (sqlite3.Error, OSError):
         return error("storage", "Local storage unavailable.", 503)
