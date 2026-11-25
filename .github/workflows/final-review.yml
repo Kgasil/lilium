@@ -1,0 +1,39 @@
+name: Lilium final candidate review
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/final-review.yml'
+      - 'tests/browser_final_review.py'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  final-review:
+    runs-on: windows-2025
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: Lilium-Desktop-0.14.0-windows-x64-preview
+          run-id: 45722415976
+          github-token: ${{ github.token }}
+          path: candidate
+      - name: Verify exact candidate
+        shell: pwsh
+        run: |
+          $zip = 'candidate/Lilium-0.14.0-windows-x64-preview.zip'
+          $expected = '95ef0b0b96824b47c87e3784e8c9985796cefdfb76e1bea445b3e09ab0efe392'
+          if ((Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected) { throw "Candidate hash mismatch" }
+          Expand-Archive -LiteralPath $zip -DestinationPath candidate/extracted
+      - name: Install browser testing tools
+        run: |
+          python -m pip install playwright==1.56.0
+          python -m playwright install chromium
+      - name: Test the downloaded executable
+        run: python tests/browser_final_review.py candidate/extracted/Lilium.exe
