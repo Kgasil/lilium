@@ -2,20 +2,20 @@
 
 **Escopo:** prévia 0.14.0, piloto gratuito com dados fictícios. Este documento é um roteiro de execução, não um certificado ou um resultado de teste. Execute somente depois que um workflow Windows tiver concluído com sucesso e disponibilizado o artefato completo.
 
-## Candidato histórico — 25/11/2026 (não executar)
+## Candidato atual — prévia 0.14.0 corrigida (25/11/2026)
 
-**BLOQUEADO:** a auditoria de dependências encontrou vulnerabilidades conhecidas. Os links e hashes abaixo são evidência histórica, não instruções para instalar. Aguarde nova compilação aprovada em auditoria e regressão.
+**Aprovado na CI para aceitação manual com dados fictícios, não para distribuição pública.** Os dois ZIPs anteriores foram desaconselhados pela auditoria; não os utilize.
 
-- [Execução Windows aprovada #45721212184](https://github.com/Kgasil/lilium/actions/runs/45721212184), commit `934c11102905d2e1ced5cba6d87a1d78bb419068`.
-- [Artefato portátil #15072930346](https://github.com/Kgasil/lilium/actions/runs/45721212184/artifacts/15072930346), expira em 09/12/2026 às 23:27 UTC.
-- SHA-256 do **ZIP interno** `Lilium-0.14.0-windows-x64-preview.zip`: `7e4eded7cc5f4d499dfc2e92c7cd8a3fb0745764805a2a2e7d651ea168457197`. Não confundir com o hash do artefato externo.
-- Esta versão é candidata ao teste, não autorizada para dados reais nem para distribuição pública. Se houver achado de segurança bloqueante, aguarde nova compilação validada.
+- [Execução Windows aprovada #45722415976](https://github.com/Kgasil/lilium/actions/runs/45722415976), commit `e34b2f5a7a2f928ac6b2aea80bfea23a78d258c0`.
+- [Artefato portátil #15071874653](https://github.com/Kgasil/lilium/actions/runs/45722415976/artifacts/15071874653), 23.870.062 bytes (ZIP externo); expira em 09/12/2026 às 23:36 UTC.
+- SHA-256 do **ZIP interno** `Lilium-0.14.0-windows-x64-preview.zip`: `95ef0b0b96824b47c87e3784e8c9985796cefdfb76e1bea445b3e09ab0efe392`.
+- [Auditoria do ambiente de build](https://github.com/Kgasil/lilium/actions/runs/45722415976/artifacts/15072284261) sem vulnerabilidades conhecidas detectadas; isso não é uma garantia de segurança. Pacote não assinado.
 
-Comandos de verificação históricos (não executar para este pacote bloqueado; o hash deverá ser substituído pelo de um novo candidato aprovado):
+Após baixar e extrair o artefato externo, abra o PowerShell na pasta que contém o ZIP interno:
 
 ```powershell
 $zip = 'Lilium-0.14.0-windows-x64-preview.zip'
-$expected = '7e4eded7cc5f4d499dfc2e92c7cd8a3fb0745764805a2a2e7d651ea168457197'
+$expected = '95ef0b0b96824b47c87e3784e8c9985796cefdfb76e1bea445b3e09ab0efe392'
 $actual = (Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash.ToLowerInvariant()
 if ($actual -ne $expected) { throw 'Hash incorreto. Nao execute o pacote.' }
 $destination = Join-Path $HOME ('Lilium-Teste-' + [guid]::NewGuid().ToString('N'))
@@ -23,7 +23,7 @@ Expand-Archive -LiteralPath $zip -DestinationPath $destination
 & (Join-Path $destination 'Lilium.exe') --diagnostics
 ```
 
-Apenas se todos os seis diagnósticos passarem e o sistema permitir a execução normalmente, abra `Lilium.exe` na pasta extraída. Não ignore alertas de segurança. O teste usa somente os dados fictícios incluídos no aplicativo.
+Apenas se os seis diagnósticos passarem e o Windows permitir a execução normalmente, abra `Lilium.exe` na pasta extraída. Não ignore alertas de segurança. Use somente os dados fictícios incluídos no aplicativo.
 
 ## 1. Evidência do pacote
 
@@ -52,7 +52,7 @@ Apenas se todos os seis diagnósticos passarem e o sistema permitir a execução
 
 ## 4. Segurança e aprovação
 
-- [ ] Revisar dependências diretas e transitivas do ambiente de build com base em vulnerabilidades conhecidas; documentar versões, data, ferramenta e resultado. Avaliar achados em contexto, sem ignorar vulnerabilidades.
+- [x] Revisar dependências do ambiente de build com pip-audit 2.10.1 em 25/11/2026: nenhuma vulnerabilidade conhecida detectada no ambiente atualizado; evidência do workflow acima. Revisão de bibliotecas nativas e da lógica da aplicação permanece pendente.
 - [ ] Confirmar que nenhuma entrada do negócio é enviada a serviços externos e que os limites descritos em [Trust & Privacy](trust-privacy.md) estão compreensíveis.
 - [ ] Registrar falhas e evidências, corrigir bloqueios, reexecutar os cenários relevantes e identificar o pacote exato aprovado.
 - [ ] Confirmar canal de feedback e instruções de privacidade; liberar apenas um piloto controlado com dados fictícios. Uso de dados reais exige avaliação separada.
@@ -63,8 +63,8 @@ Apenas se todos os seis diagnósticos passarem e o sistema permitir a execução
 |---|---|
 | Data | Pendente |
 | Versão do Windows e arquitetura | Pendente |
-| URL da execução Windows | Pendente |
-| Commit e SHA-256 do ZIP | Pendente |
+| URL da execução Windows | https://github.com/Kgasil/lilium/actions/runs/45722415976 |
+| Commit e SHA-256 do ZIP | `e34b2f5a7a2f928ac6b2aea80bfea23a78d258c0` / `95ef0b0b96824b47c87e3784e8c9985796cefdfb76e1bea445b3e09ab0efe392` |
 | Máquina sem Python | Pendente |
 | Cenários aprovados / reprovados | Pendente |
 | Falhas bloqueantes | Pendente |
