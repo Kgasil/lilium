@@ -12,7 +12,7 @@ const checks=[
  ["local navigation anchors resolve",()=>assert.ok([...html.matchAll(/href="#([^"]+)"/g)].every(m=>ids.includes(m[1])))],
  ["no inline script",()=>assert.ok(!/<script\b(?![^>]*\bsrc=)[^>]*>/i.test(html))],
  ["no inline event handler",()=>assert.ok(!/<[^>]+\son\w+\s*=/i.test(html))],
- ["only local script sources",()=>assert.ok(scripts.length===11&&scripts.every(s=>/^\/assets\/[a-z]+\.js$/.test(s)))],
+ ["only local script sources",()=>assert.ok(scripts.length===12&&scripts.every(s=>/^\/assets\/[a-z]+\.js$/.test(s)))],
  ["controller last",()=>assert.equal(scripts.at(-1),"/assets/workspace.js")],
  ["all assets have routes",()=>assert.ok(scripts.every(s=>api.includes('"'+s+'"')))],
  ["CSP blocks inline scripts",()=>assert.ok(api.includes("script-src 'self';"))],
