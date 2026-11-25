@@ -6,7 +6,7 @@
 ## Português
 Lilium é uma iniciativa independente da K&G Vision para desenvolver uma aplicação web de inteligência empresarial, com foco inicial em pequenas e médias empresas. A proposta é transformar planilhas em indicadores verificáveis, relatórios executivos e apoio a decisões. 
 
-**Status:** website institucional e primeiro protótipo local de indicadores. [Experimente Lilium Insights](https://kgasil.github.io/lilium/demo.html). Não há aplicação comercial disponível, backend, integração de IA ativa, consultoria oferecida ou data de lançamento anunciada.
+**Status:** website institucional, primeiro protótipo local de indicadores e prévia de desenvolvimento da extensão Lilium Mini. [Experimente Lilium Insights](https://kgasil.github.io/lilium/demo.html). Não há aplicação comercial disponível, backend, integração de IA ativa, consultoria oferecida ou data de lançamento anunciada.
 
 ### Lilium Business Suite
 | Módulo planejado | Escopo |
@@ -51,6 +51,14 @@ Lilium is an independent K&G Vision initiative exploring a modular business inte
 - `demo.html`: CSV restrito (`date,revenue,cost`), valores BRL não negativos com até duas casas decimais, datas ISO, agregação mensal, receita, custos, resultado, margem e exportação TXT. Processamento no navegador, sem conexão com IA. Use dados sintéticos.
 - Oito verificações unitárias do cálculo executadas antes do commit: totais, receita zero, precisão decimal, data inválida, cabeçalho inválido, valores negativos, precisão inválida e agregação mensal. Não são testes de segurança ou de interface no navegador.
 - Próximo marco: backend Python/FastAPI, validação de dados, contratos de métricas e testes automatizados versionados.
+
+## Lilium Mini — extensão gratuita / free extension
+
+[Instalação para testes / Test installation](extension/README.md) · [Código / Source](extension/)
+
+Prévia v0.1.0 para Chromium (Chrome/Edge): resultado e margem, preço por margem desejada e ponto de equilíbrio. Sem permissões de acesso a sites, armazenamento, conta ou IA conectada. Doze verificações de cálculo passaram; instalação e interface ainda não testadas em navegador. Não publicada nas lojas de extensões.
+
+Estratégia: manter a extensão útil e gratuita; desenvolver uma aplicação web com funções básicas gratuitas, futura instalação Windows e recursos profissionais opcionais pagos somente após validação. Nenhum preço definido.
 
 ## Repository
 `index.html` — bilingual responsive website. GitHub Pages: main / root (requires activation in repository settings). Future commercial implementation may be maintained privately. License terms are not yet specified.
