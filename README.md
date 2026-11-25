@@ -9,7 +9,7 @@
 ## Português
 Lilium é uma iniciativa independente da K&G Vision para desenvolver uma aplicação web de inteligência empresarial, com foco inicial em pequenas e médias empresas. A proposta é transformar planilhas em indicadores verificáveis, relatórios executivos e apoio a decisões. 
 
-**Status:** laboratório público interativo, demonstração CSV do Insights, extensão Mini em desenvolvimento e Workspace local v0.14.0 com módulos iniciais implementados em código. [Experimente o laboratório](https://kgasil.github.io/lilium/#lab) · [Demonstração Insights](https://kgasil.github.io/lilium/demo.html). A validação integral do Desktop Windows continua pendente. Não há versão comercial, IA conectada ou data de lançamento anunciada.
+**Status:** laboratório público interativo, demonstração CSV do Insights, extensão Mini em desenvolvimento e Workspace local v0.14.0 com módulos iniciais implementados em código. [Experimente o laboratório](https://kgasil.github.io/lilium/#lab) · [Demonstração Insights](https://kgasil.github.io/lilium/demo.html). Primeiro pacote portátil Windows v0.14.0 aprovado na CI; validação manual em máquina limpa ainda pendente. Não há versão comercial, IA conectada ou data de lançamento anunciada.
 
 ### Lilium Business Suite
 | Módulo | Escopo atual e futuro |
@@ -36,7 +36,7 @@ Python/FastAPI e SQLite no histórico local atual; DuckDB em avaliação futura,
 5. Avaliação comercial; eventual SaaS e serviços de implantação.
 
 ## English
-Lilium is built around a clear ambition: empower small businesses to make smarter decisions, operate with confidence and grow sustainably. This independent K&G Vision initiative is developing a modular business intelligence web application. The initial focus is validated spreadsheet analytics and executive reporting; future AI capabilities will explain verified metrics, with source references and human oversight. Explore the interactive business lab and the local Workspace v0.14.0 source preview. Initial analytics modules are implemented; external integrations, connected AI and production deployment remain planned. The Windows package is not yet validated. No commercial services or production release are offered.
+Lilium is built around a clear ambition: empower small businesses to make smarter decisions, operate with confidence and grow sustainably. This independent K&G Vision initiative is developing a modular business intelligence web application. The initial focus is validated spreadsheet analytics and executive reporting; future AI capabilities will explain verified metrics, with source references and human oversight. Explore the interactive business lab and the local Workspace v0.14.0 source preview. Initial analytics modules are implemented; external integrations, connected AI and production deployment remain planned. The first Windows portable preview passed CI; clean-machine validation is pending. No commercial services or production release are offered.
 
 ## Ecosystem / Ecossistema
 | Project | Website | Repository |
@@ -130,3 +130,6 @@ Central de ajuda offline com 15 guias, busca local sem acentos, atalhos para os 
 Formação de preços, simulação mensal, ponto de equilíbrio e metas, cinco cenários sintéticos com receita, custos, resultado, previsão e CSV para testar Insights. Reutiliza os motores Finance, Starter, Sales e Forecast; funciona no navegador sem API. 12 testes de cálculo e 11 verificações simuladas de DOM aprovados em V8. Publicação Pages e Chromium real ainda não confirmados. O laboratório é uma demonstração separada do Desktop; não é uma oferta comercial.
 
 [Public lab validation workflow](https://github.com/Kgasil/lilium/actions/workflows/public-lab.yml) · [Windows validation workflow](https://github.com/Kgasil/lilium/actions/workflows/desktop-windows.yml). The two gates are independent; a successful public demo does not validate the executable. Insights demo now rejects invalid UTF-8 and prevents a stale file read from replacing newer input.
+
+### Resultado mais recente — Windows CI aprovada (25/11/2026)
+100 testes Python, 401 verificações Node, Chromium real no código-fonte e executável, diagnóstico, reinicialização e recuperação, empacotamento e teste da cópia extraída aprovados. O laboratório público também passou no Chromium e o Pages confirmou a publicação. [Execução Windows bem-sucedida](https://github.com/Kgasil/lilium/actions/runs/45721198729) · [Artefato portátil v0.14.0](https://github.com/Kgasil/lilium/actions/runs/45721198729/artifacts/15071758237) (GitHub, expira em 09/12/2026 UTC) · [Roteiro de aceitação em máquina limpa](docs/clean-machine-validation.md). Não é um instalador assinado nem V1.0 liberada. Use apenas dados fictícios.
