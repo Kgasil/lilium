@@ -3,10 +3,11 @@ from pathlib import Path
 import sqlite3
 from uuid import UUID
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse, FileResponse
+from fastapi.responses import JSONResponse, FileResponse, Response
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from .metrics import MAX_BYTES, DataError, analyze_csv
 from .store import HistoryStore, HistoryFull
+from .backup import MAX_BACKUP, export_history, merge_history
 from .imports import XLSX, normalize, quality
 
 app = FastAPI(title="Lilium Core", version="0.14.0", docs_url=None, redoc_url=None)
@@ -156,5 +157,36 @@ def delete_history(key: UUID, request: Request):
         return error("origin", "Only same-origin requests are allowed.", 403)
     try:
         return {"deleted": True} if app.state.history.delete(str(key)) else error("not_found", "Snapshot not found.", 404)
+    except (sqlite3.Error, OSError):
+        return error("storage", "Local storage unavailable.", 503)
+
+
+
+@app.get("/api/v1/backup")
+def get_backup():
+    try:
+        return Response(export_history(app.state.history), media_type="application/json",
+                        headers={"Cache-Control": "no-store", "Content-Disposition": 'attachment; filename="lilium-history.json"'})
+    except ValueError:
+        return error("backup_invalid", "History cannot be exported in this format or exceeds 16 MiB.", 422)
+    except (sqlite3.Error, OSError):
+        return error("storage", "Local storage unavailable.", 503)
+
+
+@app.post("/api/v1/backup/merge")
+async def restore_backup(request: Request):
+    if request.headers.get("origin") != str(request.base_url).rstrip("/"):
+        return error("origin", "Only same-origin requests are allowed.", 403)
+    if request.headers.get("content-type", "").split(";", 1)[0].strip().lower() != "application/json":
+        return error("media_type", "Send a Lilium history JSON backup.", 415)
+    raw = bytearray()
+    async for chunk in request.stream():
+        if len(raw) + len(chunk) > MAX_BACKUP:
+            return error("size_limit", "Maximum backup size is 16 MiB.", 413)
+        raw.extend(chunk)
+    try:
+        return merge_history(app.state.history, bytes(raw))
+    except ValueError:
+        return error("backup_invalid", "Invalid backup, conflicting ID or history limit exceeded. No snapshots imported.", 422)
     except (sqlite3.Error, OSError):
         return error("storage", "Local storage unavailable.", 503)
