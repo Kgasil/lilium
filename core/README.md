@@ -1,9 +1,9 @@
-# Lilium Core v0.13.0 — local development preview
+# Lilium Core v0.14.0 — local development preview
 
 **Strategy & Growth · Estratégia e Crescimento**
 
 ## Windows
-Install Python 3.11 or 3.12 with the Python launcher (py). Download and extract the repository, then run `start-lilium.bat` in the root. It creates a local virtual environment and installs dependencies (internet required for setup). Open http://127.0.0.1:8000 manually. Press Ctrl+C to stop. This is not an installer or production release. Use synthetic data only.
+Install Python 3.12 x64 with the Python launcher. Download/extract the repository and run `start-lilium.bat`. The first run per version installs dependencies, then the launcher reserves a loopback port and opens the browser automatically when ready. Keep the console open; Ctrl+C stops the service. Desktop history uses `%LOCALAPPDATA%/K&G Vision/Lilium/lilium.sqlite3`; previous development history stays separate. See [Desktop packaging and validation](../desktop/README.md). The Windows build workflow is configured but not yet confirmed. Use synthetic data only.
 
 Manual commands (PowerShell, from repository root):
 
@@ -108,10 +108,10 @@ date,revenue,cost
 - POST /api/v1/history — validates the same CSV or XLSX input and explicitly saves a consolidated snapshot; 201 with identifier and timestamp.
 - GET /api/v1/history — list up to 200 saved snapshots (latest first).
 - GET /api/v1/history/{id} — reopen a saved analysis; DELETE on the same path removes it.
-- SQLite is built into Python. Database: `data/lilium.sqlite3` (ignored by Git). Only aggregated metrics are stored, not the raw CSV. Analyze alone does not save anything. No app-level encryption or secure-erasure guarantee; do not use confidential data.
+- SQLite is built into Python. Direct-development database: `data/lilium.sqlite3` (ignored by Git). The Desktop launcher uses the per-user directory instead. Only aggregated metrics are stored, not the raw CSV. Analyze alone does not save anything. No app-level encryption or secure-erasure guarantee; do not use confidential data.
 - Full history returns 409; storage failure returns 503 without exposing local paths. Back up exported JSON if needed; deleting a snapshot does not delete external exports or backups.
 
 ## Boundaries
-The UI sends CSV or XLSX only to the loopback API. Optional local persistence; no telemetry, account, external AI or payments. Do not expose the service to the LAN or internet; there is no authentication. Host and Origin validation are limited defenses, not a security audit. Result is revenue minus supplied costs, not necessarily accounting profit. No general quoted CSV/XLSX mapping, multi-tenant isolation, desktop packaging or production deployment yet. Thirty unittest cases passed in the previous v0.3 local Linux Python environment; the v0.13 Python regression run (including module asset tests), Windows installation and full browser UI remain untested.
+The UI sends CSV or XLSX only to the loopback API. Optional local persistence; no telemetry, account, external AI or payments. Do not expose the service to the LAN or internet; there is no authentication. Host and Origin validation are limited defenses, not a security audit. Result is revenue minus supplied costs, not necessarily accounting profit. No general quoted CSV/XLSX mapping, multi-tenant isolation, validated desktop binary or production deployment yet. Thirty unittest cases passed in the previous v0.3 local Linux Python environment; the v0.13 Python regression run (including module asset tests), Windows installation and full browser UI remain untested.
 
-Next: Windows packaging and integrated validation before a controlled pilot. SQLite is chosen for the lightweight local preview; analytical and multi-organization stores remain future work.
+Next: confirm Windows CI, perform interactive UI and clean-machine tests, and prepare a controlled pilot. SQLite is chosen for the lightweight local preview; analytical and multi-organization stores remain future work.
