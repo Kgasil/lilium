@@ -1,0 +1,71 @@
+name: Lilium dependency security review
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'requirements*.txt'
+      - 'docs/validation/windows-build-*.txt'
+      - '.github/workflows/dependency-audit.yml'
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: windows-2022
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: x64
+      - name: Resolve current build environment without audit tooling
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path audit-evidence
+          python -m venv .venv-review
+          & .venv-review/Scripts/python.exe -m pip install -r requirements-build.txt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & .venv-review/Scripts/python.exe -m pip check
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & .venv-review/Scripts/python.exe -m pip freeze --all | Set-Content -Encoding utf8 audit-evidence/current-resolved.txt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Get-Content audit-evidence/current-resolved.txt
+      - name: Install isolated review tool
+        run: python -m pip install pip-audit==2.10.1
+      - name: Audit prior build inventory and current resolved environment
+        shell: pwsh
+        run: |
+          python -m pip_audit --version
+          python -m pip_audit --no-deps --disable-pip -r docs/validation/windows-build-45721212184.txt --format json --output audit-evidence/previous-build.json
+          $prior = $LASTEXITCODE
+          python -m pip_audit --no-deps --disable-pip -r audit-evidence/current-resolved.txt --format json --output audit-evidence/current-build.json
+          $current = $LASTEXITCODE
+          foreach ($name in @("previous-build", "current-build")) {
+            $report = "audit-evidence/$name.json"
+            if (Test-Path $report) {
+              $data = Get-Content $report -Raw | ConvertFrom-Json
+              foreach ($dependency in $data.dependencies) {
+                if ($dependency.skip_reason) {
+                  Write-Warning "$name : $($dependency.name) skipped: $($dependency.skip_reason)"
+                  $current = 1
+                }
+                foreach ($vulnerability in $dependency.vulns) {
+                  Write-Host "$name : $($dependency.name) $($dependency.version) $($vulnerability.id) fixes=$($vulnerability.fix_versions -join ',')"
+                }
+              }
+            } else {
+              Write-Warning "No report: $name"
+              $current = 1
+            }
+          }
+          Write-Host "Historical audit exit: $prior; current audit exit: $current"
+          if ($prior -ne 0 -or $current -ne 0) { exit 1 }
+      - name: Preserve audit reports even on finding or failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Lilium-dependency-review
+          path: audit-evidence/
+          if-no-files-found: warn
+          retention-days: 14
