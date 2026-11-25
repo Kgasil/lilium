@@ -9,9 +9,9 @@ const sections=[...html.matchAll(/<section id="([^"]+)"[^>]*aria-labelledby="([^
 const tables=[...html.matchAll(/<table>[\s\S]*?<\/table>/g)];
 const checks=[
 ["skip link has focusable main target",()=>assert.ok(html.includes('class="skip-link" href="#main-content"')&&html.includes('<main id="main-content" tabindex="-1">'))],
-["13 distinct module links",()=>assert.ok(targets.length===13&&new Set(targets).size===13&&targets.every(x=>ids.includes(x)))],
+["14 distinct module links",()=>assert.ok(targets.length===14&&new Set(targets).size===14&&targets.every(x=>ids.includes(x)))],
 ["four named navigation groups",()=>assert.equal((nav.match(/class="nav-label"/g)||[]).length,4)],
-["section names and focus destinations",()=>assert.ok(sections.length===14&&sections.every(m=>m[2]===m[1]+"-heading"&&ids.includes(m[2])&&m[0].includes('tabindex="-1"')))],
+["section names and focus destinations",()=>assert.ok(sections.length===15&&sections.every(m=>m[2]===m[1]+"-heading"&&ids.includes(m[2])&&m[0].includes('tabindex="-1"')))],
 ["all tables have captions and scoped static headers",()=>assert.ok(tables.length===12&&tables.every(m=>m[0].includes('<caption class="sr-only">')&&!m[0].includes("<th>")))],
 ["all table scroll regions keyboard focusable",()=>assert.equal((html.match(/class="scroll" tabindex="0" role="region" aria-label="[^"]+"/g)||[]).length,12)],
 ["generated Connect headers scoped",()=>assert.ok(js.includes("th.scope='col'"))],
