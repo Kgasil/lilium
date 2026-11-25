@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse, FileResponse
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from .metrics import MAX_BYTES, DataError, analyze_csv
 
-app = FastAPI(title="Lilium Core", version="0.1.0")
+app = FastAPI(title="Lilium Core", version="0.1.0", docs_url=None, redoc_url=None)
 app.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1"])
 
 
