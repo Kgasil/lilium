@@ -119,3 +119,6 @@ Navegação agrupada por objetivo, seis atalhos de tarefas, glossário, foco de 
 
 ### Business Starter Kit
 Cinco cenários totalmente fictícios (comércio, serviços, indústria, restaurante e loja virtual), cada um com sete conjuntos de exercício para Insights, Sales, Finance, Operations, metas e prioridades Strategy, Forecast. Receita mensal coerente entre Insights, Sales e Forecast; pedidos agregados sintéticos e hipóteses independentes nos demais exercícios. Carregamento confirmado por conjunto ou completo, exportação CSV/JSON e preservação de histórico e fila Flow. 47 testes de cenários e 23 verificações estáticas/UX aprovados em V8. Integração real no navegador e Windows ainda pendente. [Guia de exercícios](docs/starter-kit.md).
+
+### Help Center e encerramento do escopo inicial
+Central de ajuda offline com 15 guias, busca local sem acentos, atalhos para os módulos e modelo TXT de relato sem dados confidenciais. 13 novos testes de ajuda e 23 verificações anteriores de interface aprovados em V8. Teste real no navegador pendente. Proposta de congelar novas funcionalidades até completar três etapas: validação integrada e pacote Windows; validação manual, segurança e acessibilidade; piloto gratuito controlado com dados fictícios. [Critérios e resultados](docs/pilot-readiness.md).
