@@ -26,3 +26,5 @@ The [final candidate review workflow](https://github.com/Kgasil/lilium/actions/w
 - Pilot opening: **not approved** until the owner completes and records outstanding acceptance. No data from real businesses or participants is requested.
 
 See [pilot handbook](pilot-handbook.md), [Trust & Privacy](trust-privacy.md), and [release gates](pilot-readiness.md). No new product feature or version bump introduced in this review.
+
+**Result:** run 45724967459 completed successfully. The focused browser checks and in-memory PDF generation passed against the exact remediated artifact; no external requests were observed in the tested browser session. No visual PDF inspection, screen reader evaluation, independent security audit or physical installation was performed. Manual acceptance remains pending.
