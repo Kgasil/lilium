@@ -141,3 +141,5 @@ Formação de preços, simulação mensal, ponto de equilíbrio e metas, cinco c
 
 ### Preparação final do piloto
 [Manual do piloto controlado](docs/pilot-handbook.md) · [Aceitação do pacote em runner Windows independente](https://github.com/Kgasil/lilium/actions/workflows/portable-acceptance.yml) · [Roteiro manual em máquina limpa](docs/clean-machine-validation.md). A publicação Pages e os testes do site e Windows após a atualização de documentação foram confirmados. A prévia de referência continua sendo a execução 45722415976, com seu hash próprio. Nenhum piloto público foi aberto; a decisão depende da aceitação manual.
+
+**Aceitação automatizada do pacote:** [execução independente aprovada #45723844030](https://github.com/Kgasil/lilium/actions/runs/45723844030), Windows Server 2025, ZIP exato baixado e conferido, seis diagnósticos e autoteste aprovados sem chamada a Python externo. A aceitação manual e a abertura do piloto continuam pendentes.
