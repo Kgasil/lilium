@@ -107,3 +107,6 @@ Inicializador de código-fonte para Windows x64/Python 3.12, identificação de 
 
 ### Release & Update Manager
 Gerenciador offline de pacote ZIP portátil, manifesto versionado, SHA-256, validação de caminhos Windows e preparação em pasta nova sem substituir a versão anterior. Nove testes Python aprovados em Linux com arquivos sintéticos; código publicado idêntico ao testado. CI Windows configurada para empacotar, validar e testar a cópia extraída antes de disponibilizar o artefato. Sem atualização automática, assinatura digital ou lançamento público. [Guia de versões](desktop/README.md).
+
+### Trust & Privacy
+Desktop usa token aleatório por execução, validação de origem e bloqueio de requisições sem autorização na API; o navegador remove o token da URL e o mantém na sessão da aba. Doze testes de política aprovados localmente, cinco testes integrados adicionados (execução pendente). Modo direto de desenvolvimento sem proteção; sem contas, criptografia de arquivos ou certificação de conformidade. [Privacidade e limites](docs/trust-privacy.md).
