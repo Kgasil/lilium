@@ -78,3 +78,5 @@ Independent portable artifact run [45723844030](https://github.com/Kgasil/lilium
 
 ## Final technical review
 [Source review and residual risk register](final-review.md) records the observed controls and remaining limitations. A focused Chromium workflow downloads and verifies the exact candidate to check security headers, keyboard focus, visible input labels, safe report title rendering, print media and PDF generation, mobile viewport, session reload and guest isolation. [Run 45724967459](https://github.com/Kgasil/lilium/actions/runs/45724967459). No public launch or change in candidate. Independent manual security, accessibility and clean-device acceptance remain open.
+
+Final candidate review run 45724967459 succeeded: exact artifact, security headers, session checks, keyboard focus, visible control labels, safe title rendering, print isolation, PDF generation and responsive viewport. No observed external requests during this test. These results supplement the automated gate but do not close manual acceptance.
