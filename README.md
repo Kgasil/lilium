@@ -116,3 +116,6 @@ Corrigida falha de histórico inconsistente: leitura, exportação e recuperaç�
 
 ### User Experience & Accessibility
 Navegação agrupada por objetivo, seis atalhos de tarefas, glossário, foco de teclado, link para pular navegação, estado de âncora ativa e acessibilidade estrutural das 12 tabelas. Onze verificações novas aprovadas em V8; testes reais de navegador, leitor de tela e Windows pendentes. [Critérios do piloto](docs/pilot-readiness.md).
+
+### Business Starter Kit
+Cinco cenários totalmente fictícios (comércio, serviços, indústria, restaurante e loja virtual), cada um com sete conjuntos de exercício para Insights, Sales, Finance, Operations, metas e prioridades Strategy, Forecast. Receita mensal coerente entre Insights, Sales e Forecast; pedidos agregados sintéticos e hipóteses independentes nos demais exercícios. Carregamento confirmado por conjunto ou completo, exportação CSV/JSON e preservação de histórico e fila Flow. 47 testes de cenários e 23 verificações estáticas/UX aprovados em V8. Integração real no navegador e Windows ainda pendente. [Guia de exercícios](docs/starter-kit.md).
