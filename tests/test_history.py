@@ -67,3 +67,25 @@ class HistoryTests(unittest.TestCase):
             r = self.client.get('/api/v1/history')
             self.assertEqual(r.status_code, 503)
             self.assertNotIn('private path', r.text)
+
+
+    def test_backup_api(self):
+        item = self.save()
+        export = self.client.get('/api/v1/backup')
+        self.assertEqual(export.status_code, 200)
+        self.assertEqual(export.headers['cache-control'], 'no-store')
+        self.assertEqual(export.json()['snapshots'][0], item)
+        headers = {'Content-Type': 'application/json', 'Origin': 'http://localhost'}
+        self.assertEqual(self.client.post('/api/v1/backup/merge', content=export.content, headers=headers).json(), {'added': 0, 'skipped': 1})
+        self.client.delete('/api/v1/history/' + item['id'])
+        self.assertEqual(self.client.post('/api/v1/backup/merge', content=export.content, headers=headers).json(), {'added': 1, 'skipped': 0})
+        self.assertEqual(self.store.get(item['id']), item)
+
+    def test_backup_requires_same_origin(self):
+        self.assertEqual(self.client.post('/api/v1/backup/merge', json={}).status_code, 403)
+        self.assertEqual(self.client.post('/api/v1/backup/merge', json={}, headers={'Origin': 'https://evil.example'}).status_code, 403)
+
+    def test_backup_invalid(self):
+        response = self.client.post('/api/v1/backup/merge', json={}, headers={'Origin': 'http://localhost'})
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(self.store.list(), [])
