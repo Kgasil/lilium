@@ -1,0 +1,37 @@
+name: Lilium public lab validation
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'demo.html'
+      - 'web/**'
+      - 'core/*.js'
+      - 'tests/public_*.test.js'
+      - 'tests/browser_public.py'
+      - '.github/workflows/public-lab.yml'
+permissions:
+  contents: read
+jobs:
+  public-lab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Calculation and DOM contract checks
+        run: |
+          node tests/public_lab.test.js
+          node tests/public_site.test.js
+      - name: Install Playwright and Chromium
+        run: |
+          python -m pip install playwright==1.56.0
+          python -m playwright install --with-deps chromium
+      - name: Public lab browser acceptance
+        run: python tests/browser_public.py
