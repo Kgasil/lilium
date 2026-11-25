@@ -101,3 +101,6 @@ Official visual lockup: **K&G** above **Vision**; individual project symbols are
 
 ### Backup e recuperação do histórico
 Exporte e recupere análises salvas no Workspace. JSON versionado de até 16 MiB, validação de consistência, recuperação por adição sem sobrescrita, deduplicação e reversão transacional em caso de conflito. Nove novos testes Python aprovados localmente (arquivos idênticos aos publicados); testes da API e do navegador da versão atual ainda pendentes. Não inclui os dados originais nem os resultados de outros módulos; arquivo sem criptografia. [Guia Desktop](desktop/README.md).
+
+### Setup & Diagnostics
+Inicializador de código-fonte para Windows x64/Python 3.12, identificação de alterações em requirements.txt por SHA-256, reparo manual confirmado e diagnóstico local sem ler histórico real. Oito testes Python aprovados em Linux, com instalação simulada; hashes dos três arquivos testados coincidem com o GitHub. A validação do executável e do workflow Windows permanece pendente. [Guia de manutenção](desktop/README.md).
