@@ -49,7 +49,7 @@ class ApiTests(unittest.TestCase):
         self.assertIn('LiliumDashboard', r.text)
         self.assertIn('application/javascript', r.headers['content-type'])
         self.assertEqual(r.headers['cache-control'], 'no-store')
-        self.assertEqual(self.client.get('/health').json()['version'], '0.10.0')
+        self.assertEqual(self.client.get('/health').json()['version'], '0.11.0')
 
     def test_finance_asset(self):
         r = self.client.get('/assets/finance.js')
@@ -90,6 +90,13 @@ class ApiTests(unittest.TestCase):
         r = self.client.get('/assets/forecast.js')
         self.assertEqual(r.status_code, 200)
         self.assertIn('LiliumForecast', r.text)
+        self.assertIn('application/javascript', r.headers['content-type'])
+        self.assertEqual(r.headers['cache-control'], 'no-store')
+
+    def test_flow_asset(self):
+        r = self.client.get('/assets/flow.js')
+        self.assertEqual(r.status_code, 200)
+        self.assertIn('LiliumFlow', r.text)
         self.assertIn('application/javascript', r.headers['content-type'])
         self.assertEqual(r.headers['cache-control'], 'no-store')
 
