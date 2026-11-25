@@ -1,4 +1,4 @@
-"""Run on loopback only; no authentication in this development preview. Desktop configures its own history path."""
+"""Loopback development API. Desktop enables its process-scoped access capability."""
 from pathlib import Path
 import sqlite3
 from uuid import UUID
@@ -9,19 +9,36 @@ from .metrics import MAX_BYTES, DataError, analyze_csv
 from .store import HistoryStore, HistoryFull
 from .backup import MAX_BACKUP, export_history, merge_history
 from .imports import XLSX, normalize, quality
+from .session import HEADER, authorized, protected
 
 app = FastAPI(title="Lilium Core", version="0.14.0", docs_url=None, redoc_url=None)
 app.state.history = HistoryStore(Path(__file__).resolve().parent.parent / "data" / "lilium.sqlite3")
 app.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1"])
+# Direct development imports remain unguarded for existing tests; Desktop sets a fresh token.
+app.state.session_token = None
 
 
 def error(code, message, status, row=None):
     return JSONResponse({"error": {"code": code, "message": message, "row": row}}, status_code=status)
 
 
+@app.middleware("http")
+async def local_session(request: Request, call_next):
+    if not protected(request.scope["path"]):
+        return await call_next(request)
+    token = app.state.session_token
+    if token is not None and not authorized(token, request.headers.get(HEADER),
+            request.headers.get("origin"), str(request.base_url), request.headers.get("sec-fetch-site")):
+        response = error("session_required", "Open the current Lilium Desktop access link.", 403)
+    else:
+        response = await call_next(request)
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
+
 @app.get("/health")
 def health():
-    return {"status": "ok", "version": "0.14.0", "mode": "local-preview"}
+    return {"status": "ok", "version": "0.14.0", "mode": "local-preview", "session_required": app.state.session_token is not None}
 
 
 @app.get("/", include_in_schema=False)
