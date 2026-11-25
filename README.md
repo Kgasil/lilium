@@ -9,7 +9,7 @@
 ## Português
 Lilium é uma iniciativa independente da K&G Vision para desenvolver uma aplicação web de inteligência empresarial, com foco inicial em pequenas e médias empresas. A proposta é transformar planilhas em indicadores verificáveis, relatórios executivos e apoio a decisões. 
 
-**Status:** website institucional, primeiro protótipo local de indicadores e prévia de desenvolvimento da extensão Lilium Mini. [Experimente Lilium Insights](https://kgasil.github.io/lilium/demo.html). O Lilium Core v0.1.0 e o Workspace local já estão em desenvolvimento e disponíveis para testes. Não há aplicação comercial, integração de IA ativa, consultoria oferecida ou data de lançamento anunciada.
+**Status:** website institucional, primeiro protótipo local de indicadores e prévia de desenvolvimento da extensão Lilium Mini. [Experimente Lilium Insights](https://kgasil.github.io/lilium/demo.html). O Lilium Core v0.2.0 e o Workspace local já estão em desenvolvimento e disponíveis para testes. Não há aplicação comercial, integração de IA ativa, consultoria oferecida ou data de lançamento anunciada.
 
 ### Lilium Business Suite
 | Módulo planejado | Escopo |
@@ -53,9 +53,9 @@ Lilium is built around a clear ambition: empower small businesses to make smarte
 
 - `demo.html`: CSV restrito (`date,revenue,cost`), valores BRL não negativos com até duas casas decimais, datas ISO, agregação mensal, receita, custos, resultado, margem e exportação TXT. Processamento no navegador, sem conexão com IA. Use dados sintéticos.
 - Oito verificações unitárias do cálculo executadas antes do commit: totais, receita zero, precisão decimal, data inválida, cabeçalho inválido, valores negativos, precisão inválida e agregação mensal. Não são testes de segurança ou de interface no navegador.
-- **Lilium Core v0.1.0:** Python/FastAPI, contrato de métricas, validação de CSV, API local e Workspace inicial. 12 testes unitários/API aprovados no ambiente Linux; Windows e UI completa ainda não testados.
+- **Lilium Core v0.2.0:** Python/FastAPI, contrato de métricas, validação de CSV, API local e Workspace inicial. 20 testes unitários/API aprovados no ambiente Linux; Windows e UI completa ainda não testados. Histórico opcional em SQLite (até 200 análises consolidadas, sem armazenar CSV original); banco não criptografado pelo aplicativo.
 - [Instruções para executar no Windows / Local setup](core/README.md) · [Código do Core](core/) · [Testes](tests/test_core.py).
-- Próximo marco: persistência local, importação XLSX, qualidade dos dados e dashboard ampliado.
+- Próximo marco: importação XLSX, qualidade dos dados e dashboard ampliado.
 
 ## Lilium Mini — extensão gratuita / free extension
 
