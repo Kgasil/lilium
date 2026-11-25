@@ -1,6 +1,7 @@
 """Headless Chromium pilot smoke test against a real local server; synthetic data only."""
 import os
 import queue
+import re
 import subprocess
 import sys
 import tempfile
@@ -51,6 +52,11 @@ def main():
                 page.on("request", lambda request: external.append(request.url)
                         if not request.url.startswith(url + "/") else None)
                 page.on("dialog", lambda dialog: dialog.accept())
+                # Verify that the bare URL cannot access protected history in a fresh context.
+                guest = browser.new_page()
+                guest.goto(url, wait_until="networkidle")
+                expect(guest.locator("#session-notice")).to_be_visible()
+                guest.close()
                 page.goto(link, wait_until="networkidle")
                 assert "#access=" not in page.url
                 expect(page.locator("#session-notice")).to_be_hidden()
@@ -143,8 +149,8 @@ def main():
                 assert sample_download.value.suggested_filename == "lilium-restaurant-starter.json"
                 page.locator("#starter-load").click()
                 expect(page.locator("#starter-status")).to_contain_text("7 conjunto(s)")
-                expect(page.locator("#sales-csv")).to_contain_text("Prato executivo")
-                expect(page.locator("#ops-csv")).to_contain_text("Preparação")
+                expect(page.locator("#sales-csv")).to_have_value(re.compile("Prato executivo"))
+                expect(page.locator("#ops-csv")).to_have_value(re.compile("Preparação"))
                 expect(page.locator("#results")).to_be_hidden()
                 expect(page.locator("#history-rows tr")).to_have_count(1)
                 page.locator("#run").click()
