@@ -3,15 +3,15 @@
 **Strategy & Growth · Estratégia e Crescimento**
 
 ## Windows
-Install Python 3.12 x64 with the Python launcher. Download/extract the repository and run `start-lilium.bat`. The first run per version installs dependencies, then the launcher reserves a loopback port and opens the browser automatically when ready. Keep the console open; Ctrl+C stops the service. Desktop history uses `%LOCALAPPDATA%/K&G Vision/Lilium/lilium.sqlite3`; previous development history stays separate. See [Desktop packaging and validation](../desktop/README.md). The Windows build workflow is configured but not yet confirmed. Use synthetic data only.
+Install Python 3.12 x64 with the Python launcher. Download/extract the repository and run `start-lilium.bat`. The first run or a changed requirements fingerprint installs dependencies, then the launcher reserves a loopback port and opens the browser automatically when ready. Keep the console open; Ctrl+C stops the service. Desktop history uses `%LOCALAPPDATA%/K&G Vision/Lilium/lilium.sqlite3`; previous development history stays separate. See [Desktop packaging and validation](../desktop/README.md). The Windows build workflow is configured but not yet confirmed. Use synthetic data only.
 
 Manual commands (PowerShell, from repository root):
 
 ```powershell
-py -3 -m venv .venv
+py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
-.\.venv\Scripts\python.exe -m uvicorn core.api:app --host 127.0.0.1 --port 8000
+.\.venv\Scripts\python.exe -m desktop.launcher
 ```
 
 ## API contract
@@ -115,3 +115,6 @@ date,revenue,cost
 The UI sends CSV or XLSX only to the loopback API. Optional local persistence; no telemetry, account, external AI or payments. Do not expose the service to the LAN or internet; there is no authentication. Host and Origin validation are limited defenses, not a security audit. Result is revenue minus supplied costs, not necessarily accounting profit. No general quoted CSV/XLSX mapping, multi-tenant isolation, validated desktop binary or production deployment yet. Thirty unittest cases passed in the previous v0.3 local Linux Python environment; the v0.13 Python regression run (including module asset tests), Windows installation and full browser UI remain untested.
 
 Next: confirm Windows CI, perform interactive UI and clean-machine tests, and prepare a controlled pilot. SQLite is chosen for the lightweight local preview; analytical and multi-organization stores remain future work.
+
+## Current validation boundary
+Use the Desktop launcher to enable the temporary session token. Direct Uvicorn mode is an unguarded development-only API. The public [Interactive Lab](https://kgasil.github.io/lilium/#lab) is separate, requires no Python and accepts synthetic exercises only. Complete current Windows and browser validation remains pending. See [pilot gates](../docs/pilot-readiness.md).
