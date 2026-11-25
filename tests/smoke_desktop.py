@@ -9,6 +9,8 @@ import tempfile
 import threading
 import time
 import urllib.request
+import urllib.parse
+import urllib.error
 
 
 def main(command):
@@ -35,15 +37,20 @@ def main(command):
                     if process.poll() is not None:
                         raise RuntimeError("Desktop exited before readiness")
                     continue
-                print(line, flush=True)
                 if line.startswith("LILIUM_READY http://127.0.0.1:"):
-                    url = line.split(" ", 1)[1]
+                    link = line.split(" ", 1)[1]
+                    parts = urllib.parse.urlsplit(link)
+                    token = parts.fragment.removeprefix("access=")
+                    assert len(token) == 64
+                    url = urllib.parse.urlunsplit((parts.scheme, parts.netloc, "", "", ""))
+                    print("Desktop ready (access link redacted)", flush=True)
                     break
+                print(line, flush=True)
             if url is None:
                 raise RuntimeError("Desktop readiness timeout")
             opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
             def get(path):
-                with opener.open(url + path, timeout=10) as response:
+                with opener.open(urllib.request.Request(url + path, headers={"X-Lilium-Session": token}), timeout=10) as response:
                     return response.read()
             assert json.loads(get("/health"))["version"] == "0.14.0"
             html = get("/").decode()
@@ -53,6 +60,11 @@ def main(command):
                 asset = "/assets/" + name + ".js"
                 assert asset in html and get(asset)
             assert json.loads(get("/api/v1/history")) == {"items": []}
+            try:
+                opener.open(url + "/api/v1/history", timeout=10)
+                raise AssertionError("Missing session accepted")
+            except urllib.error.HTTPError as exc:
+                assert exc.code == 403
             print("Live loopback smoke test OK", flush=True)
         finally:
             if process.poll() is None:
