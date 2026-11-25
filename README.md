@@ -113,3 +113,6 @@ Desktop usa token aleatório por execução, validação de origem e bloqueio de
 
 ### Quality Assurance — histórico e sessões
 Corrigida falha de histórico inconsistente: leitura, exportação e recuperação com conflito retornam erro estruturado, sem reparo automático ou exclusão. Sete novos testes integrados. Nesta revisão, 83 testes Python passaram em Linux (Python 3.13.5, cópia local com backend e testes conferidos por hash; 12 casos dependentes de assets excluídos, testes Desktop não executados) e 307 verificações JavaScript/estáticas passaram em V8 a partir do GitHub. A compilação Windows, Chromium e validação final continuam pendentes. [Registro QA e critérios do piloto](docs/pilot-readiness.md).
+
+### User Experience & Accessibility
+Navegação agrupada por objetivo, seis atalhos de tarefas, glossário, foco de teclado, link para pular navegação, estado de âncora ativa e acessibilidade estrutural das 12 tabelas. Onze verificações novas aprovadas em V8; testes reais de navegador, leitor de tela e Windows pendentes. [Critérios do piloto](docs/pilot-readiness.md).
