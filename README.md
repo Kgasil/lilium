@@ -9,10 +9,10 @@
 ## Português
 Lilium é uma iniciativa independente da K&G Vision para desenvolver uma aplicação web de inteligência empresarial, com foco inicial em pequenas e médias empresas. A proposta é transformar planilhas em indicadores verificáveis, relatórios executivos e apoio a decisões. 
 
-**Status:** website institucional, primeiro protótipo local de indicadores e prévia de desenvolvimento da extensão Lilium Mini. [Experimente Lilium Insights](https://kgasil.github.io/lilium/demo.html). O Lilium Core v0.14.0 e o Workspace local já estão em desenvolvimento e disponíveis para testes. Não há aplicação comercial, integração de IA ativa, consultoria oferecida ou data de lançamento anunciada.
+**Status:** laboratório público interativo, demonstração CSV do Insights, extensão Mini em desenvolvimento e Workspace local v0.14.0 com módulos iniciais implementados em código. [Experimente o laboratório](https://kgasil.github.io/lilium/#lab) · [Demonstração Insights](https://kgasil.github.io/lilium/demo.html). A validação integral do Desktop Windows continua pendente. Não há versão comercial, IA conectada ou data de lançamento anunciada.
 
 ### Lilium Business Suite
-| Módulo planejado | Escopo |
+| Módulo | Escopo atual e futuro |
 |---|---|
 | Insights | Importação CSV/XLSX, validação, indicadores e dashboards |
 | Reports | Relatórios executivos com evidências |
@@ -26,7 +26,7 @@ Lilium é uma iniciativa independente da K&G Vision para desenvolver uma aplica�
 | Connect | Integrações de leitura com APIs, CRM e ERP |
 
 ### Arquitetura proposta
-Python/FastAPI, DuckDB para análise local inicial, PostgreSQL para futura operação multiempresa, React/TypeScript para interface e adaptadores de modelos de IA no backend. O motor de cálculo determinístico será separado do modelo de linguagem. A IA receberá apenas dados autorizados e minimizados, citará métricas e fontes, não executará SQL arbitrário ou ações externas sem autorização. Isolamento por organização, permissões, testes e trilhas de auditoria são requisitos antes de qualquer piloto real.
+Python/FastAPI e SQLite no histórico local atual; DuckDB em avaliação futura, PostgreSQL para futura operação multiempresa, React/TypeScript para interface e adaptadores de modelos de IA no backend. O motor de cálculo determinístico será separado do modelo de linguagem. A IA receberá apenas dados autorizados e minimizados, citará métricas e fontes, não executará SQL arbitrário ou ações externas sem autorização. Isolamento por organização, permissões, testes e trilhas de auditoria são requisitos antes de qualquer piloto real.
 
 ### Roadmap
 1. Importação CSV, validação de esquema, indicadores determinísticos e relatório exportável.
@@ -36,7 +36,7 @@ Python/FastAPI, DuckDB para análise local inicial, PostgreSQL para futura opera
 5. Avaliação comercial; eventual SaaS e serviços de implantação.
 
 ## English
-Lilium is built around a clear ambition: empower small businesses to make smarter decisions, operate with confidence and grow sustainably. This independent K&G Vision initiative is developing a modular business intelligence web application. The initial focus is validated spreadsheet analytics and executive reporting; future AI capabilities will explain verified metrics, with source references and human oversight. The proposed modules and architecture above are planned, not production-ready. A local metrics prototype is available; no commercial services or production application release are currently offered.
+Lilium is built around a clear ambition: empower small businesses to make smarter decisions, operate with confidence and grow sustainably. This independent K&G Vision initiative is developing a modular business intelligence web application. The initial focus is validated spreadsheet analytics and executive reporting; future AI capabilities will explain verified metrics, with source references and human oversight. Explore the interactive business lab and the local Workspace v0.14.0 source preview. Initial analytics modules are implemented; external integrations, connected AI and production deployment remain planned. The Windows package is not yet validated. No commercial services or production release are offered.
 
 ## Ecosystem / Ecossistema
 | Project | Website | Repository |
@@ -90,7 +90,7 @@ Official visual lockup: **K&G** above **Vision**; individual project symbols are
 
 **Genesis (purple) · Vision (blue) · Aeris (green) · Lilium (rose)**
 
-[Experimentar Lilium Insights / Try Lilium Insights (PT-BR)](https://kgasil.github.io/lilium/demo.html) — local prototype, no connected AI or commercial offering.
+[Interactive Lab / Laboratório interativo](https://kgasil.github.io/lilium/#lab) · [Insights CSV demo](https://kgasil.github.io/lilium/demo.html) — synthetic exercises, no connected AI or commercial offering.
 
 ## Product direction / Direção do produto
 
@@ -125,3 +125,6 @@ Central de ajuda offline com 15 guias, busca local sem acentos, atalhos para os 
 
 ### Validação integrada — fase final 1 (parcial)
 86 testes Python aprovados em Linux (14 casos dependentes da interface atual excluídos); 342 testes de módulos e 36 verificações estruturais aprovados em V8. Novo teste HTTP real de três inicializações, rotação de token, persistência e recuperação de backup aprovado localmente. Workflow exige esses testes no código-fonte e no executável e testes Chromium em ambos. A fase permanece aberta: falta confirmação do workflow Windows, regressão completa e artefato. [Validação Windows](https://github.com/Kgasil/lilium/actions/workflows/desktop-windows.yml) · [Critérios](docs/pilot-readiness.md).
+
+### Interactive Lab / Laboratório público
+Formação de preços, simulação mensal, ponto de equilíbrio e metas, cinco cenários sintéticos com receita, custos, resultado, previsão e CSV para testar Insights. Reutiliza os motores Finance, Starter, Sales e Forecast; funciona no navegador sem API. 12 testes de cálculo e 11 verificações simuladas de DOM aprovados em V8. Publicação Pages e Chromium real ainda não confirmados. O laboratório é uma demonstração separada do Desktop; não é uma oferta comercial.
