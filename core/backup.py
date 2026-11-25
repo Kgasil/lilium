@@ -5,7 +5,7 @@ import json
 import re
 from uuid import UUID
 from .metrics import metrics, MAX_ROWS
-from .store import MAX_SNAPSHOTS
+from .store import MAX_SNAPSHOTS, read_snapshot
 
 MAX_BACKUP = 16 * 1024 * 1024
 MAX_CENTS = MAX_ROWS * 99_999_999_999
@@ -84,7 +84,7 @@ def decode(raw):
 def export_history(store):
     with closing(store.connect()) as db:
         rows = db.execute("SELECT * FROM snapshots ORDER BY created_at, id").fetchall()
-    items = [{"id": r["id"], "created_at": r["created_at"], "analysis": json.loads(r["payload"])} for r in rows]
+    items = [read_snapshot(r) for r in rows]
     raw = json.dumps({"kind": "lilium.history", "schema_version": "1.0", "snapshots": items}, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     decode(raw)
     return raw
@@ -97,9 +97,9 @@ def merge_history(store, raw):
         db.execute("BEGIN IMMEDIATE")
         count = db.execute("SELECT COUNT(*) FROM snapshots").fetchone()[0]
         for item in items:
-            row = db.execute("SELECT created_at, payload FROM snapshots WHERE id=?", (item["id"],)).fetchone()
+            row = db.execute("SELECT * FROM snapshots WHERE id=?", (item["id"],)).fetchone()
             if row is not None:
-                require(row["created_at"] == item["created_at"] and json.loads(row["payload"]) == item["analysis"])
+                require(read_snapshot(row) == item)
                 skipped += 1
                 continue
             require(count + added < MAX_SNAPSHOTS)
