@@ -3,7 +3,7 @@
 **Strategy & Growth · Estratégia e Crescimento**
 *Make smarter decisions. Grow with confidence.*
 
-**Status:** planning, except for the local CSV metrics demonstration in `demo.html`, the Lilium Mini development preview in `extension/`, and the local Core/Workspace v0.9.0 in `core/`. No commercial availability or connected AI.
+**Status:** planning, except for the local CSV metrics demonstration in `demo.html`, the Lilium Mini development preview in `extension/`, and the local Core/Workspace v0.10.0 in `core/`. No commercial availability or connected AI.
 
 ## Product thesis
 A modular web application for small and midsize organizations that need business intelligence and decision support without deploying a full ERP. Start with spreadsheet-heavy workflows, then integrate existing systems. The product should complement, not replace, accounting systems or professional judgment.
@@ -17,7 +17,7 @@ A modular web application for small and midsize organizations that need business
 | Operations | Initial serial-stage OEE, capacity, throughput, rework, supplied lead time, theoretical bottlenecks and downtime scenarios implemented; SLA, measured constraints and broader process analysis planned |
 | Reports | Initial session report composer, JSON/TXT export and browser print-to-PDF option implemented; native PDF/XLSX generation and scheduled delivery planned |
 | Strategy | Initial weighted OKRs, deadline status, hypothetical scenarios and action prioritization implemented; integrated KPIs and persistent action plans planned |
-| Forecast | Time-series baselines, uncertainty intervals, backtesting and forecast error |
+| Forecast | Last-value, moving-average and linear trend baselines with rolling one-step validation and error metrics implemented; uncertainty intervals, seasonal models and independent multi-step evaluation planned |
 | Flow | Workflow builder, approval queues, notifications and idempotent runs |
 | Connect | CSV/XLSX first; read-only API connectors, ERP/CRM and database adapters later |
 | Copilot | Natural-language questions over authorized metrics, evidence and recommended next steps |
@@ -30,7 +30,7 @@ Import synthetic sales and cost data → map and validate columns → compute ve
 
 ## Delivery gates
 1. Existing local demo: restricted CSV, totals, monthly aggregation, margin and TXT export.
-2. Core MVP (in development; CSV/XLSX restricted import, quality diagnostics, local aggregate history, professional filtered dashboard, initial Finance scenario tools, Sales analytics, Operations diagnostics, initial Strategy tools and session report composition implemented): typed metric contracts, validation, Python/FastAPI, analytical storage, reproducible tests, CSV/XLSX, data-quality report, accessible dashboard and export. One organization in a local environment.
+2. Core MVP (in development; CSV/XLSX restricted import, quality diagnostics, local aggregate history, professional filtered dashboard, initial Finance scenario tools, Sales analytics, Operations diagnostics, initial Strategy tools, session report composition and monthly baseline forecasts implemented): typed metric contracts, validation, Python/FastAPI, analytical storage, reproducible tests, CSV/XLSX, data-quality report, accessible dashboard and export. One organization in a local environment.
 3. Evidence-based Copilot: provider adapters, allowlisted read-only tools, retrieval from approved metric definitions, structured outputs, references, abstention when evidence is insufficient, test suite against fabricated figures and prompt injection. Secrets remain server-side. No raw unrestricted SQL from the model.
 4. Business modules: budgets, CRM, process analytics, alerts, scenario simulation and forecasting evaluated against simple baselines.
 5. Controlled pilot: authenticated users, organization isolation, authorization, deletion/retention, encrypted transport, backups, incident response, monitoring, model cost limits, audit logs and security tests. Evaluate applicable data-protection obligations before real data.
