@@ -9,3 +9,8 @@ data/
 *.duckdb
 *.sqlite
 *.sqlite3
+
+.venv-build/
+build/
+dist/
+*.spec
