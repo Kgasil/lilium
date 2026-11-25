@@ -1,4 +1,4 @@
-# Lilium Core v0.2.0 — local development preview
+# Lilium Core v0.3.0 — local development preview
 
 **Strategy & Growth · Estratégia e Crescimento**
 
@@ -17,7 +17,7 @@ py -3 -m venv .venv
 ## API contract
 - GET /health — service status and version.
 - GET / — local Workspace preview.
-- POST /api/v1/analyze — raw UTF-8 text/csv body. Exact three columns: date,revenue,cost. BRL, dot decimal, nonnegative amounts, max 9 integer digits and 2 fractional digits. ISO date, 1–10,000 rows, 1 MiB. No quoted fields or additional columns. Accepts UTF-8 BOM.
+- POST /api/v1/analyze — raw UTF-8 text/csv or XLSX body (`application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`). Exact three columns: date,revenue,cost. BRL, dot decimal, nonnegative amounts, max 9 integer digits and 2 fractional digits. ISO date, 1–10,000 rows, 1 MiB. No quoted fields or additional columns. Accepts UTF-8 BOM.
 - Returns schema version, currency, row count, totals, sorted monthly totals, and notes. Monetary values are integer cents; margin is a decimal percentage string rounded half-up to 2 decimal places or null for zero revenue.
 - 422 validation errors include safe error code and row when applicable; 413 input too large; 415 unsupported media; 403 invalid Origin.
 - /openapi.json — machine-readable API definition.
@@ -30,14 +30,19 @@ date,revenue,cost
 2026-03-01,12000,7800
 ```
 
+## Smart Import & Data Quality
+- `POST /api/v1/quality` — diagnostic only, no persistence. Counts valid/invalid rows, possible duplicates and zero-revenue rows; returns row number and issue code (first 100 issues). Invalid rows block analysis; warnings do not. No automatic corrections or deduplication.
+- XLSX: exactly one worksheet, three columns with the same CSV header, ISO dates or native Excel date values, numeric BRL values. Replace formulas with values; macros and external links are unsupported. Input 1 MiB, expanded archive 12 MiB, at most 100 archive entries, 10,000 data rows. Corrupt or unsupported files are rejected. This is a restricted importer, not a general Excel editor; XLS/XLSM are unsupported.
+- Structural errors (including invalid header, formula or unsupported workbook) stop the diagnostic. The original file is never persisted. All calculations use the existing deterministic core after normalization.
+
 ## Local history
-- POST /api/v1/history — validates the same CSV input and explicitly saves a consolidated snapshot; 201 with identifier and timestamp.
+- POST /api/v1/history — validates the same CSV or XLSX input and explicitly saves a consolidated snapshot; 201 with identifier and timestamp.
 - GET /api/v1/history — list up to 200 saved snapshots (latest first).
 - GET /api/v1/history/{id} — reopen a saved analysis; DELETE on the same path removes it.
 - SQLite is built into Python. Database: `data/lilium.sqlite3` (ignored by Git). Only aggregated metrics are stored, not the raw CSV. Analyze alone does not save anything. No app-level encryption or secure-erasure guarantee; do not use confidential data.
 - Full history returns 409; storage failure returns 503 without exposing local paths. Back up exported JSON if needed; deleting a snapshot does not delete external exports or backups.
 
 ## Boundaries
-The UI sends CSV only to the loopback API. Optional local persistence; no telemetry, account, external AI or payments. Do not expose the service to the LAN or internet; there is no authentication. Host and Origin validation are limited defenses, not a security audit. Result is revenue minus supplied costs, not necessarily accounting profit. No XLSX support, multi-tenant isolation, desktop packaging or production deployment yet. Twenty unittest cases passed (12 original and 8 history tests) in a local Linux Python environment; Windows installation and full browser UI remain untested.
+The UI sends CSV or XLSX only to the loopback API. Optional local persistence; no telemetry, account, external AI or payments. Do not expose the service to the LAN or internet; there is no authentication. Host and Origin validation are limited defenses, not a security audit. Result is revenue minus supplied costs, not necessarily accounting profit. No general spreadsheet mapping, multi-tenant isolation, desktop packaging or production deployment yet. Thirty unittest cases passed (20 previous and 10 import/quality tests) in a local Linux Python environment; Windows installation and full browser UI remain untested.
 
-Next: XLSX import, data-quality feedback, richer dashboard and export. SQLite is chosen for the lightweight local preview; analytical and multi-organization stores remain future work.
+Next: richer dashboard, navigation and export. SQLite is chosen for the lightweight local preview; analytical and multi-organization stores remain future work.
