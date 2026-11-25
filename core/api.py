@@ -27,7 +27,7 @@ def health():
 def workspace():
     return FileResponse(Path(__file__).with_name("workspace.html"), media_type="text/html", headers={
         "Cache-Control": "no-store",
-        "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'",
+        "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'",
         "X-Frame-Options": "DENY", "X-Content-Type-Options": "nosniff",
         "Referrer-Policy": "no-referrer",
     })
