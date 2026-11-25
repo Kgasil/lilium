@@ -122,3 +122,6 @@ Cinco cenários totalmente fictícios (comércio, serviços, indústria, restaur
 
 ### Help Center e encerramento do escopo inicial
 Central de ajuda offline com 15 guias, busca local sem acentos, atalhos para os módulos e modelo TXT de relato sem dados confidenciais. 13 novos testes de ajuda e 23 verificações anteriores de interface aprovados em V8. Teste real no navegador pendente. Proposta de congelar novas funcionalidades até completar três etapas: validação integrada e pacote Windows; validação manual, segurança e acessibilidade; piloto gratuito controlado com dados fictícios. [Critérios e resultados](docs/pilot-readiness.md).
+
+### Validação integrada — fase final 1 (parcial)
+86 testes Python aprovados em Linux (14 casos dependentes da interface atual excluídos); 342 testes de módulos e 36 verificações estruturais aprovados em V8. Novo teste HTTP real de três inicializações, rotação de token, persistência e recuperação de backup aprovado localmente. Workflow exige esses testes no código-fonte e no executável e testes Chromium em ambos. A fase permanece aberta: falta confirmação do workflow Windows, regressão completa e artefato. [Validação Windows](https://github.com/Kgasil/lilium/actions/workflows/desktop-windows.yml) · [Critérios](docs/pilot-readiness.md).
