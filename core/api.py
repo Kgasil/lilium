@@ -1,4 +1,4 @@
-"""Run on loopback only; no authentication in this development preview."""
+"""Run on loopback only; no authentication in this development preview. Desktop configures its own history path."""
 from pathlib import Path
 import sqlite3
 from uuid import UUID
@@ -9,7 +9,7 @@ from .metrics import MAX_BYTES, DataError, analyze_csv
 from .store import HistoryStore, HistoryFull
 from .imports import XLSX, normalize, quality
 
-app = FastAPI(title="Lilium Core", version="0.13.0", docs_url=None, redoc_url=None)
+app = FastAPI(title="Lilium Core", version="0.14.0", docs_url=None, redoc_url=None)
 app.state.history = HistoryStore(Path(__file__).resolve().parent.parent / "data" / "lilium.sqlite3")
 app.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1"])
 
@@ -20,7 +20,7 @@ def error(code, message, status, row=None):
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "version": "0.13.0", "mode": "local-preview"}
+    return {"status": "ok", "version": "0.14.0", "mode": "local-preview"}
 
 
 @app.get("/", include_in_schema=False)
