@@ -339,4 +339,34 @@ document.addEventListener('click',event=>{
  if(target.hasAttribute('tabindex'))requestAnimationFrame(()=>target.focus({preventScroll:true}));
 });
 
+
+const starterTargets=['insights','sales','finance','operations','goals','actions','forecast'];
+for(const item of LiliumStarter.list()){const opt=repNode('option',item.name);opt.value=item.id;$('starter-scenario').append(opt);}
+function starterSelection(){const scenario=LiliumStarter.build($('starter-scenario').value);$('starter-focus').textContent='Exercício: '+scenario.focus;$('starter-status').textContent='';return scenario;}
+$('starter-scenario').onchange=starterSelection;$('starter-target').onchange=starterSelection;starterSelection();
+$('starter-load').onclick=()=>{
+ const x=starterSelection(),target=$('starter-target').value,selected=target==='all'?starterTargets:[target];
+ if(!selected.every(k=>starterTargets.includes(k)))return;
+ if(saving||backupBusy||$('run').disabled||$('sales-run').disabled||$('ops-run').disabled){$('starter-status').textContent='Aguarde as operações em andamento.';return;}
+ if(!confirm('Carregar '+x.name+'? As entradas e resultados selecionados serão substituídos. Relatórios e respostas do Copilot serão limpos. Histórico e fila Flow permanecem.'))return;
+ for(const k of selected){
+  if(k==='insights'){selectedFile=null;$('file').value='';$('csv').disabled=false;$('csv').value=x.insights;reset();$('source').textContent='Fonte: Starter Kit · '+x.name;}
+  if(k==='sales'){salesReset();$('sales-file').value='';$('sales-csv').value=x.sales;}
+  if(k==='finance'){for(const [key,value] of Object.entries(x.finance))$('sim-'+key).value=value;$('finance-form').dispatchEvent(new Event('input',{bubbles:true}));}
+  if(k==='operations'){opsReset();$('ops-file').value='';$('ops-csv').value=x.operations;}
+  if(k==='goals'){stReset();$('strategy-csv').value=x.goals;$('strategy-date').value=x.asOf;}
+  if(k==='actions'){actReset();$('strategy-actions').value=x.actions;}
+  if(k==='forecast'){fcReset();$('forecast-csv').value=x.forecast;$('forecast-unit').value='BRL';$('forecast-horizon').value='3';$('forecast-model').value='auto';}
+ }
+ repReset();cpReset();$('flow-evaluation').replaceChildren();$('flow-status').textContent='Dados alterados. Reavalie as regras; propostas anteriores permanecem na fila.';
+ $('starter-status').textContent='Cenário '+x.name+' carregado em '+selected.length+' conjunto(s). Execute os cálculos manualmente. Confira os períodos e não misture cenários sem revisar as fontes.';
+};
+$('starter-export').onclick=()=>{
+ const x=starterSelection(),k=$('starter-target').value;
+ if(k==='all'){stExport({schema_version:'1.0',kind:'lilium.synthetic-exercise',...x},'lilium-'+x.id+'-starter.json');}
+ else if(k==='finance')stExport({schema_version:'1.0',kind:'lilium.synthetic-finance',scenario:x.id,inputs:x.finance,notes:x.notes},'lilium-'+x.id+'-finance.json');
+ else if(starterTargets.includes(k))repDownload(x[k],'text/csv;charset=utf-8','lilium-'+x.id+'-'+k+'.csv');
+ $('starter-status').textContent='Modelo fictício preparado para download.';
+};
+
 $('workspace-loading').hidden=true;
