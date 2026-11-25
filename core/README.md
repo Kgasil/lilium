@@ -1,4 +1,4 @@
-# Lilium Core v0.1.0 — local development preview
+# Lilium Core v0.2.0 — local development preview
 
 **Strategy & Growth · Estratégia e Crescimento**
 
@@ -30,7 +30,14 @@ date,revenue,cost
 2026-03-01,12000,7800
 ```
 
-## Boundaries
-The UI sends CSV only to the loopback API. No persistence, telemetry, account, external AI or payments. Do not expose the service to the LAN or internet; there is no authentication. Host and Origin validation are limited defenses, not a security audit. Result is revenue minus supplied costs, not necessarily accounting profit. No XLSX support, multi-tenant isolation, desktop packaging or production deployment yet. Twelve unittest cases passed in a local Linux Python environment; Windows installation and full browser UI remain untested.
+## Local history
+- POST /api/v1/history — validates the same CSV input and explicitly saves a consolidated snapshot; 201 with identifier and timestamp.
+- GET /api/v1/history — list up to 200 saved snapshots (latest first).
+- GET /api/v1/history/{id} — reopen a saved analysis; DELETE on the same path removes it.
+- SQLite is built into Python. Database: `data/lilium.sqlite3` (ignored by Git). Only aggregated metrics are stored, not the raw CSV. Analyze alone does not save anything. No app-level encryption or secure-erasure guarantee; do not use confidential data.
+- Full history returns 409; storage failure returns 503 without exposing local paths. Back up exported JSON if needed; deleting a snapshot does not delete external exports or backups.
 
-Next: persistent local datasets, XLSX import, data-quality feedback, richer dashboard and export.
+## Boundaries
+The UI sends CSV only to the loopback API. Optional local persistence; no telemetry, account, external AI or payments. Do not expose the service to the LAN or internet; there is no authentication. Host and Origin validation are limited defenses, not a security audit. Result is revenue minus supplied costs, not necessarily accounting profit. No XLSX support, multi-tenant isolation, desktop packaging or production deployment yet. Twenty unittest cases passed (12 original and 8 history tests) in a local Linux Python environment; Windows installation and full browser UI remain untested.
+
+Next: XLSX import, data-quality feedback, richer dashboard and export. SQLite is chosen for the lightweight local preview; analytical and multi-organization stores remain future work.
