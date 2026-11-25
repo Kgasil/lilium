@@ -1,4 +1,8 @@
 # Lilium Business Suite — Product vision (proposal)
+
+**Strategy & Growth · Estratégia e Crescimento**
+*Make smarter decisions. Grow with confidence.*
+
 **Status:** planning, except for the local CSV metrics demonstration in `demo.html` and the Lilium Mini development preview in `extension/`. No commercial availability or connected AI.
 
 ## Product thesis
