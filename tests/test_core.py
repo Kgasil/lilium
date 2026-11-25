@@ -152,5 +152,53 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(self.client.get('/health', headers={'Host':'evil.example'}).status_code, 400)
 
 
+class DesktopSessionApiTests(unittest.TestCase):
+    def setUp(self):
+        from unittest.mock import patch
+        from tempfile import TemporaryDirectory
+        from pathlib import Path
+        from core.store import HistoryStore
+        from core.session import new_token
+        tmp = TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        self.token = new_token()
+        for name, value in (("session_token", self.token), ("history", HistoryStore(Path(tmp.name) / "test.db"))):
+            p = patch.object(app.state, name, value)
+            p.start()
+            self.addCleanup(p.stop)
+        self.client = TestClient(app, base_url="http://localhost")
+        self.headers = {"X-Lilium-Session": self.token}
+
+    def test_sensitive_reads_and_writes_rejected(self):
+        for method, path in (("GET", "/api/v1/history"), ("GET", "/api/v1/backup"),
+                             ("POST", "/api/v1/analyze"), ("POST", "/api/v1/history"),
+                             ("POST", "/api/v1/quality"), ("POST", "/api/v1/backup/merge")):
+            with self.subTest(path=path):
+                r = self.client.request(method, path)
+                self.assertEqual(r.status_code, 403)
+                self.assertEqual(r.headers["cache-control"], "no-store")
+
+    def test_authorized_api(self):
+        self.assertEqual(self.client.get("/api/v1/history", headers=self.headers).json(), {"items": []})
+        r = self.client.post("/api/v1/analyze", content=SAMPLE, headers={**self.headers, "Content-Type": "text/csv", "Origin": "http://localhost"})
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.headers["cache-control"], "no-store")
+
+    def test_cross_origin_with_token(self):
+        self.assertEqual(self.client.get("/api/v1/history", headers={**self.headers, "Origin": "https://example.com"}).status_code, 403)
+        self.assertEqual(self.client.get("/api/v1/history", headers={**self.headers, "Sec-Fetch-Site": "same-site"}).status_code, 403)
+
+    def test_old_token_rejected(self):
+        from core.session import new_token
+        app.state.session_token = new_token()
+        self.assertEqual(self.client.get("/api/v1/history", headers=self.headers).status_code, 403)
+
+    def test_public_static_health_no_secret(self):
+        self.assertEqual(self.client.get("/").status_code, 200)
+        r = self.client.get("/health")
+        self.assertTrue(r.json()["session_required"])
+        self.assertNotIn(self.token, r.text)
+
+
 if __name__ == '__main__':
     unittest.main()
