@@ -104,3 +104,6 @@ Exporte e recupere análises salvas no Workspace. JSON versionado de até 16 MiB
 
 ### Setup & Diagnostics
 Inicializador de código-fonte para Windows x64/Python 3.12, identificação de alterações em requirements.txt por SHA-256, reparo manual confirmado e diagnóstico local sem ler histórico real. Oito testes Python aprovados em Linux, com instalação simulada; hashes dos três arquivos testados coincidem com o GitHub. A validação do executável e do workflow Windows permanece pendente. [Guia de manutenção](desktop/README.md).
+
+### Release & Update Manager
+Gerenciador offline de pacote ZIP portátil, manifesto versionado, SHA-256, validação de caminhos Windows e preparação em pasta nova sem substituir a versão anterior. Nove testes Python aprovados em Linux com arquivos sintéticos; código publicado idêntico ao testado. CI Windows configurada para empacotar, validar e testar a cópia extraída antes de disponibilizar o artefato. Sem atualização automática, assinatura digital ou lançamento público. [Guia de versões](desktop/README.md).
