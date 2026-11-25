@@ -369,4 +369,20 @@ $('starter-export').onclick=()=>{
  $('starter-status').textContent='Modelo fictício preparado para download.';
 };
 
+
+function helpNormalize(value){return String(value).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('pt-BR').trim();}
+function helpMatches(text,query){const words=helpNormalize(query).split(/\s+/).filter(Boolean),haystack=helpNormalize(text);return words.every(word=>haystack.includes(word));}
+function filterHelp(){
+ const query=$('help-search').value;
+ const topics=Array.from($('help-topics').querySelectorAll('.help-topic'));
+ let count=0;
+ for(const topic of topics){const match=helpMatches(topic.textContent,query);topic.hidden=!match;if(match)count++;}
+ $('help-empty').hidden=count!==0;
+ $('help-status').textContent=count+' de '+topics.length+' tópicos disponíveis.';
+}
+$('help-search').addEventListener('input',filterHelp);
+$('help-clear').onclick=()=>{$('help-search').value='';filterHelp();$('help-search').focus();};
+$('help-download').onclick=()=>repDownload($('help-feedback').value,'text/plain;charset=utf-8','lilium-relato-suporte.txt');
+filterHelp();
+
 $('workspace-loading').hidden=true;
