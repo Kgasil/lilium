@@ -24,7 +24,7 @@ class SetupTests(unittest.TestCase):
 
     @patch('desktop.setup_env.subprocess.run')
     def test_initial_install(self, run):
-        self.assertEqual(setup_env.ensure_environment(self.root), self.exe)
+        self.assertTrue(setup_env.ensure_environment(self.root).samefile(self.exe))
         self.assertEqual(run.call_count, 3)
         self.assertEqual(self.marker.read_text().strip(), hashlib.sha256(self.req.read_bytes()).hexdigest())
 
