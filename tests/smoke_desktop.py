@@ -56,7 +56,7 @@ def main(command):
             html = get("/").decode()
             assert "Workspace" in html
             for name in ("dashboard", "finance", "sales", "operations", "strategy",
-                         "reports", "forecast", "flow", "connect", "copilot", "workspace"):
+                         "reports", "forecast", "flow", "connect", "copilot", "starter", "workspace"):
                 asset = "/assets/" + name + ".js"
                 assert asset in html and get(asset)
             assert json.loads(get("/api/v1/history")) == {"items": []}
