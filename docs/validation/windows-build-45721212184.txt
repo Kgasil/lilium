@@ -1,0 +1,30 @@
+# Dependency inventory reconstructed from Windows run 45721212184 install log.
+# Before Playwright; not a lockfile, not a complete SBOM of the executable.
+# Includes packages installed by the build step and already-present click/packaging.
+altgraph==0.17.5
+annotated-doc==0.0.7
+annotated-types==0.8.0
+anyio==4.16.0
+certifi==2026.11.20
+click==8.5.1
+defusedxml==0.7.1
+et-xmlfile==2.0.0
+fastapi==0.128.2
+h11==0.16.0
+httpcore==1.0.9
+httpx==0.28.1
+idna==3.20
+openpyxl==3.1.5
+packaging==26.3
+pefile==2023.2.7
+Pillow==12.0.0
+pydantic==2.14.4
+pydantic-core==2.50.5
+pyinstaller==6.16.0
+pyinstaller-hooks-contrib==2026.10
+pywin32-ctypes==0.2.3
+setuptools==84.2.1
+starlette==0.50.0
+typing-extensions==4.16.0
+typing-inspection==0.4.5
+uvicorn==0.48.0
