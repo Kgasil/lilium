@@ -125,6 +125,17 @@ def main():
                 page.locator("#backup-merge").click()
                 expect(page.locator("#backup-status")).to_contain_text("1 cópias idênticas ignoradas")
                 expect(page.locator("#history-rows tr")).to_have_count(1)
+                page.locator("#help-search").fill("previsao")
+                expect(page.locator("#help-topics .help-topic:visible")).not_to_have_count(0)
+                expect(page.locator("#help-empty")).to_be_hidden()
+                page.locator("#help-search").fill("xyz987654321")
+                expect(page.locator("#help-empty")).to_be_visible()
+                page.locator("#help-clear").click()
+                expect(page.locator("#help-topics .help-topic:visible")).to_have_count(15)
+                page.locator("#help").get_by_text("Modelo de relato para suporte", exact=True).click()
+                with page.expect_download() as support_download:
+                    page.locator("#help-download").click()
+                assert support_download.value.suggested_filename == "lilium-relato-suporte.txt"
                 page.locator("#starter-scenario").select_option("restaurant")
                 page.locator("#starter-target").select_option("all")
                 with page.expect_download() as sample_download:
