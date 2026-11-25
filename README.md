@@ -40,8 +40,8 @@ Lilium is an independent K&G Vision initiative exploring a modular business inte
 | --- | --- | --- |
 | K&G Vision | [Institutional](https://kgasil.github.io/) | [Source](https://github.com/Kgasil/kgasil.github.io) |
 | Genesis | [O Princípio](https://kgasil.github.io/genesis/) | [Source](https://github.com/Kgasil/genesis) |
-| Vision | [Beyond Boundaries](https://kgasil.github.io/vision/) | [Source](https://github.com/Kgasil/vision) |
-| Aeris | [Naturalmente bom.](https://kgasil.github.io/aeris/) | [Source](https://github.com/Kgasil/aeris) |
+| Vision | [Security & Efficiency](https://kgasil.github.io/vision/) | [Source](https://github.com/Kgasil/vision) |
+| Aeris | [Discreto por natureza. Eficiente por design.](https://kgasil.github.io/aeris/) | [Source](https://github.com/Kgasil/aeris) |
 | Lilium | [Where strategy meets intelligence.](https://kgasil.github.io/lilium/) | [Source](https://github.com/Kgasil/lilium) |
 
 **Learn · Build · Simplify · Transform / Aprender · Construir · Simplificar · Transformar**
