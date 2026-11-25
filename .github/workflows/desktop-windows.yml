@@ -57,10 +57,30 @@ jobs:
         run: python -m playwright install chromium
       - name: Browser pilot smoke test against bundled application
         run: python tests/browser_pilot.py dist/Lilium/Lilium.exe
+      - name: Package versioned preview and verify staged copy
+        shell: pwsh
+        run: |
+          python -m desktop.release_manager package --source dist/Lilium --output release-preview --commit "$env:GITHUB_SHA"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $manifest = Get-Content release-preview/manifest.json -Raw | ConvertFrom-Json
+          $archive = Join-Path release-preview $manifest.filename
+          python -m desktop.release_manager verify --archive $archive --manifest release-preview/manifest.json --sha256 $manifest.sha256
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $parent = Join-Path $env:RUNNER_TEMP ("lilium-staged-" + [guid]::NewGuid())
+          New-Item -ItemType Directory -Path $parent | Out-Null
+          $staged = python -m desktop.release_manager stage --archive $archive --manifest release-preview/manifest.json --sha256 $manifest.sha256 --parent $parent
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $folder = ($staged | ConvertFrom-Json).staged_folder
+          python tests/smoke_desktop.py (Join-Path $folder "Lilium.exe")
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          "### Lilium preview integrity" >> $env:GITHUB_STEP_SUMMARY
+          "- Commit: $($manifest.commit)" >> $env:GITHUB_STEP_SUMMARY
+          "- Archive: $($manifest.filename)" >> $env:GITHUB_STEP_SUMMARY
+          "- SHA-256: $($manifest.sha256)" >> $env:GITHUB_STEP_SUMMARY
       - name: Upload development artifact
         uses: actions/upload-artifact@v4
         with:
           name: Lilium-Desktop-0.14.0-windows-x64-preview
-          path: dist/Lilium/
+          path: release-preview/
           if-no-files-found: error
           retention-days: 14
