@@ -1,5 +1,5 @@
 # Lilium Business Suite — Product vision (proposal)
-**Status:** planning, except for the local CSV metrics demonstration in `demo.html`. No commercial availability or connected AI.
+**Status:** planning, except for the local CSV metrics demonstration in `demo.html` and the Lilium Mini development preview in `extension/`. No commercial availability or connected AI.
 
 ## Product thesis
 A modular web application for small and midsize organizations that need business intelligence and decision support without deploying a full ERP. Start with spreadsheet-heavy workflows, then integrate existing systems. The product should complement, not replace, accounting systems or professional judgment.
@@ -37,6 +37,14 @@ Public GitHub Pages for institutional presentation and synthetic demonstrations;
 
 ## AI capabilities and limitations
 AI interprets verified calculations rather than generating authoritative financial figures. Forecasts use statistical or ML models with backtesting; language models communicate results and uncertainty. Agents propose workflows, with explicit human approval for consequential actions. Do not send customer identifiers or confidential data to external providers without authorization and appropriate safeguards.
+
+## Product access and trust-first strategy
+
+- **Lilium Mini**: free Chromium extension for quick business tools, initially profit/margin, target-margin pricing and break-even. Future candidates: discount/ROI calculators, checklists, local notes and quick reports. No browser-page access, accounts, tracking or mandatory upgrade for the initial tools. Local-only by default; explicit opt-in for any future data transfer.
+- **Lilium Workspace**: planned web application with a free useful tier, data import, basic dashboards and reports. Explore a Windows installable version after the web core is stable.
+- **Lilium Business**: proposed optional paid capabilities (advanced analytics, AI usage, automation, connectors, collaborative workspaces and governance). Do not lock access to existing user data behind a paywall; provide export and clear pricing before any paid subscription.
+- First validate with small merchants, service providers and independent entrepreneurs through opt-in interviews, synthetic demos and controlled testing. Measure usability, repeat use, calculation correctness and time saved; do not claim validated outcomes prematurely.
+- Mini stays useful independently; the optional link to Workspace is transparent and does not transmit input data.
 
 ## Possible commercial model (unvalidated)
 Free local/synthetic demo; Professional for advanced analysis and report automation; Business for teams and connectors; Enterprise for deployment, governance and custom integrations. Optional implementation and training services only after the initiative is ready to offer them. No pricing or performance claims yet.
