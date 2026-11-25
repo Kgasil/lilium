@@ -11,7 +11,7 @@ import webbrowser
 
 VERSION = "0.14.0"
 ASSETS = ("dashboard", "finance", "sales", "operations", "strategy", "reports",
-          "forecast", "flow", "connect", "copilot")
+          "forecast", "flow", "connect", "copilot", "workspace")
 
 
 def data_directory():
