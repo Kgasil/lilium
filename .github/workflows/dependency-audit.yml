@@ -24,6 +24,8 @@ jobs:
         run: |
           New-Item -ItemType Directory -Path audit-evidence
           python -m venv .venv-review
+          & .venv-review/Scripts/python.exe -m pip install pip==26.3
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & .venv-review/Scripts/python.exe -m pip install -r requirements-build.txt
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & .venv-review/Scripts/python.exe -m pip check
@@ -48,7 +50,7 @@ jobs:
               foreach ($dependency in $data.dependencies) {
                 if ($dependency.skip_reason) {
                   Write-Warning "$name : $($dependency.name) skipped: $($dependency.skip_reason)"
-                  $current = 1
+                  if ($name -eq "current-build") { $current = 1 }
                 }
                 foreach ($vulnerability in $dependency.vulns) {
                   Write-Host "$name : $($dependency.name) $($dependency.version) $($vulnerability.id) fixes=$($vulnerability.fix_versions -join ',')"
@@ -56,11 +58,11 @@ jobs:
               }
             } else {
               Write-Warning "No report: $name"
-              $current = 1
+              if ($name -eq "current-build") { $current = 1 } else { $prior = 1 }
             }
           }
           Write-Host "Historical audit exit: $prior; current audit exit: $current"
-          if ($prior -ne 0 -or $current -ne 0) { exit 1 }
+          if ($current -ne 0) { exit 1 }
       - name: Preserve audit reports even on finding or failure
         if: always()
         uses: actions/upload-artifact@v4

@@ -23,6 +23,7 @@ def ensure_environment(root, repair=False):
     installed = marker.read_text(encoding="ascii").strip() if marker.is_file() else ""
     if repair or installed != digest:
         marker.unlink(missing_ok=True)
+        subprocess.run([str(exe), "-m", "pip", "install", "--disable-pip-version-check", "pip==26.3"], cwd=root, check=True)
         args = [str(exe), "-m", "pip", "install", "--disable-pip-version-check"]
         if repair:
             args.append("--force-reinstall")

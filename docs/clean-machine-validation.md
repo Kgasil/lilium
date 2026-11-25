@@ -2,14 +2,16 @@
 
 **Escopo:** prévia 0.14.0, piloto gratuito com dados fictícios. Este documento é um roteiro de execução, não um certificado ou um resultado de teste. Execute somente depois que um workflow Windows tiver concluído com sucesso e disponibilizado o artefato completo.
 
-## Candidato para teste — 25/11/2026
+## Candidato histórico — 25/11/2026 (não executar)
+
+**BLOQUEADO:** a auditoria de dependências encontrou vulnerabilidades conhecidas. Os links e hashes abaixo são evidência histórica, não instruções para instalar. Aguarde nova compilação aprovada em auditoria e regressão.
 
 - [Execução Windows aprovada #45721212184](https://github.com/Kgasil/lilium/actions/runs/45721212184), commit `934c11102905d2e1ced5cba6d87a1d78bb419068`.
 - [Artefato portátil #15072930346](https://github.com/Kgasil/lilium/actions/runs/45721212184/artifacts/15072930346), expira em 09/12/2026 às 23:27 UTC.
 - SHA-256 do **ZIP interno** `Lilium-0.14.0-windows-x64-preview.zip`: `7e4eded7cc5f4d499dfc2e92c7cd8a3fb0745764805a2a2e7d651ea168457197`. Não confundir com o hash do artefato externo.
 - Esta versão é candidata ao teste, não autorizada para dados reais nem para distribuição pública. Se houver achado de segurança bloqueante, aguarde nova compilação validada.
 
-Após baixar e extrair o artefato externo, abra o PowerShell na pasta que contém o ZIP interno:
+Comandos de verificação históricos (não executar para este pacote bloqueado; o hash deverá ser substituído pelo de um novo candidato aprovado):
 
 ```powershell
 $zip = 'Lilium-0.14.0-windows-x64-preview.zip'

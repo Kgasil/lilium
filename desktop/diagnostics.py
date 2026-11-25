@@ -8,12 +8,12 @@ import tempfile
 
 def dependency_versions():
     # Explicit imports are visible to the freezer; no metadata directory required.
-    import fastapi, uvicorn, httpx, openpyxl, defusedxml
+    import fastapi, starlette, uvicorn, httpx, openpyxl, defusedxml
     return {m.__name__: m.__version__ for m in
-            (fastapi, uvicorn, httpx, openpyxl, defusedxml)}
+            (fastapi, starlette, uvicorn, httpx, openpyxl, defusedxml)}
 
 
-EXPECTED = {"fastapi": "0.128.2", "uvicorn": "0.48.0", "httpx": "0.28.1",
+EXPECTED = {"fastapi": "0.165.0", "starlette": "1.10.0", "uvicorn": "0.48.0", "httpx": "0.28.1",
             "openpyxl": "3.1.5", "defusedxml": "0.7.1"}
 
 

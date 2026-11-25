@@ -25,7 +25,7 @@ class SetupTests(unittest.TestCase):
     @patch('desktop.setup_env.subprocess.run')
     def test_initial_install(self, run):
         self.assertTrue(setup_env.ensure_environment(self.root).samefile(self.exe))
-        self.assertEqual(run.call_count, 3)
+        self.assertEqual(run.call_count, 4)
         self.assertEqual(self.marker.read_text().strip(), hashlib.sha256(self.req.read_bytes()).hexdigest())
 
     @patch('desktop.setup_env.subprocess.run')
@@ -38,7 +38,8 @@ class SetupTests(unittest.TestCase):
     @patch('desktop.setup_env.subprocess.run')
     def test_repair(self, run):
         setup_env.ensure_environment(self.root, repair=True)
-        self.assertIn('--force-reinstall', run.call_args_list[1].args[0])
+        self.assertIn('pip==26.3', run.call_args_list[1].args[0])
+        self.assertIn('--force-reinstall', run.call_args_list[2].args[0])
         self.assertEqual(self.history.read_bytes(), b'keep')
 
     @patch('desktop.setup_env.subprocess.run')
@@ -47,7 +48,7 @@ class SetupTests(unittest.TestCase):
         self.req.write_text('example==2.0', encoding='ascii')
         run.reset_mock()
         setup_env.ensure_environment(self.root)
-        self.assertEqual(run.call_count, 3)
+        self.assertEqual(run.call_count, 4)
 
     @patch('desktop.setup_env.subprocess.run')
     def test_failed_repair_invalidates_marker(self, run):
