@@ -10,6 +10,8 @@ on:
       - 'requirements*.txt'
       - 'build-lilium.bat'
       - 'start-lilium.bat'
+      - 'diagnose-lilium.bat'
+      - 'repair-lilium.bat'
       - '.github/workflows/desktop-windows.yml'
 permissions:
   contents: read
@@ -41,6 +43,12 @@ jobs:
         run: python tests/smoke_desktop.py
       - name: Build portable preview and run executable self-test
         run: python -m desktop.build_windows
+      - name: Bundled readiness diagnostics
+        shell: pwsh
+        run: |
+          $env:LOCALAPPDATA = Join-Path $env:RUNNER_TEMP "lilium-diagnostics"
+          & dist/Lilium/Lilium.exe --diagnostics
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Live bundled smoke test
         run: python tests/smoke_desktop.py dist/Lilium/Lilium.exe
       - name: Install browser test dependency
