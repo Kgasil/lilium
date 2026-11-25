@@ -7,8 +7,9 @@ from fastapi.responses import JSONResponse, FileResponse
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from .metrics import MAX_BYTES, DataError, analyze_csv
 from .store import HistoryStore, HistoryFull
+from .imports import XLSX, normalize, quality
 
-app = FastAPI(title="Lilium Core", version="0.2.0", docs_url=None, redoc_url=None)
+app = FastAPI(title="Lilium Core", version="0.3.0", docs_url=None, redoc_url=None)
 app.state.history = HistoryStore(Path(__file__).resolve().parent.parent / "data" / "lilium.sqlite3")
 app.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1"])
 
@@ -19,7 +20,7 @@ def error(code, message, status, row=None):
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "version": "0.2.0", "mode": "local-preview"}
+    return {"status": "ok", "version": "0.3.0", "mode": "local-preview"}
 
 
 @app.get("/", include_in_schema=False)
@@ -27,21 +28,29 @@ def workspace():
     return FileResponse(Path(__file__).with_name("workspace.html"), media_type="text/html")
 
 
-async def analyze_input(request: Request):
+async def analyze_input(request: Request, diagnostic=False):
     origin = request.headers.get("origin")
     if origin and origin != str(request.base_url).rstrip("/"):
         return error("origin", "Only same-origin requests are allowed.", 403)
-    if request.headers.get("content-type", "").split(";", 1)[0].strip().lower() != "text/csv":
-        return error("media_type", "Send raw UTF-8 CSV as text/csv.", 415)
+    media = request.headers.get("content-type", "").split(";", 1)[0].strip().lower()
+    if media not in {"text/csv", XLSX}:
+        return error("media_type", "Send raw UTF-8 CSV or XLSX.", 415)
     raw = bytearray()
     async for chunk in request.stream():
         if len(raw) + len(chunk) > MAX_BYTES:
             return error("size_limit", "Maximum input size is 1 MiB.", 413)
         raw.extend(chunk)
     try:
-        return analyze_csv(bytes(raw))
+        normalized = normalize(bytes(raw), media)
+        return quality(normalized) if diagnostic else analyze_csv(normalized)
     except DataError as exc:
         return error(exc.code, str(exc), 413 if exc.code == "size_limit" else 422, exc.row)
+
+
+@app.post("/api/v1/quality")
+async def data_quality(request: Request):
+    result = await analyze_input(request, diagnostic=True)
+    return result if isinstance(result, JSONResponse) else JSONResponse(result)
 
 
 @app.post("/api/v1/analyze")
