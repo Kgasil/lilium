@@ -3,7 +3,7 @@
 **Strategy & Growth · Estratégia e Crescimento**
 *Make smarter decisions. Grow with confidence.*
 
-**Status:** planning, except for the local CSV metrics demonstration in `demo.html`, the Lilium Mini development preview in `extension/`, and the local Core/Workspace v0.13.0 in `core/`. No commercial availability or connected AI.
+**Status:** planning, except for the local CSV metrics demonstration in `demo.html`, the Lilium Mini development preview in `extension/`, and the local Core/Workspace v0.14.0 in `core/`. No commercial availability or connected AI.
 
 ## Product thesis
 A modular web application for small and midsize organizations that need business intelligence and decision support without deploying a full ERP. Start with spreadsheet-heavy workflows, then integrate existing systems. The product should complement, not replace, accounting systems or professional judgment.
@@ -45,7 +45,7 @@ AI interprets verified calculations rather than generating authoritative financi
 ## Product access and trust-first strategy
 
 - **Lilium Mini**: free Chromium extension for quick business tools, initially profit/margin, target-margin pricing and break-even. Future candidates: discount/ROI calculators, checklists, local notes and quick reports. No browser-page access, accounts, tracking or mandatory upgrade for the initial tools. Local-only by default; explicit opt-in for any future data transfer.
-- **Lilium Workspace**: planned web application with a free useful tier, data import, basic dashboards and reports. Explore a Windows installable version after the web core is stable.
+- **Lilium Workspace**: planned web application with a free useful tier, data import, basic dashboards and reports. Windows x64 portable packaging and local launcher implemented in source; build and interactive validation pending. Signed installer and native desktop window remain planned.
 - **Lilium Business**: proposed optional paid capabilities (advanced analytics, AI usage, automation, connectors, collaborative workspaces and governance). Do not lock access to existing user data behind a paywall; provide export and clear pricing before any paid subscription.
 - First validate with small merchants, service providers and independent entrepreneurs through opt-in interviews, synthetic demos and controlled testing. Measure usability, repeat use, calculation correctness and time saved; do not claim validated outcomes prematurely.
 - Mini stays useful independently; the optional link to Workspace is transparent and does not transmit input data.
