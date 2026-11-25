@@ -117,4 +117,6 @@ The UI sends CSV or XLSX only to the loopback API. Optional local persistence; n
 Next: confirm Windows CI, perform interactive UI and clean-machine tests, and prepare a controlled pilot. SQLite is chosen for the lightweight local preview; analytical and multi-organization stores remain future work.
 
 ## Current validation boundary
-Use the Desktop launcher to enable the temporary session token. Direct Uvicorn mode is an unguarded development-only API. The public [Interactive Lab](https://kgasil.github.io/lilium/#lab) is separate, requires no Python and accepts synthetic exercises only. Complete current Windows and browser validation remains pending. See [pilot gates](../docs/pilot-readiness.md).
+Use the Desktop launcher to enable the temporary session token. Direct Uvicorn mode is an unguarded development-only API. The public [Interactive Lab](https://kgasil.github.io/lilium/#lab) is separate, requires no Python and accepts synthetic exercises only. Earlier Windows/Chromium functional CI succeeded, but the earlier packages were superseded due to security findings. A new dependency-audited build must pass all gates. See [pilot gates](../docs/pilot-readiness.md).
+
+Current remediation pins FastAPI 0.165.0 and Starlette 1.10.0; setup upgrades pip to 26.3. Read [Trust & Privacy](../docs/trust-privacy.md) for review scope and limitations. Manual acceptance on a clean Windows device is pending.
