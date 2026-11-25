@@ -1,0 +1,20 @@
+# Lilium — controlled pilot preparation
+
+Status: v0.14.0 development preview; not a V1.0 release. Free pilot is planned, not open. Synthetic data only.
+
+## Release gates
+- [ ] Windows CI succeeds, including Python regression, JavaScript regression, source/bundled server smoke tests and Chromium pilot test.
+- [ ] Download the Windows x64 build artifact; test on a clean Windows machine without Python, without bypassing OS security warnings.
+- [ ] Check startup, shutdown, repeated launch, saved history across restart, backup/restore and upgrade behavior.
+- [ ] Test keyboard navigation, narrow layout, import errors, downloads and report printing; review accessibility.
+- [ ] Review local threat model and dependency vulnerabilities. Loopback alone is not authentication. The app is unsigned and lacks app-level encryption, tenant isolation and durable audit logging.
+- [ ] Document remaining defects, support/feedback route and known limitations. No business or personal data until privacy and security readiness is separately established.
+
+## Suggested free pilot
+Invite a small group of volunteers only after the above gates pass. Provide a synthetic sample scenario and ask them to evaluate setup, understanding of indicators, usefulness, and friction. Do not request business spreadsheets, credentials or personal information. Collect only voluntary, non-sensitive feedback; no telemetry or external AI is enabled.
+
+## Feedback format
+Version / Windows version / module / steps to reproduce / expected result / actual result / severity / optional redacted screenshot. Do not include real financial figures, customer identifiers or local file paths.
+
+## Acceptance flow
+Insights import and quality → save and reopen aggregate → Finance scenario → Sales → Operations → Strategy → Forecast → Flow review → Connect mapping → Copilot → Reports export → reset session. Automated Chromium coverage is configured, but the run result has not been confirmed. Manual installation, print and security checks remain open.
