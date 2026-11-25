@@ -32,10 +32,13 @@ def main():
                     if process.poll() is not None:
                         raise RuntimeError("Launcher exited")
                     continue
-                print(line, flush=True)
                 if line.startswith("LILIUM_READY http://127.0.0.1:"):
-                    url = line.split(" ", 1)[1]
+                    link = line.split(" ", 1)[1]
+                    url = link.split("/#access=", 1)[0]
+                    assert link != url
+                    print("Desktop ready (access link redacted)", flush=True)
                     break
+                print(line, flush=True)
             if not url:
                 raise RuntimeError("Launcher timeout")
             with sync_playwright() as p:
@@ -48,7 +51,9 @@ def main():
                 page.on("request", lambda request: external.append(request.url)
                         if not request.url.startswith(url + "/") else None)
                 page.on("dialog", lambda dialog: dialog.accept())
-                page.goto(url, wait_until="networkidle")
+                page.goto(link, wait_until="networkidle")
+                assert "#access=" not in page.url
+                expect(page.locator("#session-notice")).to_be_hidden()
                 expect(page.locator("#getting-started")).to_be_visible()
                 expect(page.locator("#workspace-loading")).to_be_hidden()
                 expect(page.locator("#results")).to_be_hidden()
