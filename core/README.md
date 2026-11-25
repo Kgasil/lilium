@@ -1,4 +1,4 @@
-# Lilium Core v0.12.0 — local development preview
+# Lilium Core v0.13.0 — local development preview
 
 **Strategy & Growth · Estratégia e Crescimento**
 
@@ -29,6 +29,13 @@ date,revenue,cost
 2026-02-01,11200,7440
 2026-03-01,12000,7800
 ```
+
+## Lilium Copilot
+- Guided local assistant with eight predefined topics (overview, Insights, Finance, Sales, Operations, Strategy, Forecast and action suggestions). No free-form language model, voice, network request, credentials or generative AI. Uses computed session results; retains source, scope and data kind. Missing sources and unavailable metrics are explicit, not fabricated.
+- Reuses Reports for module summaries and Flow for six example alert rules, editable in Flow's CSV format. Thresholds are illustrative, not universal benchmarks. Matched rules generate suggestions with evidence and scope; no causal inference or cross-module financial consolidation.
+- Explicit confirmation to forward a suggestion to the Flow pending queue. Re-evaluates the rule against current source data; changed evidence or rule requires regenerating the response. Deduplication and queue limits inherited from Flow. No execution, automatic approval or durable audit log.
+- JSON response export. Session snapshots are not automatically refreshed or persisted. Use synthetic data.
+- `node tests/copilot.test.js`: 30 new checks passed in V8; 295 total JS checks passed from published GitHub source. Python regression, browser and Windows testing remain pending.
 
 ## Lilium Connect
 - Local data interchange for Insights, Sales and Forecast. Paste or open simple UTF-8 CSV/TSV; delimiters comma, semicolon or tab, up to 1 MiB, 10,000 rows and 50 columns. No quoted fields or multiline cells. Headers must be unique. Map required fields explicitly to different source columns; unmapped columns are omitted in the normalized copy.
@@ -90,7 +97,7 @@ date,revenue,cost
 - Navigation between overview, import/quality and local history. Responsive graphite/rose/gold layout with local JavaScript served by the API.
 - Inclusive month filters over validated monthly aggregates. Totals are recomputed from the selected months; margin uses integer arithmetic with half-up rounding. Missing months are not invented. An empty interval has no indicators.
 - Revenue/cost chart displays up to the latest 24 months in the filter; the accessible table contains all selected months. Export monthly CSV for the active period or full JSON for the original analysis. Saving always persists the complete analysis, not a filtered subset.
-- Run the dashboard tests with `node tests/dashboard.test.js` (Node.js optional for development only; no Node dependency for users). Fourteen pure JS checks passed in a V8 execution environment. The Python regression suite now includes an additional asset-route test; the full Python suite and browser UI have not been rerun for v0.12.
+- Run the dashboard tests with `node tests/dashboard.test.js` (Node.js optional for development only; no Node dependency for users). Fourteen pure JS checks passed in a V8 execution environment. The Python regression suite now includes an additional asset-route test; the full Python suite and browser UI have not been rerun for v0.13.
 
 ## Smart Import & Data Quality
 - `POST /api/v1/quality` — diagnostic only, no persistence. Counts valid/invalid rows, possible duplicates and zero-revenue rows; returns row number and issue code (first 100 issues). Invalid rows block analysis; warnings do not. No automatic corrections or deduplication.
@@ -105,6 +112,6 @@ date,revenue,cost
 - Full history returns 409; storage failure returns 503 without exposing local paths. Back up exported JSON if needed; deleting a snapshot does not delete external exports or backups.
 
 ## Boundaries
-The UI sends CSV or XLSX only to the loopback API. Optional local persistence; no telemetry, account, external AI or payments. Do not expose the service to the LAN or internet; there is no authentication. Host and Origin validation are limited defenses, not a security audit. Result is revenue minus supplied costs, not necessarily accounting profit. No general quoted CSV/XLSX mapping, multi-tenant isolation, desktop packaging or production deployment yet. Thirty unittest cases passed in the previous v0.3 local Linux Python environment; the v0.12 Python regression run (including module asset tests), Windows installation and full browser UI remain untested.
+The UI sends CSV or XLSX only to the loopback API. Optional local persistence; no telemetry, account, external AI or payments. Do not expose the service to the LAN or internet; there is no authentication. Host and Origin validation are limited defenses, not a security audit. Result is revenue minus supplied costs, not necessarily accounting profit. No general quoted CSV/XLSX mapping, multi-tenant isolation, desktop packaging or production deployment yet. Thirty unittest cases passed in the previous v0.3 local Linux Python environment; the v0.13 Python regression run (including module asset tests), Windows installation and full browser UI remain untested.
 
-Next: Lilium Copilot — evidence-grounded local assistant foundation. SQLite is chosen for the lightweight local preview; analytical and multi-organization stores remain future work.
+Next: Windows packaging and integrated validation before a controlled pilot. SQLite is chosen for the lightweight local preview; analytical and multi-organization stores remain future work.
