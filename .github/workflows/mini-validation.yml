@@ -29,3 +29,15 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Popup UI regression (local page, not installed extension)
         run: python tests/browser_mini.py
+      - name: Build and verify experimental extension package
+        run: |
+          python extension/package_mini.py --output mini-preview
+          python extension/package_mini.py --output mini-rebuild
+          diff -r mini-preview mini-rebuild
+      - name: Upload experimental Mini ZIP and SHA-256
+        uses: actions/upload-artifact@v4
+        with:
+          name: Lilium-Mini-experimental
+          path: mini-preview/
+          if-no-files-found: error
+          retention-days: 14
