@@ -110,7 +110,7 @@ Estratégia: manter a extensão útil e gratuita; desenvolver uma aplicação we
 
 ## Identidade K&G Vision / K&G Vision identity
 
-<p align="center"><a href="https://kgasil.github.io/"><img src="https://raw.githubusercontent.com/Kgasil/kgasil.github.io/main/assets/brand-banner.svg" alt="K&amp;G Vision — institutional identity" width="420"></a></p>
+<p align="center"><a href="https://kgasil.github.io/"><img src="https://raw.githubusercontent.com/Kgasil/kgasil.github.io/main/assets/brand-banner.svg?v=20261126-2" alt="K&amp;G Vision — institutional identity" width="420"></a></p>
 
 [Versão vertical / Vertical lockup](https://github.com/Kgasil/kgasil.github.io/blob/main/assets/brand-stacked.svg) · [Escudo / Shield](https://github.com/Kgasil/kgasil.github.io/blob/main/assets/kg-symbol.svg)
 
@@ -179,3 +179,5 @@ Formação de preços, simulação mensal, ponto de equilíbrio e metas, cinco c
 [Revisão de segurança, acessibilidade e impressão](docs/final-review.md) · [Validação complementar do pacote](https://github.com/Kgasil/lilium/actions/runs/45724967459). Revisão de primeira parte; não é auditoria independente nem certificação. A decisão de abertura do piloto permanece condicionada à aceitação manual.
 
 **Aeris Extension 1.0.0** — 16 ferramentas, 50 testes automatizados aprovados; instalação manual disponível pelo GitHub. / 16 tools, 50 automated tests passed; manual installation available on GitHub. [Instalação / Installation](https://kgasil.github.io/aeris/extension-preview.html) · [Notas / Release notes](https://github.com/Kgasil/aeris/blob/main/release/extension-1.0.0-notes.md).
+
+[![K&G Vision — GRAAL](https://raw.githubusercontent.com/Kgasil/kgasil.github.io/main/assets/kg-symbol.svg?v=20261126-2)](https://kgasil.github.io/) **GRAAL · Marco 01** — identidade integrada / integrated identity.
