@@ -8,6 +8,14 @@
 
 > **25/11/2026 — Initial development milestone / Desenvolvimento inicial concluído.** Prévia v0.14.0 validada em CI, 501 testes Python e Node.js aprovados, aceitação manual pendente. [Comunicado / Announcement](docs/milestone-2026-11-25.md) · [Interactive Lab](https://kgasil.github.io/lilium/#lab) · [Guia Windows](docs/clean-machine-validation.md) · [Changelog / Histórico](CHANGELOG.md).
 
+## Current release status / Estado atual da liberação
+
+**v0.14.0 — controlled acceptance only / somente aceitação controlada.** The designated Windows artifact is the remediated build from [run 45722415976](https://github.com/Kgasil/lilium/actions/runs/45722415976). Automated build, independent portable verification and focused browser review passed. Manual Windows acceptance, manual security/accessibility review and pilot approval remain open. The unsigned preview must not be used with real data; do not bypass OS warnings.
+
+**Next action / Próxima ação:** [Windows acceptance guide](docs/clean-machine-validation.md) · [23-case manual acceptance matrix](docs/manual-acceptance-matrix.md) · [Release gate tracker #1](https://github.com/Kgasil/lilium/issues/1) · [Pilot handbook](docs/pilot-handbook.md).
+
+The following technical milestones record historical results as of each checkpoint; earlier references to pending CI do not supersede the latest successful candidate evidence. Additional reference suites are published; their full Windows CI results remain unconfirmed. No public V1.0 release or open pilot.
+
 ## Português
 Lilium é uma iniciativa independente da K&G Vision para desenvolver uma aplicação web de inteligência empresarial, com foco inicial em pequenas e médias empresas. A proposta é transformar planilhas em indicadores verificáveis, relatórios executivos e apoio a decisões. 
 
@@ -69,7 +77,7 @@ Lilium is built around a clear ambition: empower small businesses to make smarte
 - **Lilium Connect:** mapeamento de colunas CSV/TSV, conversão decimal opcional, validação de destino, prévia, exportação CSV/pacote JSON v1.0 e transferência confirmada para Insights, Sales ou Forecast. Sem conectores externos ou persistência. [Testes Connect](tests/connect.test.js).
 - **Lilium Copilot:** assistente determinístico local com oito tópicos guiados, indicadores com fontes e escopos, limites de alerta configuráveis, sugestões com evidências, encaminhamento confirmado ao Flow com revalidação e exportação JSON. Sem IA generativa, voz ou conexão externa. [Testes Copilot](tests/copilot.test.js).
 - **Lilium Desktop v0.14:** inicializador local com abertura automática no navegador, porta dinâmica loopback, histórico em `%LOCALAPPDATA%`, ícone oficial e receita de empacotamento portátil Windows x64 com PyInstaller. [Instruções Desktop](desktop/README.md) · [Validação Windows](https://github.com/Kgasil/lilium/actions/workflows/desktop-windows.yml). Executável ainda não confirmado, sem instalador assinado ou lançamento público.
-- **Preparação do piloto:** tela inicial guiada, reinício da sessão sem apagar histórico, cabeçalhos de segurança do Workspace, teste de navegador Chromium configurado no workflow e [critérios de liberação e feedback](docs/pilot-readiness.md). Ainda não há V1.0 pública; testes Windows e navegador pendentes de confirmação.
+- **Preparação do piloto:** tela inicial guiada, reinício da sessão sem apagar histórico, cabeçalhos de segurança do Workspace, teste de navegador Chromium configurado no workflow e [critérios de liberação e feedback](docs/pilot-readiness.md). Ainda não há V1.0 pública; CI Windows e Chromium do candidato designado aprovadas, aceitação manual pendente.
 
 ## Lilium Mini — extensão gratuita / free extension
 
