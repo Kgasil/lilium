@@ -29,3 +29,6 @@ Data: 2026-11-26. Escopo: extensão 0.1.1; não inclui auditoria do Desktop ou d
 
 ## Nova CI
 [Execução 45880059459](https://github.com/Kgasil/lilium/actions/runs/45880059459), commit `13877d8b9b6366913d2eb612e564ea04d7cd453d`: verificação dos blobs fixados, PNG, construção temporária duplicada, sintaxe JS e regressão de cálculo aprovadas. Na última consulta, instalação das dependências de teste Chromium ainda em andamento; nova regressão de interface e upload pendentes. Comparação main/backup confirmou apenas três arquivos de documentação e validação alterados/adicionados. Sem alterações no runtime ou no link de distribuição pública.
+
+## Confirmação na etapa 07
+A execução 45880059459 concluiu com sucesso, incluindo a regressão de interface em Chromium, build duplicado e upload de artefato experimental. Não equivale à instalação nativa ou análise Defender.
