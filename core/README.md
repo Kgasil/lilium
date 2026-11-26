@@ -2,8 +2,10 @@
 
 **Strategy & Growth · Estratégia e Crescimento**
 
+**Version scope:** Lilium Web Lab 1.0 is the public milestone; Core and Desktop remain v0.14.0 development previews. Historical test notes below reflect their respective checkpoints. See [current project status](../README.md).
+
 ## Windows
-Install Python 3.12 x64 with the Python launcher. Download/extract the repository and run `start-lilium.bat`. The first run or a changed requirements fingerprint installs dependencies, then the launcher reserves a loopback port and opens the browser automatically when ready. Keep the console open; Ctrl+C stops the service. Desktop history uses `%LOCALAPPDATA%/K&G Vision/Lilium/lilium.sqlite3`; previous development history stays separate. See [Desktop packaging and validation](../desktop/README.md). The Windows build workflow is configured but not yet confirmed. Use synthetic data only.
+Install Python 3.12 x64 with the Python launcher. Download/extract the repository and run `start-lilium.bat`. The first run or a changed requirements fingerprint installs dependencies, then the launcher reserves a loopback port and opens the browser automatically when ready. Keep the console open; Ctrl+C stops the service. Desktop history uses `%LOCALAPPDATA%/K&G Vision/Lilium/lilium.sqlite3`; previous development history stays separate. See [Desktop packaging and validation](../desktop/README.md). The remediated Windows CI build passed; independent manual clean-machine acceptance remains pending. Use synthetic data only.
 
 Manual commands (PowerShell, from repository root):
 
