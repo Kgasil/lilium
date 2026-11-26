@@ -2,6 +2,12 @@
 
 This file records documented public development milestones, not a complete historical log of every internal change. / Este arquivo registra marcos públicos documentados, não o histórico integral de todas as alterações internas.
 
+## Mini v0.1.1 — 2026-11-25 — GitHub-only experimental distribution / Distribuição experimental pelo GitHub
+
+- Branded 128px PNG icon and updated version; calculator engines and browser permissions unchanged.
+- [Manual installation guide / Tutorial de instalação](extension/README.md) for Chrome and Edge, including pinned source ZIP, examples and troubleshooting.
+- Owner reported testing v0.1.0; detailed v0.1.1 acceptance and current CI results remain unconfirmed. No store submission or formal GitHub Release.
+
 ## Web Lab 1.0 — 2026-11-25 — Public demonstration edition / Edição pública demonstrativa
 
 - Public edition of the existing browser lab: financial calculations, pricing, five synthetic scenarios, forecasts and CSV demonstration.
