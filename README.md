@@ -8,6 +8,8 @@
 
 > **25/11/2026 — Initial development milestone / Desenvolvimento inicial concluído.** Prévia v0.14.0 validada em CI, 501 testes Python e Node.js aprovados, aceitação manual pendente. [Comunicado / Announcement](docs/milestone-2026-11-25.md) · [Interactive Lab](https://kgasil.github.io/lilium/#lab) · [Guia Windows](docs/clean-machine-validation.md) · [Changelog / Histórico](CHANGELOG.md).
 
+> **Marco 1.0 — Lilium Web Lab.** Demonstrações públicas de inteligência empresarial; Desktop v0.14.0 continua em prévia controlada e Mini v0.1.1 é experimental. [Experimente / Try the Web Lab](https://kgasil.github.io/lilium/#lab).
+
 ## Lilium Web Lab 1.0 — public edition / edição pública
 
 [**Experimentar Web Lab 1.0 / Try Web Lab 1.0**](https://kgasil.github.io/lilium/#lab) · [Launch announcement / Comunicado](docs/web-lab-v1.0.md). Public synthetic-data demonstrations of financial analytics, pricing, scenarios and forecasts. Version 1.0 applies to the web lab only; Desktop remains v0.14.0 and the Desktop pilot is closed.
@@ -58,14 +60,17 @@ Python/FastAPI e SQLite no histórico local atual; DuckDB em avaliação futura,
 ## English
 Lilium is built around a clear ambition: empower small businesses to make smarter decisions, operate with confidence and grow sustainably. This independent K&G Vision initiative is developing a modular business intelligence web application. The initial focus is validated spreadsheet analytics and executive reporting; future AI capabilities will explain verified metrics, with source references and human oversight. Explore the interactive business lab and the local Workspace v0.14.0 source preview. Initial analytics modules are implemented; external integrations, connected AI and production deployment remain planned. The remediated Windows preview passed dependency review and full functional CI; clean-machine acceptance remains pending. No commercial services or production release are offered.
 
-## Ecosystem / Ecossistema
-| Project | Website | Repository |
-| --- | --- | --- |
-| K&G Vision | [Institutional](https://kgasil.github.io/) | [Source](https://github.com/Kgasil/kgasil.github.io) |
-| Genesis | [Wisdom & Application / Sabedoria e Aplicação](https://kgasil.github.io/genesis/) · [Interactive library / Biblioteca interativa](https://kgasil.github.io/genesis/biblioteca.html) | [Source](https://github.com/Kgasil/genesis) |
-| Vision | [Security and Development](https://kgasil.github.io/vision/) | [Source](https://github.com/Kgasil/vision) |
-| Aeris | [Discreto e Eficiente.](https://kgasil.github.io/aeris/) | [Source](https://github.com/Kgasil/aeris) |
-| Lilium | [Strategy & Growth / Estratégia e Crescimento](https://kgasil.github.io/lilium/) | [Source](https://github.com/Kgasil/lilium) |
+## Ecosystem / Ecossistema — Marco 1.0
+
+| Project | Website | Repository | Current stage / Etapa atual |
+| --- | --- | --- | --- |
+| K&G Vision | [Institutional](https://kgasil.github.io/) | [Source](https://github.com/Kgasil/kgasil.github.io) | Independent initiative / Iniciativa independente |
+| Project Genesis | [Wisdom & Application / Sabedoria e Aplicação](https://kgasil.github.io/genesis/) | [Source](https://github.com/Kgasil/genesis) | **1.0 — Editorial & Library / Acervo e biblioteca.** 75 private study PDFs; [public interactive library](https://kgasil.github.io/genesis/biblioteca.html) / 75 PDFs privados; biblioteca pública interativa, sem cursos ou certificados. |
+| Project Vision | [Security & Development / Segurança e Desenvolvimento](https://kgasil.github.io/vision/) | [Source](https://github.com/Kgasil/vision) | **1.0 — Public Research Lab / Laboratório público.** Technical baseline V10.2; local demonstrations / Base técnica V10.2; demonstrações locais, não serviços de produção. |
+| Project Aeris | [Discreet & Efficient / Discreto e Eficiente](https://kgasil.github.io/aeris/) | [Source](https://github.com/Kgasil/aeris) | **1.0 — Extension 1.0.0.** [Manual installation / Instalação manual](https://github.com/Kgasil/aeris/tree/main/extension); Desktop 1.0.0rc1 remains a preview / permanece em prévia. |
+| Project Lilium | [Strategy & Growth / Estratégia e Crescimento](https://kgasil.github.io/lilium/) | [Source](https://github.com/Kgasil/lilium) | **1.0 — Web Lab.** Public demo / demonstração pública; Desktop v0.14.0 controlled preview / prévia controlada; [Mini v0.1.1](https://github.com/Kgasil/lilium/tree/main/extension) experimental. |
+
+**Version note / Nota de versão:** 1.0 identifies the first completed public-facing project milestone of the ecosystem, not a uniform software release tag. Genesis is an editorial milestone; Vision retains technical baseline V10.2; Aeris 1.0.0 applies to Extension; Lilium 1.0 applies to Web Lab. / 1.0 identifica o primeiro marco público do ecossistema, não uma tag de software uniforme. Genesis é um marco editorial; Vision mantém a base V10.2; Aeris 1.0.0 refere-se à extensão; Lilium 1.0 refere-se ao Web Lab. Desktop previews are not stable releases / Prévias Desktop não são versões estáveis.
 
 **Learn · Build · Simplify · Transform / Aprender · Construir · Simplificar · Transformar**
 
