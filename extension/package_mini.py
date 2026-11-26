@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
-RUNTIME = ("manifest.json", "math.js", "popup.css", "popup.html", "popup.js")
+RUNTIME = ("icon128.png", "manifest.json", "math.js", "popup.css", "popup.html", "popup.js")
 
 
 def build(source, output):
@@ -19,12 +19,14 @@ def build(source, output):
     manifest = json.loads(files["manifest.json"])
     if manifest.get("manifest_version") != 3:
         raise ValueError("Expected Manifest V3")
-    if set(manifest) != {"manifest_version", "name", "version", "description", "action"}:
+    if set(manifest) != {"manifest_version", "name", "version", "description", "action", "icons"}:
         raise ValueError("Review changed manifest capabilities before packaging")
     if manifest.get("name") != "Lilium Mini" or manifest.get("action") != {
-        "default_title": "Lilium Mini", "default_popup": "popup.html"
+        "default_title": "Lilium Mini", "default_popup": "popup.html", "default_icon": {"128": "icon128.png"}
     }:
         raise ValueError("Unexpected extension identity or popup")
+    if manifest.get("icons") != {"128": "icon128.png"}:
+        raise ValueError("Unexpected icon manifest")
     version = manifest["version"]
     if not re.fullmatch(r"\d+\.\d+\.\d+", version):
         raise ValueError("Unexpected version format")
