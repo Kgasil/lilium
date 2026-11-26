@@ -109,3 +109,7 @@ Data / Windows e arquitetura / versão / URL do build / SHA-256 do ZIP interno /
 | M01–M16, N01–N07 | NÃO EXECUTADO | — | — | — |
 
 Copie uma linha por caso. Não publique tokens, caminhos privados, dados reais ou detalhes de exploração de vulnerabilidades. Reporte bloqueios e mantenha o piloto fechado até aprovação registrada conforme [pilot-readiness.md](pilot-readiness.md). Nenhum caso manual foi marcado como aprovado nesta matriz.
+
+## Verificação complementar dos arquivos efetivamente empacotados
+
+O ZIP interno do candidato designado (artefato 15071874653) foi aberto em Linux, sem executar Lilium.exe. Seis módulos JavaScript extraídos do pacote foram usados em um roteiro local independente equivalente aos 26 grupos de referência da seção anterior, com Node.js v22.16.0 e `node:assert/strict` real: 26/26 passaram, incluindo os cinco cenários. Os 12 arquivos JavaScript empacotados passaram em `node --check`. As diferenças CRLF/LF foram normalizadas para comparar os blobs de starter, finance, sales, operations e forecast com os identificadores do código-fonte de referência; os cinco conferiram. Esta verificação não executou o backend Python congelado, o executável Windows nem a interface Chromium. Nenhuma alteração do candidato ou aprovação manual; a [Issue #1](https://github.com/Kgasil/lilium/issues/1) permanece como critério de liberação. Não somar essas repetições aos 501 testes originais de CI como casos exclusivos.
