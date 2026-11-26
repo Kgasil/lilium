@@ -33,6 +33,10 @@ Apenas se os seis diagnósticos passarem e o Windows permitir a execução norma
 
 Use a [matriz de aceitação manual](manual-acceptance-matrix.md) para conferir valores independentes, registrar os 23 casos funcionais e não funcionais e acompanhar os bloqueios na [Issue #1](https://github.com/Kgasil/lilium/issues/1). Nenhum caso manual foi executado.
 
+## Conferência adicional do arquivo distribuído (25/11/2026)
+
+O artefato exato 15071874653 foi baixado pelo conector GitHub e inspecionado em Linux, sem executar o binário. ZIP externo: 23.870.062 bytes, SHA-256 `72ebc3cdcbc83d5f5fc94e475557537eb2de3c646ff34142e691f80e5d4ae1d5`. ZIP interno: 23.925.665 bytes, SHA-256 idêntico ao candidato acima. Manifesto, SHA256SUMS, versão, plataforma e commit coincidem. Ambos os ZIPs passaram na checagem CRC; o ZIP interno contém 109 entradas, incluindo Lilium.exe, sem caminhos absolutos ou componentes de travessia detectados na inspeção. Isso comprova integridade dos arquivos baixados, não ausência de malware, assinatura ou execução no Windows. A aceitação manual permanece aberta.
+
 ## 1. Evidência do pacote
 
 - [x] Registrar URL e commit do workflow Windows bem-sucedido, versão e SHA-256 do ZIP interno (evidência acima; a conferência após download continua pendente).
