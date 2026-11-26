@@ -6,6 +6,8 @@
 
 [Website](https://kgasil.github.io/lilium/) · [K&G Vision](https://kgasil.github.io/) · [Português](#português) · [English](#english)
 
+> **25/11/2026 — Initial development milestone / Desenvolvimento inicial concluído.** Prévia v0.14.0 validada em CI, 501 testes Python e Node.js aprovados, aceitação manual pendente. [Comunicado / Announcement](docs/milestone-2026-11-25.md) · [Interactive Lab](https://kgasil.github.io/lilium/#lab) · [Guia Windows](docs/clean-machine-validation.md).
+
 ## Português
 Lilium é uma iniciativa independente da K&G Vision para desenvolver uma aplicação web de inteligência empresarial, com foco inicial em pequenas e médias empresas. A proposta é transformar planilhas em indicadores verificáveis, relatórios executivos e apoio a decisões. 
 
@@ -53,7 +55,7 @@ Lilium is built around a clear ambition: empower small businesses to make smarte
 
 - `demo.html`: CSV restrito (`date,revenue,cost`), valores BRL não negativos com até duas casas decimais, datas ISO, agregação mensal, receita, custos, resultado, margem e exportação TXT. Processamento no navegador, sem conexão com IA. Use dados sintéticos.
 - Oito verificações unitárias do cálculo executadas antes do commit: totais, receita zero, precisão decimal, data inválida, cabeçalho inválido, valores negativos, precisão inválida e agregação mensal. Não são testes de segurança ou de interface no navegador.
-- **Lilium Core v0.14.0:** Python/FastAPI, contrato de métricas, validação de CSV, API local e Workspace inicial. 30 testes Python/API aprovados na v0.3; 295 testes JavaScript reexecutados com sucesso na v0.14 em V8. A regressão Python e a geração/validação do executável Windows estão configuradas no workflow, mas ainda não foram confirmadas; impressão e UI completa também pendentes. Histórico opcional em SQLite (até 200 análises consolidadas, sem armazenar CSV original); banco não criptografado pelo aplicativo.
+- **Lilium Core v0.14.0:** Python/FastAPI, contrato de métricas, validação de CSV, API local e Workspace inicial. 30 testes Python/API aprovados na v0.3; 295 testes JavaScript reexecutados com sucesso na v0.14 em V8. A regressão completa, o executável Windows corrigido e a geração automatizada de PDF foram aprovados em CI; aceitação manual e inspeção visual pendentes. Histórico opcional em SQLite (até 200 análises consolidadas, sem armazenar CSV original); banco não criptografado pelo aplicativo.
 - [Instruções para executar no Windows / Local setup](core/README.md) · [Código do Core](core/) · [Testes](tests/test_core.py).
 - Smart Import & Data Quality: CSV/XLSX de uma aba, diagnóstico por linha, alertas de possíveis duplicatas e receita zero; erros bloqueiam a análise. Sem correção automática. Limites de arquivo e formato em [Core](core/README.md).
 - Professional Workspace: menu lateral responsivo, filtros mensais inclusivos, gráfico de receita/custos, tabela e exportação CSV do período. JSON e histórico preservam a análise completa. [Testes do dashboard](tests/dashboard.test.js).
@@ -127,7 +129,7 @@ Central de ajuda offline com 15 guias, busca local sem acentos, atalhos para os 
 86 testes Python aprovados em Linux (14 casos dependentes da interface atual excluídos); 342 testes de módulos e 36 verificações estruturais aprovados em V8. Novo teste HTTP real de três inicializações, rotação de token, persistência e recuperação de backup aprovado localmente. Workflow exige esses testes no código-fonte e no executável e testes Chromium em ambos. A fase permanece aberta: falta confirmação do workflow Windows, regressão completa e artefato. [Validação Windows](https://github.com/Kgasil/lilium/actions/workflows/desktop-windows.yml) · [Critérios](docs/pilot-readiness.md).
 
 ### Interactive Lab / Laboratório público
-Formação de preços, simulação mensal, ponto de equilíbrio e metas, cinco cenários sintéticos com receita, custos, resultado, previsão e CSV para testar Insights. Reutiliza os motores Finance, Starter, Sales e Forecast; funciona no navegador sem API. 12 testes de cálculo e 11 verificações simuladas de DOM aprovados em V8. Publicação Pages e Chromium real ainda não confirmados. O laboratório é uma demonstração separada do Desktop; não é uma oferta comercial.
+Formação de preços, simulação mensal, ponto de equilíbrio e metas, cinco cenários sintéticos com receita, custos, resultado, previsão e CSV para testar Insights. Reutiliza os motores Finance, Starter, Sales e Forecast; funciona no navegador sem API. 12 testes de cálculo e 11 verificações simuladas de DOM aprovados em V8. Publicação Pages e Chromium confirmados. O laboratório é uma demonstração separada do Desktop; não é uma oferta comercial.
 
 [Public lab validation workflow](https://github.com/Kgasil/lilium/actions/workflows/public-lab.yml) · [Windows validation workflow](https://github.com/Kgasil/lilium/actions/workflows/desktop-windows.yml). The two gates are independent; a successful public demo does not validate the executable. Insights demo now rejects invalid UTF-8 and prevents a stale file read from replacing newer input.
 
