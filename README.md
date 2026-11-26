@@ -6,7 +6,7 @@
 
 [Website](https://kgasil.github.io/lilium/) · [K&G Vision](https://kgasil.github.io/) · [Português](#português) · [English](#english)
 
-> **25/11/2026 — Initial development milestone / Desenvolvimento inicial concluído.** Prévia v0.14.0 validada em CI, 501 testes Python e Node.js aprovados, aceitação manual pendente. [Comunicado / Announcement](docs/milestone-2026-11-25.md) · [Interactive Lab](https://kgasil.github.io/lilium/#lab) · [Guia Windows](docs/clean-machine-validation.md).
+> **25/11/2026 — Initial development milestone / Desenvolvimento inicial concluído.** Prévia v0.14.0 validada em CI, 501 testes Python e Node.js aprovados, aceitação manual pendente. [Comunicado / Announcement](docs/milestone-2026-11-25.md) · [Interactive Lab](https://kgasil.github.io/lilium/#lab) · [Guia Windows](docs/clean-machine-validation.md) · [Changelog / Histórico](CHANGELOG.md).
 
 ## Português
 Lilium é uma iniciativa independente da K&G Vision para desenvolver uma aplicação web de inteligência empresarial, com foco inicial em pequenas e médias empresas. A proposta é transformar planilhas em indicadores verificáveis, relatórios executivos e apoio a decisões. 
