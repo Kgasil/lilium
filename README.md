@@ -62,7 +62,7 @@ Python/FastAPI e SQLite no histórico local atual; DuckDB em avaliação futura,
 ## English
 Lilium is built around a clear ambition: empower small businesses to make smarter decisions, operate with confidence and grow sustainably. This independent K&G Vision initiative is developing a modular business intelligence web application. The initial focus is validated spreadsheet analytics and executive reporting; future AI capabilities will explain verified metrics, with source references and human oversight. Explore the interactive business lab and the local Workspace v0.14.0 source preview. Initial analytics modules are implemented; external integrations, connected AI and production deployment remain planned. The remediated Windows preview passed dependency review and full functional CI; clean-machine acceptance remains pending. No commercial services or production release are offered.
 
-## Ecosystem / Ecossistema — Marco 1.0
+## GRAAL — Ecosystem / Ecossistema · Marco 01
 
 | Project | Website | Repository | Current stage / Etapa atual |
 | --- | --- | --- | --- |
