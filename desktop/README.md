@@ -2,6 +2,8 @@
 
 This is a development preview, not a signed installer or a commercial release. The desktop launcher runs the local FastAPI application and opens the default browser after the server reports readiness. It is not yet a native desktop window. Keep its console open; Ctrl+C stops the server. No telemetry, account or external AI is included.
 
+**Version scope:** Lilium's 1.0 public milestone applies to [Web Lab](https://kgasil.github.io/lilium/#lab); Desktop remains v0.14.0. The remediated Windows CI build passed; manual clean-machine acceptance remains pending. See [current release status](../README.md).
+
 ## Run from source (Windows)
 1. Install 64-bit Python 3.12 with the Windows Python launcher.
 2. Download/extract the repository and double-click `start-lilium.bat`.
