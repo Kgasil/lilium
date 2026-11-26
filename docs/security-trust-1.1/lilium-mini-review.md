@@ -26,3 +26,6 @@ Data: 2026-11-26. Escopo: extensão 0.1.1; não inclui auditoria do Desktop ou d
 - CI anterior [45736783251](https://github.com/Kgasil/lilium/actions/runs/45736783251) concluída com sucesso: testes de cálculo, regressão de popup Chromium em página local, build duplicado e upload. Runtime idêntico ao atual; não representa nova execução de interface nem instalação nativa.
 - Novo verificador tests/verify_mini_original.py: fixa blobs da versão distribuída, verifica PNG e manifesto e usa packager existente em diretório temporário sem publicar ou substituir pacotes. Adicionado ao workflow existente. Nova CI a confirmar.
 - Defender atualizado e instalação real Chrome/Edge, assinatura e loja permanecem pendentes. Sem alterações no runtime, sem publicação de novo release ou custo contratado.
+
+## Nova CI
+[Execução 45880059459](https://github.com/Kgasil/lilium/actions/runs/45880059459), commit `13877d8b9b6366913d2eb612e564ea04d7cd453d`: verificação dos blobs fixados, PNG, construção temporária duplicada, sintaxe JS e regressão de cálculo aprovadas. Na última consulta, instalação das dependências de teste Chromium ainda em andamento; nova regressão de interface e upload pendentes. Comparação main/backup confirmou apenas três arquivos de documentação e validação alterados/adicionados. Sem alterações no runtime ou no link de distribuição pública.
