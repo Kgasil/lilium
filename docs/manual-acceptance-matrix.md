@@ -25,6 +25,18 @@ Cada mês de janeiro a setembro de 2026 possui três pedidos agregados fictício
 
 Margem total: 32%. Sales: 27 pedidos distintos, 837 unidades, ticket agregado R$ 1.352,33, Mochila lidera em receita (R$ 29.070,00). Forecast: selecionar manualmente tendência linear e horizonte de 3 meses; outubro R$ 5.297,00, novembro R$ 5.545,00, dezembro R$ 5.793,00. Não interpretar a previsão sintética como garantia de receita futura.
 
+### Referências para os cinco cenários
+
+O arquivo [acceptance-reference.test.js](../tests/acceptance-reference.test.js) fixa os resultados esperados dos cinco cenários em centavos inteiros. Inclui 26 grupos de verificações (catálogo, totais CSV de Insights, Sales, Finance, Operations e Forecast). Os 26 grupos passaram em V8 com módulos do commit de referência e uma implementação mínima de assert; a execução Node.js/CI do novo teste ainda não foi confirmada. Os totais CSV de Insights são verificados independentemente, não pelo motor Python. O workflow Windows já executa arquivos `tests/*.test.js`. Não substitui a aceitação manual ou altera o candidato aprovado.
+
+| Cenário | Receita (R$) | Resultado (R$) | Margem |
+|---|---:|---:|---:|
+| Comércio | 36.513,00 | 11.684,16 | 32% |
+| Serviços | 146.790,00 | 76.330,80 | 52% |
+| Indústria | 77.670,00 | 20.194,20 | 26% |
+| Restaurante | 25.272,00 | 7.076,16 | 28% |
+| Loja virtual | 69.309,00 | 23.565,06 | 34% |
+
 ## 2. Casos funcionais
 
 | ID | Módulo / ação | Resultado esperado |
