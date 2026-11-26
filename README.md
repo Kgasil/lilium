@@ -10,6 +10,8 @@
 
 > **Marco 1.0 — Lilium Web Lab.** Demonstrações públicas de inteligência empresarial; Desktop v0.14.0 continua em prévia controlada e Mini v0.1.1 é experimental. [Experimente / Try the Web Lab](https://kgasil.github.io/lilium/#lab).
 
+**Papel no ecossistema / Ecosystem role:** No ecossistema K&G Vision, o Lilium explora como transformar dados e cenários em informação útil para decisões estratégicas. / Within the K&G Vision ecosystem, Lilium explores how to turn data and scenarios into useful information for strategic decisions.
+
 ## Lilium Web Lab 1.0 — public edition / edição pública
 
 [**Experimentar Web Lab 1.0 / Try Web Lab 1.0**](https://kgasil.github.io/lilium/#lab) · [Launch announcement / Comunicado](docs/web-lab-v1.0.md). Public synthetic-data demonstrations of financial analytics, pricing, scenarios and forecasts. Version 1.0 applies to the web lab only; Desktop remains v0.14.0 and the Desktop pilot is closed.
