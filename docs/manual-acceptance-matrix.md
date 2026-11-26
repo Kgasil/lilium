@@ -37,6 +37,10 @@ O arquivo [acceptance-reference.test.js](../tests/acceptance-reference.test.js) 
 | Restaurante | 25.272,00 | 7.076,16 | 28% |
 | Loja virtual | 69.309,00 | 23.565,06 | 34% |
 
+### Backend Python — regressão dos indicadores
+
+[tests/test_acceptance_reference.py](../tests/test_acceptance_reference.py) contém três métodos unittest, cada um com cinco subcasos: totais exatos, 45 agregações mensais com entrada fora de ordem, e rejeição de uma linha inválida após nove linhas válidas. Os três métodos e 15 subcasos passaram em Python 3.13.5 no ambiente Linux local; os blobs do motor e do teste conferem com o GitHub (`8e380e01f3e30a9fdf3775e8c9fbb01ab79038f8` e `445055558f7e118680cb04ed8cad67517f5e13d6`). A regressão completa em Windows e a execução manual do pacote continuam pendentes. Nenhuma alteração funcional ou mudança do candidato.
+
 ## 2. Casos funcionais
 
 | ID | Módulo / ação | Resultado esperado |
