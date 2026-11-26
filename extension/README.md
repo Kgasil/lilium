@@ -5,6 +5,8 @@
 
 > Distribuição experimental exclusivamente pelo GitHub. A extensão é gratuita, não está publicada na Chrome Web Store nem no Microsoft Edge Add-ons e não requer conta ou pagamento. A instalação manual destina-se a testes com dados fictícios; não é uma certificação de segurança.
 
+**Marco 1.0 do Project Lilium:** corresponde ao [Web Lab público](https://kgasil.github.io/lilium/#lab), não à extensão Mini, que permanece v0.1.1. [Visão geral](../README.md).
+
 ## Como instalar no Chrome ou Edge (Windows)
 
 ### 1. Baixar e extrair
