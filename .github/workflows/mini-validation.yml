@@ -1,0 +1,31 @@
+name: Lilium Mini validation
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'extension/**'
+      - 'tests/browser_mini.py'
+      - '.github/workflows/mini-validation.yml'
+permissions:
+  contents: read
+jobs:
+  mini:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Calculation regression
+        run: node extension/math.test.js
+      - name: Install browser test dependencies
+        run: |
+          python -m pip install playwright==1.56.0
+          python -m playwright install --with-deps chromium
+      - name: Popup UI regression (local page, not installed extension)
+        run: python tests/browser_mini.py
