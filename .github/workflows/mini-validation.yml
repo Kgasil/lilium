@@ -6,6 +6,7 @@ on:
     paths:
       - 'extension/**'
       - 'tests/browser_mini.py'
+      - 'tests/verify_mini_original.py'
       - '.github/workflows/mini-validation.yml'
 permissions:
   contents: read
@@ -21,6 +22,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Verify pinned Mini runtime and temporary build
+        run: python tests/verify_mini_original.py
+      - name: Verify JavaScript syntax
+        run: node --check extension/math.js && node --check extension/popup.js
       - name: Calculation regression
         run: node extension/math.test.js
       - name: Install browser test dependencies
