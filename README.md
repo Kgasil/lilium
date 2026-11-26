@@ -12,6 +12,12 @@
 
 [**Experimentar Web Lab 1.0 / Try Web Lab 1.0**](https://kgasil.github.io/lilium/#lab) · [Launch announcement / Comunicado](docs/web-lab-v1.0.md). Public synthetic-data demonstrations of financial analytics, pricing, scenarios and forecasts. Version 1.0 applies to the web lab only; Desktop remains v0.14.0 and the Desktop pilot is closed.
 
+| Product / Produto | Version / Versão | Scope / Escopo |
+| --- | --- | --- |
+| [Web Lab](https://kgasil.github.io/lilium/#lab) | 1.0 | Public browser demonstrations / Demonstrações públicas no navegador |
+| [Desktop](docs/clean-machine-validation.md) | 0.14.0 | Controlled Windows preview; manual results pending / Prévia Windows controlada; resultados manuais pendentes |
+| [Mini](extension/README.md) | 0.1.0 | Experimental Chrome/Edge extension; not in stores / Extensão experimental Chrome/Edge; não publicada nas lojas |
+
 ## Current release status / Estado atual da liberação
 
 **v0.14.0 — controlled acceptance only / somente aceitação controlada.** The designated Windows artifact is the remediated build from [run 45722415976](https://github.com/Kgasil/lilium/actions/runs/45722415976). Automated build, independent portable verification and focused browser review passed. Manual Windows acceptance, manual security/accessibility review and pilot approval remain open. The unsigned preview must not be used with real data; do not bypass OS warnings.
@@ -23,7 +29,7 @@ The following technical milestones record historical results as of each checkpoi
 ## Português
 Lilium é uma iniciativa independente da K&G Vision para desenvolver uma aplicação web de inteligência empresarial, com foco inicial em pequenas e médias empresas. A proposta é transformar planilhas em indicadores verificáveis, relatórios executivos e apoio a decisões. 
 
-**Status:** laboratório público interativo, demonstração CSV do Insights, extensão Mini em desenvolvimento e Workspace local v0.14.0 com módulos iniciais implementados em código. [Experimente o laboratório](https://kgasil.github.io/lilium/#lab) · [Demonstração Insights](https://kgasil.github.io/lilium/demo.html). Prévia Windows v0.14.0 corrigida aprovada na CI e na auditoria de dependências; disponível somente para aceitação manual com dados fictícios. Não há versão comercial, IA conectada ou data de lançamento anunciada para o Desktop.
+**Status:** Web Lab 1.0 público, demonstração CSV do Insights, extensão Mini v0.1.0 experimental e Workspace local v0.14.0 com módulos iniciais implementados em código. [Experimente o laboratório](https://kgasil.github.io/lilium/#lab) · [Demonstração Insights](https://kgasil.github.io/lilium/demo.html). Prévia Windows v0.14.0 corrigida aprovada na CI e na auditoria de dependências; disponível somente para aceitação manual com dados fictícios. Não há versão comercial, IA conectada ou data de lançamento anunciada para o Desktop.
 
 ### Lilium Business Suite
 | Módulo | Escopo atual e futuro |
@@ -89,7 +95,7 @@ Lilium is built around a clear ambition: empower small businesses to make smarte
 
 Prévia v0.1.0 para Chromium (Chrome/Edge): resultado e margem, preço por margem desejada e ponto de equilíbrio. Sem permissões de acesso a sites, armazenamento, conta ou IA conectada. Doze verificações de cálculo passaram; instalação e interface ainda não testadas em navegador. Não publicada nas lojas de extensões.
 
-Estratégia: manter a extensão útil e gratuita; desenvolver uma aplicação web com funções básicas gratuitas, futura instalação Windows e recursos profissionais opcionais pagos somente após validação. Nenhum preço definido.
+Estratégia: manter a extensão útil e gratuita; desenvolver uma aplicação web com funções básicas gratuitas, prévia portátil Windows e eventuais recursos profissionais opcionais somente após validação. Nenhum preço definido.
 
 ## Repository
 `index.html` — bilingual responsive website. GitHub Pages: main / root (requires activation in repository settings). Future commercial implementation may be maintained privately. License terms are not yet specified.
