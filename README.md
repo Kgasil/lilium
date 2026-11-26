@@ -91,9 +91,9 @@ Lilium is built around a clear ambition: empower small businesses to make smarte
 
 ## Lilium Mini — extensão gratuita / free extension
 
-[Instalação para testes / Test installation](extension/README.md) · [Privacidade / Privacy](https://kgasil.github.io/lilium/mini-privacy.html) · [Código / Source](extension/)
+[**Instalar no Chrome ou Edge — tutorial / Installation guide**](extension/README.md) · [Baixar código v0.1.1 / Download source ZIP](https://github.com/Kgasil/lilium/archive/447d7414f20e28f6c0440647f2b7be71fc44e71d.zip) · [Privacidade / Privacy](https://kgasil.github.io/lilium/mini-privacy.html) · [Código / Source](extension/)
 
-Candidata v0.1.1 para Chromium (Chrome/Edge): resultado e margem, preço por margem desejada e ponto de equilíbrio. Sem permissões de acesso a sites, armazenamento, conta ou IA conectada. Doze verificações de cálculo passaram; instalação e interface ainda não testadas em navegador. Não publicada nas lojas de extensões.
+Prévia v0.1.1 distribuída exclusivamente pelo GitHub, com instalação manual no Chrome/Edge: resultado e margem, preço por margem desejada e ponto de equilíbrio. Sem permissões de acesso a sites, armazenamento, conta ou IA conectada. Doze verificações de cálculo passaram; o responsável relatou ter testado a v0.1.0. A aceitação detalhada da v0.1.1 permanece pendente. Não publicada nas lojas de extensões.
 
 Estratégia: manter a extensão útil e gratuita; desenvolver uma aplicação web com funções básicas gratuitas, prévia portátil Windows e eventuais recursos profissionais opcionais somente após validação. Nenhum preço definido.
 
