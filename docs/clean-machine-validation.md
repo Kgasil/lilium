@@ -29,6 +29,10 @@ Apenas se os seis diagnósticos passarem e o Windows permitir a execução norma
 
 [Execução independente 45723844030](https://github.com/Kgasil/lilium/actions/runs/45723844030): download do mesmo ZIP, verificação do hash e manifesto, extração em pasta nova, versão, seis diagnósticos e autoteste aprovados em runner Windows Server 2025 com PATH restrito. Nenhum Python externo foi chamado. O runner pode ter Python instalado; esta evidência não substitui a validação manual descrita abaixo.
 
+## Matriz de resultados esperados
+
+Use a [matriz de aceitação manual](manual-acceptance-matrix.md) para conferir valores independentes, registrar os 23 casos funcionais e não funcionais e acompanhar os bloqueios na [Issue #1](https://github.com/Kgasil/lilium/issues/1). Nenhum caso manual foi executado.
+
 ## 1. Evidência do pacote
 
 - [x] Registrar URL e commit do workflow Windows bem-sucedido, versão e SHA-256 do ZIP interno (evidência acima; a conferência após download continua pendente).
