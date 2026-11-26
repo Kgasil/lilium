@@ -16,7 +16,7 @@
 | --- | --- | --- |
 | [Web Lab](https://kgasil.github.io/lilium/#lab) | 1.0 | Public browser demonstrations / Demonstrações públicas no navegador |
 | [Desktop](docs/clean-machine-validation.md) | 0.14.0 | Controlled Windows preview; manual results pending / Prévia Windows controlada; resultados manuais pendentes |
-| [Mini](extension/README.md) | 0.1.0 | Experimental Chrome/Edge extension; not in stores / Extensão experimental Chrome/Edge; não publicada nas lojas |
+| [Mini](extension/README.md) | 0.1.1 | Experimental Chrome/Edge extension; not in stores / Extensão experimental Chrome/Edge; não publicada nas lojas |
 
 ## Current release status / Estado atual da liberação
 
@@ -29,7 +29,7 @@ The following technical milestones record historical results as of each checkpoi
 ## Português
 Lilium é uma iniciativa independente da K&G Vision para desenvolver uma aplicação web de inteligência empresarial, com foco inicial em pequenas e médias empresas. A proposta é transformar planilhas em indicadores verificáveis, relatórios executivos e apoio a decisões. 
 
-**Status:** Web Lab 1.0 público, demonstração CSV do Insights, extensão Mini v0.1.0 experimental e Workspace local v0.14.0 com módulos iniciais implementados em código. [Experimente o laboratório](https://kgasil.github.io/lilium/#lab) · [Demonstração Insights](https://kgasil.github.io/lilium/demo.html). Prévia Windows v0.14.0 corrigida aprovada na CI e na auditoria de dependências; disponível somente para aceitação manual com dados fictícios. Não há versão comercial, IA conectada ou data de lançamento anunciada para o Desktop.
+**Status:** Web Lab 1.0 público, demonstração CSV do Insights, extensão Mini v0.1.1 experimental e Workspace local v0.14.0 com módulos iniciais implementados em código. [Experimente o laboratório](https://kgasil.github.io/lilium/#lab) · [Demonstração Insights](https://kgasil.github.io/lilium/demo.html). Prévia Windows v0.14.0 corrigida aprovada na CI e na auditoria de dependências; disponível somente para aceitação manual com dados fictícios. Não há versão comercial, IA conectada ou data de lançamento anunciada para o Desktop.
 
 ### Lilium Business Suite
 | Módulo | Escopo atual e futuro |
@@ -91,9 +91,9 @@ Lilium is built around a clear ambition: empower small businesses to make smarte
 
 ## Lilium Mini — extensão gratuita / free extension
 
-[Instalação para testes / Test installation](extension/README.md) · [Código / Source](extension/)
+[Instalação para testes / Test installation](extension/README.md) · [Privacidade / Privacy](https://kgasil.github.io/lilium/mini-privacy.html) · [Código / Source](extension/)
 
-Prévia v0.1.0 para Chromium (Chrome/Edge): resultado e margem, preço por margem desejada e ponto de equilíbrio. Sem permissões de acesso a sites, armazenamento, conta ou IA conectada. Doze verificações de cálculo passaram; instalação e interface ainda não testadas em navegador. Não publicada nas lojas de extensões.
+Candidata v0.1.1 para Chromium (Chrome/Edge): resultado e margem, preço por margem desejada e ponto de equilíbrio. Sem permissões de acesso a sites, armazenamento, conta ou IA conectada. Doze verificações de cálculo passaram; instalação e interface ainda não testadas em navegador. Não publicada nas lojas de extensões.
 
 Estratégia: manter a extensão útil e gratuita; desenvolver uma aplicação web com funções básicas gratuitas, prévia portátil Windows e eventuais recursos profissionais opcionais somente após validação. Nenhum preço definido.
 
