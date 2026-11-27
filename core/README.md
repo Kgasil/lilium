@@ -1,6 +1,6 @@
 # Lilium Core v0.14.0 — local development preview
 
-**Strategy & Growth · Estratégia e Crescimento**
+**Strategy & Evolution · Estratégia e Evolução**
 
 **Version scope:** Lilium Web Lab 1.0 is the public milestone; Core and Desktop remain v0.14.0 development previews. Historical test notes below reflect their respective checkpoints. See [current project status](../README.md).
 
@@ -15,6 +15,10 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 .\.venv\Scripts\python.exe -m desktop.launcher
 ```
+
+## Data Intelligence — candidato da Etapa 03
+
+API local aceita três cabeçalhos canônicos em qualquer ordem (CSV/XLSX), e CSV simples UTF-8 com `data;receita;custo` em qualquer ordem, data ISO ou DD/MM/AAAA, valores inteiros ou vírgula decimal sem milhares. A normalização não modifica o arquivo original; erros impedem análise, duplicatas são alertas. O contrato de métricas permanece idêntico. Meta de margem usa a margem arredondada exibida, não muda a análise; gráfico alterna receita/custo e resultado; diagnóstico JSON contém contagens e códigos de linha, sem valores originais. Candidato ainda sujeito a CI.
 
 ## API contract
 - GET /health — service status and version.
@@ -32,7 +36,11 @@ date,revenue,cost
 2026-03-01,12000,7800
 ```
 
-## Lilium Copilot
+## Lilium Copilot — candidato conversacional da Etapa 04
+
+Perguntas livres (até 240 caracteres), continuidade simples do tópico e roteamento local por regras. Opcionalmente, com consentimento por pergunta, o Desktop envia apenas o texto ao Ollama em 127.0.0.1:11434. Instalação e modelo são opcionais e separados: obtenha Ollama do site oficial, execute localmente `ollama pull qwen2.5:1.5b` ou `ollama pull llama3.2:1b` antes de usar, confira licença e requisitos. Sem download automático ou serviço pago contratado. O modelo retorna apenas tópico permitido; resposta e recomendações continuam determinísticas. Sem envio de métricas ou arquivos ao modelo, sem armazenamento da conversa pelo Lilium, sem ações automáticas. O serviço local pode ter comportamento/logs próprios; não digite dados pessoais ou confidenciais. Fallback por regras se o modelo falhar. CI e inferência real pendentes.
+
+### Consulta guiada existente
 - Guided local assistant with eight predefined topics (overview, Insights, Finance, Sales, Operations, Strategy, Forecast and action suggestions). No free-form language model, voice, network request, credentials or generative AI. Uses computed session results; retains source, scope and data kind. Missing sources and unavailable metrics are explicit, not fabricated.
 - Reuses Reports for module summaries and Flow for six example alert rules, editable in Flow's CSV format. Thresholds are illustrative, not universal benchmarks. Matched rules generate suggestions with evidence and scope; no causal inference or cross-module financial consolidation.
 - Explicit confirmation to forward a suggestion to the Flow pending queue. Re-evaluates the rule against current source data; changed evidence or rule requires regenerating the response. Deduplication and queue limits inherited from Flow. No execution, automatic approval or durable audit log.
