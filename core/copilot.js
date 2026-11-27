@@ -54,6 +54,16 @@ function forward(queue,report,index,currentSources,deps,at,ruleText){
  if(!fresh||fresh.outcome!=="matched"||JSON.stringify(fresh)!==JSON.stringify(old))throw Error("A regra ou evidência mudou. Gere uma nova resposta antes de encaminhar.");
  return deps.flow.enqueue(queue,[fresh],at);
 }
-const api={TOPICS,DEFAULT_RULES,explain,forward};
+function routeQuestion(raw,previous=null){
+ if(typeof raw!=="string"||!raw.trim()||raw.length>240)throw Error("Digite uma pergunta de até 240 caracteres.");
+ const q=raw.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim().replace(/[?!.,]+$/g,"");
+ if(/^(e (por que|como assim)|por que|explique melhor|pode explicar melhor|e agora)$/.test(q))return Object.hasOwn(TOPICS,previous)?previous:null;
+ const groups={overview:/\b(resumo|visao geral|panorama|indicadores gerais)\b/,insights:/\b(margem|receita|receitas|custos|resultado|lucro)\b/,finance:/\b(preco|precificacao|simulacao|ponto de equilibrio|financas|finance)\b/,sales:/\b(venda|vendas|pedidos|ticket|sales)\b/,operations:/\b(gargalo|capacidade|operacao|operacoes|operations)\b/,strategy:/\b(meta|metas|okr|estrategia|strategy)\b/,forecast:/\b(previsao|previsoes|forecast|projecao|tendencia)\b/,actions:/\b(acoes|sugestoes|recomendacoes|melhorias|o que fazer)\b/};
+ const matches=Object.keys(groups).filter(key=>groups[key].test(q));
+ // Ambiguous questions need an explicit topic or the optional model router.
+ return matches.length===1?matches[0]:null;
+}
+function routedTopic(value){return typeof value==="string"&&Object.hasOwn(TOPICS,value)?value:null;}
+const api={TOPICS,DEFAULT_RULES,explain,forward,routeQuestion,routedTopic};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;else root.LiliumCopilot=Object.freeze(api);
 })(typeof globalThis!=="undefined"?globalThis:this);

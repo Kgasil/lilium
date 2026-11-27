@@ -273,11 +273,11 @@ $('connect-apply').onclick=()=>{const p=connectPacket;if(!p||!confirm('Substitui
 };
 $('connect-sample').click();
 
-let copilotResponse=null;
+let copilotResponse=null,chatTopic=null,chatEpoch=0,chatBusy=false;
 const copilotDeps={reports:LiliumReports,flow:LiliumFlow};
 const copilotSources=()=>({insights:currentView,finance:financeReport,sales:salesView,operations:opsView,strategy:strategyReport,forecast:forecastReport});
 const copilotLabels={insights:'Insights',finance:'Finance',sales:'Sales',operations:'Operations',strategy:'Strategy',forecast:'Forecast'};
-function cpReset(){copilotResponse=null;$('copilot-results').hidden=true;$('copilot-export').disabled=true;$('copilot-status').textContent='';$('copilot-forward-status').textContent='';}
+function cpReset(){chatEpoch++;copilotResponse=null;$('copilot-results').hidden=true;$('copilot-export').disabled=true;$('copilot-status').textContent='';$('copilot-forward-status').textContent='';}
 function cpDefaults(){cpReset();$('copilot-rules').value=[LiliumFlow.HEADER,...LiliumCopilot.DEFAULT_RULES.map(r=>r.join(','))].join('\n');}
 for(const [key,label] of Object.entries(LiliumCopilot.TOPICS)){const o=repNode('option',label);o.value=key;$('copilot-topic').append(o);}
 $('copilot-topic').onchange=cpReset;$('copilot-rules').oninput=cpReset;$('copilot-defaults').onclick=cpDefaults;
@@ -304,6 +304,41 @@ function cpRender(report){
  $('copilot-results').hidden=false;
 }
 $('copilot-run').onclick=()=>{cpReset();try{const report=LiliumCopilot.explain($('copilot-topic').value,copilotSources(),copilotDeps,new Date().toISOString(),$('copilot-rules').value);cpRender(report);copilotResponse=report;$('copilot-export').disabled=false;$('copilot-status').textContent=report.sections.length+' fontes exibidas; '+report.evaluated_rules+' regras avaliadas; '+report.suggestions.length+' sugestões.';}catch(e){$('copilot-status').textContent=e.message;}};
+function appendChat(question,topic,mode){
+ const box=$('copilot-chat'),turn=document.createElement('article');
+ turn.append(repNode('h4',question),repNode('p',LiliumCopilot.TOPICS[topic]+' · '+mode+' · veja os indicadores e sugestões abaixo.'));
+ box.append(turn);while(box.children.length>8)box.firstElementChild.remove();
+}
+$('copilot-ask').onclick=async()=>{
+ if(chatBusy)return;
+ const question=$('copilot-question').value.trim(),status=$('copilot-chat-status');
+ let topic;
+ try{topic=LiliumCopilot.routeQuestion(question,chatTopic);}catch(e){status.textContent=e.message;return;}
+ cpReset();const epoch=chatEpoch,initialSources=copilotSources();
+ chatBusy=true;$('copilot-ask').disabled=true;
+ let mode='roteamento por regras';
+ try{
+  if($('copilot-consent').checked){
+   status.textContent='Consultando modelo local para identificar o tópico...';
+   try{
+    const res=await localFetch('/api/v1/copilot/route',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question,model:$('copilot-model').value,consent:true})});
+    if(res.ok){const data=await res.json();const routed=LiliumCopilot.routedTopic(data.topic);if(routed){topic=routed;mode='tópico escolhido pelo modelo local';}else mode='modelo indisponível; regras locais';}
+    else mode='modelo indisponível; regras locais';
+   }catch{mode='modelo indisponível; regras locais';}
+  }
+  if(epoch!==chatEpoch)return;
+  const sources=copilotSources();
+  if(Object.keys(sources).some(k=>sources[k]!==initialSources[k])){status.textContent='Os indicadores mudaram. Pergunte novamente.';return;}
+  if(!topic){status.textContent='Não identifiquei um tópico único. Escolha uma pergunta guiada ou reformule.';return;}
+  const report=LiliumCopilot.explain(topic,sources,copilotDeps,new Date().toISOString(),$('copilot-rules').value);
+  $('copilot-topic').value=topic;cpRender(report);copilotResponse=report;$('copilot-export').disabled=false;
+  chatTopic=topic;appendChat(question,topic,mode);
+  status.textContent=mode+' · resposta determinística · '+report.sections.length+' fontes; '+report.suggestions.length+' sugestões.';
+  $('copilot-question').value='';
+ }catch(e){if(epoch===chatEpoch)status.textContent=e.message||'Não foi possível consultar os indicadores.';}
+ finally{chatBusy=false;$('copilot-ask').disabled=false;$('copilot-consent').checked=false;}
+};
+$('copilot-clear-chat').onclick=()=>{cpReset();chatTopic=null;$('copilot-chat').replaceChildren();$('copilot-question').value='';$('copilot-consent').checked=false;$('copilot-chat-status').textContent='Conversa local limpa.';};
 $('copilot-export').onclick=()=>{if(copilotResponse)stExport(copilotResponse,'lilium-copilot-response.json');};
 cpDefaults();
 $('pilot-reset').onclick=()=>{if(confirm("Descartar os dados e resultados em memória? O histórico salvo será mantido."))location.reload();};

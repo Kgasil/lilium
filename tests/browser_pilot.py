@@ -109,6 +109,15 @@ def main():
                 ]:
                     page.locator("#" + trigger).click()
                     expect(page.locator("#" + target)).to_contain_text(expected)
+                page.locator("#copilot-question").fill("Como está a margem?")
+                page.locator("#copilot-ask").click()
+                expect(page.locator("#copilot-chat-status")).to_contain_text("resposta determinística")
+                expect(page.locator("#copilot-answer")).to_contain_text("Insights")
+                page.locator("#copilot-question").fill("Explique melhor")
+                page.locator("#copilot-ask").click()
+                expect(page.locator("#copilot-chat article")).to_have_count(2)
+                page.locator("#copilot-clear-chat").click()
+                expect(page.locator("#copilot-chat")).to_be_empty()
                 page.locator("#connect-read").click()
                 for field, name in [("date", "Dia"), ("revenue", "Receita"), ("cost", "Custo")]:
                     page.locator("#connect-map select[data-field=" + field + "]").select_option(name)

@@ -32,6 +32,8 @@
 
 ## Current release status / Estado atual da liberação
 
+> **Copilot candidate / Candidato Copilot:** [Etapa 04](docs/stage-04-copilot-2026-11-27.md). Free-text topic routing by rules or optional local Ollama model; deterministic evidence and human-reviewed suggestions. No generative financial claims, external cloud integration or public package change. Local model execution still requires validation.
+
 > **Data Intelligence candidate / Candidato de dados:** [Etapa 03](docs/stage-03-data-2026-11-27.md). CSV brasileiro explícito, colunas canônicas reordenadas, meta de margem, gráfico de resultado e diagnóstico JSON. Desktop source preview only; public Web Lab and Mini downloads unchanged. No release approval.
 
 > **Experience development / Desenvolvimento visual:** [Etapa 02 — escopo e critérios](docs/stage-02-experience-2026-11-27.md). The dark Workspace and Mini 0.1.2 are development candidates, not the approved distributed packages. / Workspace escuro e Mini 0.1.2 são candidatos de desenvolvimento, não os pacotes distribuídos aprovados. Current public links and versions below remain unchanged.
