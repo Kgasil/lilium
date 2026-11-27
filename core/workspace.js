@@ -64,14 +64,36 @@ async function deleteHistory(id){if(!confirm('Excluir esta análise do históric
 $('save').onclick=async()=>{if(!last||!lastPayload||saving||$('save').hidden)return;saving=true;$('save').disabled=true;const seq=rev,p=lastPayload;try{const res=await localFetch('/api/v1/history',{method:'POST',headers:{'Content-Type':p.type},body:p.body});const data=await res.json();if(!res.ok)throw Error(data.error?.message||'Falha ao salvar.');if(seq===rev){$('save').hidden=true;$('status').textContent='Análise salva localmente.';}await refreshHistory();}catch(e){if(seq===rev)$('status').textContent=e.message;}finally{saving=false;$('save').disabled=false;}};
 $('refresh').onclick=refreshHistory;refreshHistory();
 
-let financeReport=null;
+let financeReport=null,managementReport=null;
 const fmoney=v=>LiliumFinance.formatBRL(v), fpercent=v=>v===null?'N/A':v.replace('.',',')+'%', funits=v=>v===null?'Inviável nas premissas':BigInt(v).toLocaleString('pt-BR')+' un.';
 function financeCards(id,items){const target=$(id);target.replaceChildren();for(const [name,value] of items){const card=document.createElement('div');card.className='kpi';const label=document.createElement('span');label.textContent=name;const strong=document.createElement('strong');strong.textContent=value;card.append(label,strong);target.append(card);}target.hidden=false;}
 $('pricing-form').addEventListener('input',()=>{$('pricing-result').hidden=true;$('pricing-status').textContent='';});
 $('pricing-form').addEventListener('submit',e=>{e.preventDefault();$('pricing-result').hidden=true;try{const p=LiliumFinance.pricing($('price-cost').value,$('price-margin').value);financeCards('pricing-result',[['Preço mínimo',fmoney(p.price_cents)],['Contribuição unitária',fmoney(p.contribution_cents)],['Margem efetiva',fpercent(p.margin_pct)]]);$('pricing-status').textContent='Preço arredondado para cima ao centavo.';}catch(err){$('pricing-status').textContent=err.message;}});
-$('finance-form').addEventListener('input',()=>{financeReport=null;$('finance-export').disabled=true;$('finance-result').hidden=true;$('finance-status').textContent='';});
-$('finance-form').addEventListener('submit',e=>{e.preventDefault();financeReport=null;$('finance-export').disabled=true;$('finance-result').hidden=true;try{const inputs=Object.fromEntries(['price','variable','fixed','quantity','fee','target'].map(k=>[k,$('sim-'+k).value.trim()]));const s=LiliumFinance.simulate(inputs);financeCards('finance-result',[['Receita simulada',fmoney(s.revenue_cents)],['Custos variáveis',fmoney(s.variable_cents)],['Taxas de venda',fmoney(s.fees_cents)],['Custos fixos',fmoney(s.fixed_cents)],['Resultado estimado',fmoney(s.result_cents)],['Margem de resultado',fpercent(s.result_margin_pct)],['Contribuição unitária',fmoney(s.unit_contribution_cents)],['Margem de contribuição',fpercent(s.contribution_margin_pct)],['Ponto de equilíbrio',funits(s.break_even_units)],['Vendas para atingir a meta',funits(s.target_units)]]);$('finance-status').textContent=BigInt(s.result_cents)<0n?'O cenário apresenta resultado negativo.':BigInt(s.result_cents)===0n?'Receitas e custos estimados se equilibram.':'Cenário com resultado positivo nas premissas informadas.';financeReport={schema_version:'1.0',kind:'single-product-monthly-simulation',currency:'BRL',inputs,results:s,assumptions:['Constant unit price and costs','Percentage fee rounded half-up per unit','Fixed monthly costs','Not a forecast or accounting statement']};$('finance-export').disabled=false;}catch(err){$('finance-status').textContent=err.message;}});
+$('finance-form').addEventListener('input',()=>{clearScenarios();financeReport=null;$('finance-export').disabled=true;$('finance-result').hidden=true;$('finance-status').textContent='';});
+$('finance-form').addEventListener('submit',e=>{e.preventDefault();clearScenarios();financeReport=null;$('finance-export').disabled=true;$('finance-result').hidden=true;try{const inputs=Object.fromEntries(['price','variable','fixed','quantity','fee','target'].map(k=>[k,$('sim-'+k).value.trim()]));const s=LiliumFinance.simulate(inputs);financeCards('finance-result',[['Receita simulada',fmoney(s.revenue_cents)],['Custos variáveis',fmoney(s.variable_cents)],['Taxas de venda',fmoney(s.fees_cents)],['Custos fixos',fmoney(s.fixed_cents)],['Resultado estimado',fmoney(s.result_cents)],['Margem de resultado',fpercent(s.result_margin_pct)],['Contribuição unitária',fmoney(s.unit_contribution_cents)],['Margem de contribuição',fpercent(s.contribution_margin_pct)],['Ponto de equilíbrio',funits(s.break_even_units)],['Vendas para atingir a meta',funits(s.target_units)]]);$('finance-status').textContent=BigInt(s.result_cents)<0n?'O cenário apresenta resultado negativo.':BigInt(s.result_cents)===0n?'Receitas e custos estimados se equilibram.':'Cenário com resultado positivo nas premissas informadas.';financeReport={schema_version:'1.0',kind:'single-product-monthly-simulation',currency:'BRL',inputs,results:s,assumptions:['Constant unit price and costs','Percentage fee rounded half-up per unit','Fixed monthly costs','Not a forecast or accounting statement']};$('finance-export').disabled=false;}catch(err){$('finance-status').textContent=err.message;}});
 $('finance-export').onclick=()=>{if(!financeReport)return;const url=URL.createObjectURL(new Blob([JSON.stringify(financeReport,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='lilium-finance-scenario.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+
+function clearScenarios(){
+ if(financeReport?.scenarios){const {scenarios,...rest}=financeReport;financeReport=rest;}
+ $('scenario-result').hidden=true;$('scenario-status').textContent='';
+}
+for(const id of ['scenario-low','scenario-high'])$(id).addEventListener('input',clearScenarios);
+$('scenario-run').onclick=()=>{clearScenarios();try{
+ if(!financeReport)throw Error('Calcule a simulação mensal primeiro.');
+ const scenarios=LiliumFinance.compareScenarios(financeReport.inputs,$('scenario-low').value,$('scenario-high').value);
+ financeReport={...financeReport,scenarios};
+ financeCards('scenario-result',scenarios.map(x=>[x.label+' · '+x.quantity+' un.',fmoney(x.result_cents)]));
+ $('scenario-status').textContent='Resultados hipotéticos; somente o volume varia.';
+ }catch(e){$('scenario-status').textContent=e.message;}};
+function clearManagement(){managementReport=null;$('management-result').hidden=true;$('management-export').disabled=true;$('management-status').textContent='';}
+$('management-form').addEventListener('input',clearManagement);
+$('management-form').addEventListener('submit',e=>{e.preventDefault();clearManagement();try{
+ const input=Object.fromEntries(["revenue","deductions","cogs","expenses","other_income","other_expense","tax","opening","receipts","payments"].map(k=>[k,$('mgmt-'+k).value]));input.month=$('mgmt-month').value;
+ const r=LiliumFinance.management(input),d=r.dre,c=r.cash;
+ financeCards('management-result',[['Receita líquida',fmoney(d.net_revenue)],['Resultado bruto',fmoney(d.gross_profit)],['Resultado operacional',fmoney(d.operating_result)],['Resultado gerencial',fmoney(d.result)],['Margem líquida',fpercent(r.margin_pct)],['Saldo inicial de caixa',fmoney(c.opening)],['Entradas de caixa',fmoney(c.receipts)],['Saídas de caixa',fmoney(c.payments)],['Movimentação líquida',fmoney(c.flow)],['Saldo final de caixa',fmoney(c.closing)]]);
+ managementReport=r;$('management-export').disabled=false;$('management-status').textContent='Mês '+r.month+' · DRE e caixa calculados separadamente.';
+ }catch(e){$('management-status').textContent=e.message;}});
+$('management-export').onclick=()=>{if(managementReport)stExport(managementReport,'lilium-management.json');};
 
 let salesRows=null,salesView=null,salesRevision=0;
 const salesSample="date,order_id,product,quantity,unit_price\n2026-01-05,A1,Café,2,25.00\n2026-01-05,A1,Bolo,1,10.00\n2026-02-01,A2,Café,3,25.00\n2026-02-02,A3,Chá,1,5.00";
@@ -166,7 +188,7 @@ function repRender(report){
  view.append(repNode('small','K&G Vision · Lilium'));view.hidden=false;
 }
 $('reports-generate').onclick=()=>{repReset();try{
- const sources={insights:currentView,finance:financeReport,sales:salesView,operations:opsView,strategy:strategyReport,actions:actionReport};
+ const sources={insights:currentView,finance:financeReport,sales:salesView,operations:opsView,strategy:strategyReport,actions:actionReport,management:managementReport};
  const selected=LiliumReports.MODULES.filter(k=>$('reports-'+k).checked);
  const report=LiliumReports.compose(sources,selected,{title:$('reports-title').value,generated_at:new Date().toISOString()});
  repRender(report);executiveReport=report;
@@ -241,7 +263,7 @@ $('flow-rules').value=flowSample;flowQueueRender();
 
 let connectData=null,connectPacket=null,connectRev=0,connectPackageRev=0;
 const connectValidators={validDate:LiliumSales.validDate,sales:LiliumSales.parse,forecast:LiliumForecast.parse};
-const connectNames={insights:'Insights',sales:'Sales',forecast:'Forecast'};
+const connectNames={insights:'Insights',sales:'Sales',forecast:'Forecast',management:'DRE e caixa'};
 function connectReset(){connectPacket=null;$('connect-result').hidden=true;$('connect-transfer-status').textContent='';}
 function connectMapReset(){connectRev++;connectData=null;connectReset();$('connect-map').replaceChildren();$('connect-normalize').disabled=true;$('connect-status').textContent='';}
 $('connect-raw').addEventListener('input',connectMapReset);$('connect-sep').addEventListener('change',connectMapReset);$('connect-target').addEventListener('change',connectMapReset);$('connect-decimal').addEventListener('change',connectReset);
@@ -275,7 +297,7 @@ $('connect-sample').click();
 
 let copilotResponse=null,chatTopic=null,chatEpoch=0,chatBusy=false;
 const copilotDeps={reports:LiliumReports,flow:LiliumFlow};
-const copilotSources=()=>({insights:currentView,finance:financeReport,sales:salesView,operations:opsView,strategy:strategyReport,forecast:forecastReport});
+const copilotSources=()=>({insights:currentView,finance:financeReport,sales:salesView,operations:opsView,strategy:strategyReport,forecast:forecastReport,management:managementReport});
 const copilotLabels={insights:'Insights',finance:'Finance',sales:'Sales',operations:'Operations',strategy:'Strategy',forecast:'Forecast'};
 function cpReset(){chatEpoch++;copilotResponse=null;$('copilot-results').hidden=true;$('copilot-export').disabled=true;$('copilot-status').textContent='';$('copilot-forward-status').textContent='';}
 function cpDefaults(){cpReset();$('copilot-rules').value=[LiliumFlow.HEADER,...LiliumCopilot.DEFAULT_RULES.map(r=>r.join(','))].join('\n');}

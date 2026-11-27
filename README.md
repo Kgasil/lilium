@@ -32,6 +32,8 @@
 
 ## Current release status / Estado atual da liberação
 
+> **Business Intelligence candidate / Candidato empresarial:** [Etapa 05](docs/stage-05-business-2026-11-27.md). Simplified managerial DRE and cash, volume scenarios, separate evidence in Reports and Copilot. Development only; no public package changes.
+
 > **Copilot candidate / Candidato Copilot:** [Etapa 04](docs/stage-04-copilot-2026-11-27.md). Free-text topic routing by rules or optional local Ollama model; deterministic evidence and human-reviewed suggestions. No generative financial claims, external cloud integration or public package change. Local model execution still requires validation.
 
 > **Data Intelligence candidate / Candidato de dados:** [Etapa 03](docs/stage-03-data-2026-11-27.md). CSV brasileiro explícito, colunas canônicas reordenadas, meta de margem, gráfico de resultado e diagnóstico JSON. Desktop source preview only; public Web Lab and Mini downloads unchanged. No release approval.

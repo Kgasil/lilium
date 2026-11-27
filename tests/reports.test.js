@@ -12,6 +12,7 @@ const sources={
 const build=(keys=R.MODULES,data=sources,m=meta)=>R.compose(data,keys,m);
 const report=build(),txt=R.toText(report);
 const checks=[
+["management evidence separate",()=>{const r=build(["management"],{management:{month:"2026-11",dre:{net_revenue:"950000",gross_profit:"550000",operating_result:"350000",result:"300000"},cash:{opening:"100000",receipts:"800000",payments:"700000",flow:"100000",closing:"200000"},margin_pct:"31.58",notes:[]}});assert.equal(r.sections[0].metrics.find(x=>x.label==="Resultado gerencial").value,"R$ 3.000,00");assert.equal(r.sections[0].metrics.find(x=>x.label==="Saldo final de caixa").value,"R$ 2.000,00");}],
 ["all six sections",()=>assert.equal(report.sections.length,6)],
 ["stable order",()=>assert.equal(build(["sales","insights"]).sections[0].source,"insights")],
 ["deduplicate selection",()=>assert.equal(build(["sales","sales"]).sections.length,1)],

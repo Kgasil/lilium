@@ -97,6 +97,15 @@ def main():
                 expect(page.locator("#history-rows tr")).to_have_count(1)
                 page.locator("#finance-form button[type=submit]").click()
                 expect(page.locator("#finance-result")).to_contain_text("3.500,00")
+                page.locator("#scenario-run").click()
+                expect(page.locator("#scenario-result")).to_contain_text("4.600,00")
+                page.locator("#management-form button[type=submit]").click()
+                expect(page.locator("#management-result")).to_contain_text("3.000,00")
+                expect(page.locator("#management-result")).to_contain_text("2.000,00")
+                page.locator("#copilot-question").fill("Como está o caixa?")
+                page.locator("#copilot-ask").click()
+                expect(page.locator("#copilot-answer")).to_contain_text("Saldo final de caixa")
+                page.locator("#copilot-clear-chat").click()
                 for trigger, target, expected in [
                     ("sales-run", "sales-metrics", "46,67"),
                     ("ops-run", "ops-metrics", "Montagem"),

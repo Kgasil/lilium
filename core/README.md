@@ -36,6 +36,10 @@ date,revenue,cost
 2026-03-01,12000,7800
 ```
 
+## Etapa 05 — inteligência empresarial
+
+DRE gerencial simplificada e fluxo de caixa mensal a partir de valores informados separadamente, em centavos inteiros. Comparação de três volumes mantém preço, custos e taxas constantes. Reports e Copilot incluem DRE/caixa como fonte independente; Sales, Operations e Strategy exibem indicadores adicionais no relatório; Forecast inclui o último mês estimado no Copilot. Sem reconciliação contábil ou previsão de caixa, sem novas dependências, CI pendente.
+
 ## Lilium Copilot — candidato conversacional da Etapa 04
 
 Perguntas livres (até 240 caracteres), continuidade simples do tópico e roteamento local por regras. Opcionalmente, com consentimento por pergunta, o Desktop envia apenas o texto ao Ollama em 127.0.0.1:11434. Instalação e modelo são opcionais e separados: obtenha Ollama do site oficial, execute localmente `ollama pull qwen2.5:1.5b` ou `ollama pull llama3.2:1b` antes de usar, confira licença e requisitos. Sem download automático ou serviço pago contratado. O modelo retorna apenas tópico permitido; resposta e recomendações continuam determinísticas. Sem envio de métricas ou arquivos ao modelo, sem armazenamento da conversa pelo Lilium, sem ações automáticas. O serviço local pode ter comportamento/logs próprios; não digite dados pessoais ou confidenciais. Fallback por regras se o modelo falhar. CI e inferência real pendentes.

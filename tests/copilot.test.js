@@ -15,6 +15,8 @@ const checks=[
 ["follow-up without context",()=>assert.equal(c.routeQuestion("por quê?"),null)],
 ["route allowlist",()=>{assert.equal(c.routedTopic("forecast"),"forecast");assert.equal(c.routedTopic("constructor"),null);assert.equal(c.routedTopic("execute"),null);}],
 ["question length",()=>assert.throws(()=>c.routeQuestion("a".repeat(241)))],
+["management route",()=>assert.equal(c.routeQuestion("Como está o caixa?"),"management")],
+["management missing",()=>assert.equal(ask("management",{}).missing_sources[0],"management")],
 ["guided mode",()=>assert.equal(r.mode,"deterministic-guided")],
 ["three available sources",()=>assert.equal(r.sections.length,3)],
 ["missing sources",()=>assert.ok(r.missing_sources.includes("finance"))],
