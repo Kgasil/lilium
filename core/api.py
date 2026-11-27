@@ -1,6 +1,9 @@
 """Loopback development API. Desktop enables its process-scoped access capability."""
 from pathlib import Path
 import sqlite3
+import json
+from starlette.concurrency import run_in_threadpool
+from .local_model import classify, MODELS
 from uuid import UUID
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, FileResponse, Response
@@ -128,6 +131,34 @@ async def analyze_input(request: Request, diagnostic=False):
         return quality(normalized) if diagnostic else analyze_csv(normalized)
     except DataError as exc:
         return error(exc.code, str(exc), 413 if exc.code == "size_limit" else 422, exc.row)
+
+
+@app.post("/api/v1/copilot/route")
+async def copilot_route(request: Request):
+    # Even direct development mode must not expose a model invocation endpoint.
+    if app.state.session_token is None:
+        return error("session_required", "Use the private Desktop session.", 403)
+    if request.headers.get("origin") != str(request.base_url).rstrip("/"):
+        return error("origin", "Only same-origin requests are allowed.", 403)
+    if request.headers.get("content-type", "").split(";", 1)[0].strip().lower() != "application/json":
+        return error("media_type", "Send JSON.", 415)
+    raw = bytearray()
+    async for chunk in request.stream():
+        if len(raw) + len(chunk) > 2048:
+            return error("size_limit", "Maximum request size is 2 KiB.", 413)
+        raw.extend(chunk)
+    try:
+        body = json.loads(raw)
+        if not isinstance(body, dict) or set(body) != {"question", "model", "consent"} or body["consent"] is not True:
+            raise ValueError()
+        if not isinstance(body["question"], str) or not body["question"].strip() or len(body["question"]) > 240:
+            raise ValueError()
+        if not isinstance(body["model"], str) or body["model"] not in MODELS:
+            raise ValueError()
+    except (ValueError, UnicodeError, TypeError):
+        return error("invalid_question", "Use an allowed local model, a short question and explicit consent.", 422)
+    topic = await run_in_threadpool(classify, body["question"], body["model"])
+    return {"topic": topic, "mode": "local-model-router" if topic else "unavailable"}
 
 
 @app.post("/api/v1/quality")

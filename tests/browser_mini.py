@@ -35,6 +35,9 @@ with local_site() as origin, sync_playwright() as p:
     page.on('request', lambda request: external.append(request.url) if request.url.startswith(('https://', 'http://')) and not request.url.startswith(origin + '/') else None)
     page.goto(origin + '/popup.html')
     expect(page.get_by_label('Ferramenta')).to_have_value('profit')
+    assert page.locator('body').evaluate("e => getComputedStyle(e).backgroundColor") == 'rgb(48, 36, 47)'
+    assert page.locator('html').evaluate("e => getComputedStyle(e).colorScheme") == 'dark'
+    assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
 
     def calculate(tool, values):
         page.locator('#tool').select_option(tool)

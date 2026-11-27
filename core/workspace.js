@@ -30,12 +30,30 @@ async function localFetch(url, options={}) {
  }
  return response;
 }
-const $=id=>document.getElementById(id);const sample="date,revenue,cost\n2026-01-01,10000,6000\n2026-02-01,11200,7440\n2026-03-01,12000,7800";const money=x=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(x/100);const pct=x=>x===null?'N/A':x.replace('.',',')+'%';let last=null,rev=0,selectedFile=null,lastPayload=null;function reset(){rev++;last=null;lastPayload=null;currentView=null;$('overview-empty').hidden=false;$('quality').hidden=true;$('save').hidden=true;$('results').hidden=true;$('status').textContent='';}let currentView=null;function show(data){for(const id of ['from','to']){const select=$(id);select.replaceChildren();const all=document.createElement('option');all.value='';all.textContent=id==='from'?'Início':'Fim';select.append(all);for(const m of data.months){const o=document.createElement('option');o.value=m.month;o.textContent=m.month;select.append(o)}}renderPeriod(data,'','');$('overview-empty').hidden=true;$('results').hidden=false;}
-function renderPeriod(data,from,to){const view=LiliumDashboard.selectPeriod(data,from,to);currentView=view;$('metrics').replaceChildren();for(const [name,value] of [['Receita',money(view.totals.revenue_cents)],['Custos',money(view.totals.cost_cents)],['Resultado',money(view.totals.result_cents)],['Margem',pct(view.totals.margin_pct)]]){const box=document.createElement('div');box.className='kpi';const label=document.createElement('span');label.textContent=name;const strong=document.createElement('strong');strong.textContent=view.months.length?value:'—';box.append(label,strong);$('metrics').append(box)}$('rows').replaceChildren();for(const m of view.months){const tr=document.createElement('tr');for(const v of [m.month,money(m.revenue_cents),money(m.cost_cents),money(m.result_cents),pct(m.margin_pct)]){const td=document.createElement('td');td.textContent=v;tr.append(td)}$('rows').append(tr)}$('bars').replaceChildren();const scale=LiliumDashboard.chartScale(view.months);for(const m of view.months.slice(-24)){const row=document.createElement('div');row.className='bar-row';const label=document.createElement('small');label.textContent=m.month;const pair=document.createElement('div');pair.className='bar-pair';for(const [v,cls] of [[m.revenue_cents,'bar'],[m.cost_cents,'bar cost']]){const track=document.createElement('div');track.className='bar-track';const b=document.createElement('div');b.className=cls;b.style.width=(100*v/scale)+'%';track.append(b);pair.append(track)}row.append(label,pair);$('bars').append(row)}$('period-note').textContent=view.months.length?view.months.length+' meses com registros. O filtro não altera nem limita o histórico salvo.':'Nenhum mês com registros no intervalo.';$('export-csv').disabled=!view.months.length;}
+const $=id=>document.getElementById(id);const sample="date,revenue,cost\n2026-01-01,10000,6000\n2026-02-01,11200,7440\n2026-03-01,12000,7800";const money=x=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(x/100);const pct=x=>x===null?'N/A':x.replace('.',',')+'%';let last=null,rev=0,selectedFile=null,lastPayload=null,lastQuality=null;function reset(){rev++;last=null;lastPayload=null;lastQuality=null;currentView=null;$('margin-target').value='';$('chart-mode').value='comparison';$('overview-empty').hidden=false;$('quality').hidden=true;$('save').hidden=true;$('results').hidden=true;$('status').textContent='';}let currentView=null;function show(data){for(const id of ['from','to']){const select=$(id);select.replaceChildren();const all=document.createElement('option');all.value='';all.textContent=id==='from'?'Início':'Fim';select.append(all);for(const m of data.months){const o=document.createElement('option');o.value=m.month;o.textContent=m.month;select.append(o)}}renderPeriod(data,'','');$('overview-empty').hidden=true;$('results').hidden=false;}
+function renderPeriod(data,from,to){const view=LiliumDashboard.selectPeriod(data,from,to);currentView=view;$('metrics').replaceChildren();for(const [name,value] of [['Receita',money(view.totals.revenue_cents)],['Custos',money(view.totals.cost_cents)],['Resultado',money(view.totals.result_cents)],['Margem',pct(view.totals.margin_pct)]]){const box=document.createElement('div');box.className='kpi';const label=document.createElement('span');label.textContent=name;const strong=document.createElement('strong');strong.textContent=view.months.length?value:'—';box.append(label,strong);$('metrics').append(box)}$('rows').replaceChildren();for(const m of view.months){const tr=document.createElement('tr');for(const v of [m.month,money(m.revenue_cents),money(m.cost_cents),money(m.result_cents),pct(m.margin_pct)]){const td=document.createElement('td');td.textContent=v;tr.append(td)}$('rows').append(tr)}renderDataChart();renderMarginTarget();$('period-note').textContent=view.months.length?view.months.length+' meses com registros. O filtro não altera nem limita o histórico salvo.':'Nenhum mês com registros no intervalo.';$('export-csv').disabled=!view.months.length;}
+function renderMarginTarget(){
+ const raw=$('margin-target').value.trim(),out=$('margin-target-status');
+ if(!raw){out.textContent='Defina uma meta opcional para o período.';return;}
+ if(!currentView){out.textContent='Sem análise disponível.';return;}
+ try{const x=LiliumDashboard.marginTarget(currentView,raw);out.textContent=x.status==='unavailable'?'Margem indisponível para este período.':(x.status==='met'?'Meta atingida':'Abaixo da meta')+' · diferença: '+x.gap.replace('.',',')+' p.p.';}catch(e){out.textContent=e.message;}
+}
+function renderDataChart(){
+ if(!currentView)return;
+ const mode=$('chart-mode').value,chart=LiliumDashboard.chartSeries(currentView.months,mode);
+ $('chart-heading').textContent=mode==='result'?'Resultado mensal (magnitude e sinal)':'Receita e custos por mês';
+ const legend=$('chart-legend');legend.className='legend'+(mode==='result'?' result':'');legend.replaceChildren();
+ for(const name of mode==='result'?['Resultado não negativo','Resultado negativo']:['Receita','Custos']){const label=document.createElement('span');label.textContent=name;legend.append(label);}
+ $('bars').replaceChildren();
+ for(const r of chart.rows){const row=document.createElement('div');row.className='bar-row';const label=document.createElement('small');label.textContent=r.month;const pair=document.createElement('div');pair.className='bar-pair';for(const v of r.values){const track=document.createElement('div');track.className='bar-track';const bar=document.createElement('div');bar.className='bar '+v.kind;bar.style.width=(100*Math.abs(v.value)/chart.scale)+'%';track.title=money(v.value);track.append(bar);pair.append(track);}row.append(label,pair);$('bars').append(row);}
+}
+$('margin-target').addEventListener('input',renderMarginTarget);
+$('chart-mode').addEventListener('change',renderDataChart);
 $('apply').onclick=()=>{if(!last)return;try{renderPeriod(last,$('from').value,$('to').value)}catch{$('period-note').textContent='Período inválido. O início deve ser anterior ou igual ao fim.';}};$('clear').onclick=()=>{if(!last)return;$('from').value=$('to').value='';renderPeriod(last,'','');};
 $('export-csv').onclick=()=>{if(!currentView||!currentView.months.length)return;const url=URL.createObjectURL(new Blob([LiliumDashboard.exportMonthly(currentView)],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='lilium-monthly.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};const XLSX='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 function payload(){return selectedFile?{body:selectedFile,type:selectedFile.name.toLowerCase().endsWith('.xlsx')?XLSX:'text/csv'}:{body:$('csv').value,type:'text/csv; charset=utf-8'};}
-function showQuality(q){$('quality-summary').textContent=q.rows+' linhas · '+q.valid_rows+' válidas · '+q.invalid_rows+' inválidas · '+q.possible_duplicates+' possíveis duplicatas · '+q.zero_revenue_rows+' com receita zero.';$('quality-rows').replaceChildren();const labels={columns:'Número incorreto de colunas',date:'Data inválida',amount:'Valor monetário inválido',row_limit:'Linha vazia ou inválida',possible_duplicate:'Possível duplicata',zero_revenue:'Receita zero'};for(const i of q.issues){const tr=document.createElement('tr');for(const v of [i.row,i.severity==='error'?'Erro':'Alerta',labels[i.code]||i.code]){const td=document.createElement('td');td.textContent=v;tr.append(td)}$('quality-rows').append(tr)}$('quality-note').textContent=q.issues_truncated?'Exibindo os primeiros 100 apontamentos.':'';$('quality').hidden=false;}
+function showQuality(q){lastQuality=q;$('quality-summary').textContent=q.rows+' linhas · '+q.valid_rows+' válidas · '+q.invalid_rows+' inválidas · '+q.possible_duplicates+' possíveis duplicatas · '+q.zero_revenue_rows+' com receita zero.';$('quality-rows').replaceChildren();const labels={columns:'Número incorreto de colunas',date:'Data inválida',amount:'Valor monetário inválido',row_limit:'Linha vazia ou inválida',possible_duplicate:'Possível duplicata',zero_revenue:'Receita zero'};for(const i of q.issues){const tr=document.createElement('tr');for(const v of [i.row,i.severity==='error'?'Erro':'Alerta',labels[i.code]||i.code]){const td=document.createElement('td');td.textContent=v;tr.append(td)}$('quality-rows').append(tr)}$('quality-note').textContent=q.issues_truncated?'Exibindo os primeiros 100 apontamentos.':'';$('quality').hidden=false;}
+$('quality-export').onclick=()=>{if(!lastQuality)return;const url=URL.createObjectURL(new Blob([JSON.stringify({schema_version:'1.0',kind:'lilium.quality',...lastQuality},null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='lilium-quality.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
 async function run(onlyQuality=false){reset();const seq=rev,p=payload();const size=typeof p.body==='string'?new TextEncoder().encode(p.body).length:p.body.size;if(size>1048576){$('status').textContent='Limite de 1 MiB.';return;}$('run').disabled=$('check').disabled=true;try{const send=async url=>{const res=await localFetch(url,{method:'POST',headers:{'Content-Type':p.type},body:p.body});const data=await res.json();if(!res.ok)throw Error((data.error?.message||'Falha na validação.')+(data.error?.row?' Linha '+data.error.row:''));return data};const q=await send('/api/v1/quality');if(seq!==rev)return;showQuality(q);if(!q.can_analyze){$('status').textContent='Corrija as linhas inválidas antes de analisar.';return;}if(onlyQuality){$('status').textContent='Diagnóstico concluído.';return;}const data=await send('/api/v1/analyze');if(seq!==rev)return;last=data;lastPayload=p;show(data);$('save').hidden=false;$('overview').scrollIntoView({block:'start'});$('status').textContent=data.rows+' linhas válidas.';}catch(e){if(seq===rev)$('status').textContent=e.message||'Não foi possível acessar a API local.';}finally{$('run').disabled=$('check').disabled=false;}}
 $('csv').addEventListener('input',reset);$('sample').onclick=()=>{selectedFile=null;$('file').value='';$('csv').disabled=false;$('csv').value=sample;$('source').textContent='Fonte: texto CSV.';reset()};$('file').onchange=()=>{reset();selectedFile=null;$('csv').disabled=false;$('csv').value='';const f=$('file').files[0];$('source').textContent='Fonte: texto CSV.';if(!f)return;if(!/\.(csv|xlsx)$/i.test(f.name)||f.size>1048576){$('file').value='';$('status').textContent='Escolha CSV ou XLSX de até 1 MiB.';return;}selectedFile=f;$('csv').disabled=true;$('source').textContent='Fonte: '+f.name;};$('run').onclick=()=>run(false);$('check').onclick=()=>run(true);$('export').onclick=()=>{if(!last)return;const url=URL.createObjectURL(new Blob([JSON.stringify(last,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='lilium-analysis.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};$('csv').value=sample;
 let historySeq=0, saving=false;
@@ -46,14 +64,36 @@ async function deleteHistory(id){if(!confirm('Excluir esta análise do históric
 $('save').onclick=async()=>{if(!last||!lastPayload||saving||$('save').hidden)return;saving=true;$('save').disabled=true;const seq=rev,p=lastPayload;try{const res=await localFetch('/api/v1/history',{method:'POST',headers:{'Content-Type':p.type},body:p.body});const data=await res.json();if(!res.ok)throw Error(data.error?.message||'Falha ao salvar.');if(seq===rev){$('save').hidden=true;$('status').textContent='Análise salva localmente.';}await refreshHistory();}catch(e){if(seq===rev)$('status').textContent=e.message;}finally{saving=false;$('save').disabled=false;}};
 $('refresh').onclick=refreshHistory;refreshHistory();
 
-let financeReport=null;
+let financeReport=null,managementReport=null;
 const fmoney=v=>LiliumFinance.formatBRL(v), fpercent=v=>v===null?'N/A':v.replace('.',',')+'%', funits=v=>v===null?'Inviável nas premissas':BigInt(v).toLocaleString('pt-BR')+' un.';
 function financeCards(id,items){const target=$(id);target.replaceChildren();for(const [name,value] of items){const card=document.createElement('div');card.className='kpi';const label=document.createElement('span');label.textContent=name;const strong=document.createElement('strong');strong.textContent=value;card.append(label,strong);target.append(card);}target.hidden=false;}
 $('pricing-form').addEventListener('input',()=>{$('pricing-result').hidden=true;$('pricing-status').textContent='';});
 $('pricing-form').addEventListener('submit',e=>{e.preventDefault();$('pricing-result').hidden=true;try{const p=LiliumFinance.pricing($('price-cost').value,$('price-margin').value);financeCards('pricing-result',[['Preço mínimo',fmoney(p.price_cents)],['Contribuição unitária',fmoney(p.contribution_cents)],['Margem efetiva',fpercent(p.margin_pct)]]);$('pricing-status').textContent='Preço arredondado para cima ao centavo.';}catch(err){$('pricing-status').textContent=err.message;}});
-$('finance-form').addEventListener('input',()=>{financeReport=null;$('finance-export').disabled=true;$('finance-result').hidden=true;$('finance-status').textContent='';});
-$('finance-form').addEventListener('submit',e=>{e.preventDefault();financeReport=null;$('finance-export').disabled=true;$('finance-result').hidden=true;try{const inputs=Object.fromEntries(['price','variable','fixed','quantity','fee','target'].map(k=>[k,$('sim-'+k).value.trim()]));const s=LiliumFinance.simulate(inputs);financeCards('finance-result',[['Receita simulada',fmoney(s.revenue_cents)],['Custos variáveis',fmoney(s.variable_cents)],['Taxas de venda',fmoney(s.fees_cents)],['Custos fixos',fmoney(s.fixed_cents)],['Resultado estimado',fmoney(s.result_cents)],['Margem de resultado',fpercent(s.result_margin_pct)],['Contribuição unitária',fmoney(s.unit_contribution_cents)],['Margem de contribuição',fpercent(s.contribution_margin_pct)],['Ponto de equilíbrio',funits(s.break_even_units)],['Vendas para atingir a meta',funits(s.target_units)]]);$('finance-status').textContent=BigInt(s.result_cents)<0n?'O cenário apresenta resultado negativo.':BigInt(s.result_cents)===0n?'Receitas e custos estimados se equilibram.':'Cenário com resultado positivo nas premissas informadas.';financeReport={schema_version:'1.0',kind:'single-product-monthly-simulation',currency:'BRL',inputs,results:s,assumptions:['Constant unit price and costs','Percentage fee rounded half-up per unit','Fixed monthly costs','Not a forecast or accounting statement']};$('finance-export').disabled=false;}catch(err){$('finance-status').textContent=err.message;}});
+$('finance-form').addEventListener('input',()=>{clearScenarios();financeReport=null;$('finance-export').disabled=true;$('finance-result').hidden=true;$('finance-status').textContent='';});
+$('finance-form').addEventListener('submit',e=>{e.preventDefault();clearScenarios();financeReport=null;$('finance-export').disabled=true;$('finance-result').hidden=true;try{const inputs=Object.fromEntries(['price','variable','fixed','quantity','fee','target'].map(k=>[k,$('sim-'+k).value.trim()]));const s=LiliumFinance.simulate(inputs);financeCards('finance-result',[['Receita simulada',fmoney(s.revenue_cents)],['Custos variáveis',fmoney(s.variable_cents)],['Taxas de venda',fmoney(s.fees_cents)],['Custos fixos',fmoney(s.fixed_cents)],['Resultado estimado',fmoney(s.result_cents)],['Margem de resultado',fpercent(s.result_margin_pct)],['Contribuição unitária',fmoney(s.unit_contribution_cents)],['Margem de contribuição',fpercent(s.contribution_margin_pct)],['Ponto de equilíbrio',funits(s.break_even_units)],['Vendas para atingir a meta',funits(s.target_units)]]);$('finance-status').textContent=BigInt(s.result_cents)<0n?'O cenário apresenta resultado negativo.':BigInt(s.result_cents)===0n?'Receitas e custos estimados se equilibram.':'Cenário com resultado positivo nas premissas informadas.';financeReport={schema_version:'1.0',kind:'single-product-monthly-simulation',currency:'BRL',inputs,results:s,assumptions:['Constant unit price and costs','Percentage fee rounded half-up per unit','Fixed monthly costs','Not a forecast or accounting statement']};$('finance-export').disabled=false;}catch(err){$('finance-status').textContent=err.message;}});
 $('finance-export').onclick=()=>{if(!financeReport)return;const url=URL.createObjectURL(new Blob([JSON.stringify(financeReport,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='lilium-finance-scenario.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+
+function clearScenarios(){
+ if(financeReport?.scenarios){const {scenarios,...rest}=financeReport;financeReport=rest;}
+ $('scenario-result').hidden=true;$('scenario-status').textContent='';
+}
+for(const id of ['scenario-low','scenario-high'])$(id).addEventListener('input',clearScenarios);
+$('scenario-run').onclick=()=>{clearScenarios();try{
+ if(!financeReport)throw Error('Calcule a simulação mensal primeiro.');
+ const scenarios=LiliumFinance.compareScenarios(financeReport.inputs,$('scenario-low').value,$('scenario-high').value);
+ financeReport={...financeReport,scenarios};
+ financeCards('scenario-result',scenarios.map(x=>[x.label+' · '+x.quantity+' un.',fmoney(x.result_cents)]));
+ $('scenario-status').textContent='Resultados hipotéticos; somente o volume varia.';
+ }catch(e){$('scenario-status').textContent=e.message;}};
+function clearManagement(){managementReport=null;$('management-result').hidden=true;$('management-export').disabled=true;$('management-status').textContent='';}
+$('management-form').addEventListener('input',clearManagement);
+$('management-form').addEventListener('submit',e=>{e.preventDefault();clearManagement();try{
+ const input=Object.fromEntries(["revenue","deductions","cogs","expenses","other_income","other_expense","tax","opening","receipts","payments"].map(k=>[k,$('mgmt-'+k).value]));input.month=$('mgmt-month').value;
+ const r=LiliumFinance.management(input),d=r.dre,c=r.cash;
+ financeCards('management-result',[['Receita líquida',fmoney(d.net_revenue)],['Resultado bruto',fmoney(d.gross_profit)],['Resultado operacional',fmoney(d.operating_result)],['Resultado gerencial',fmoney(d.result)],['Margem líquida',fpercent(r.margin_pct)],['Saldo inicial de caixa',fmoney(c.opening)],['Entradas de caixa',fmoney(c.receipts)],['Saídas de caixa',fmoney(c.payments)],['Movimentação líquida',fmoney(c.flow)],['Saldo final de caixa',fmoney(c.closing)]]);
+ managementReport=r;$('management-export').disabled=false;$('management-status').textContent='Mês '+r.month+' · DRE e caixa calculados separadamente.';
+ }catch(e){$('management-status').textContent=e.message;}});
+$('management-export').onclick=()=>{if(managementReport)stExport(managementReport,'lilium-management.json');};
 
 let salesRows=null,salesView=null,salesRevision=0;
 const salesSample="date,order_id,product,quantity,unit_price\n2026-01-05,A1,Café,2,25.00\n2026-01-05,A1,Bolo,1,10.00\n2026-02-01,A2,Café,3,25.00\n2026-02-02,A3,Chá,1,5.00";
@@ -148,7 +188,7 @@ function repRender(report){
  view.append(repNode('small','K&G Vision · Lilium'));view.hidden=false;
 }
 $('reports-generate').onclick=()=>{repReset();try{
- const sources={insights:currentView,finance:financeReport,sales:salesView,operations:opsView,strategy:strategyReport,actions:actionReport};
+ const sources={insights:currentView,finance:financeReport,sales:salesView,operations:opsView,strategy:strategyReport,actions:actionReport,management:managementReport};
  const selected=LiliumReports.MODULES.filter(k=>$('reports-'+k).checked);
  const report=LiliumReports.compose(sources,selected,{title:$('reports-title').value,generated_at:new Date().toISOString()});
  repRender(report);executiveReport=report;
@@ -223,7 +263,7 @@ $('flow-rules').value=flowSample;flowQueueRender();
 
 let connectData=null,connectPacket=null,connectRev=0,connectPackageRev=0;
 const connectValidators={validDate:LiliumSales.validDate,sales:LiliumSales.parse,forecast:LiliumForecast.parse};
-const connectNames={insights:'Insights',sales:'Sales',forecast:'Forecast'};
+const connectNames={insights:'Insights',sales:'Sales',forecast:'Forecast',management:'DRE e caixa'};
 function connectReset(){connectPacket=null;$('connect-result').hidden=true;$('connect-transfer-status').textContent='';}
 function connectMapReset(){connectRev++;connectData=null;connectReset();$('connect-map').replaceChildren();$('connect-normalize').disabled=true;$('connect-status').textContent='';}
 $('connect-raw').addEventListener('input',connectMapReset);$('connect-sep').addEventListener('change',connectMapReset);$('connect-target').addEventListener('change',connectMapReset);$('connect-decimal').addEventListener('change',connectReset);
@@ -255,11 +295,11 @@ $('connect-apply').onclick=()=>{const p=connectPacket;if(!p||!confirm('Substitui
 };
 $('connect-sample').click();
 
-let copilotResponse=null;
+let copilotResponse=null,chatTopic=null,chatEpoch=0,chatBusy=false;
 const copilotDeps={reports:LiliumReports,flow:LiliumFlow};
-const copilotSources=()=>({insights:currentView,finance:financeReport,sales:salesView,operations:opsView,strategy:strategyReport,forecast:forecastReport});
+const copilotSources=()=>({insights:currentView,finance:financeReport,sales:salesView,operations:opsView,strategy:strategyReport,forecast:forecastReport,management:managementReport});
 const copilotLabels={insights:'Insights',finance:'Finance',sales:'Sales',operations:'Operations',strategy:'Strategy',forecast:'Forecast'};
-function cpReset(){copilotResponse=null;$('copilot-results').hidden=true;$('copilot-export').disabled=true;$('copilot-status').textContent='';$('copilot-forward-status').textContent='';}
+function cpReset(){chatEpoch++;copilotResponse=null;$('copilot-results').hidden=true;$('copilot-export').disabled=true;$('copilot-status').textContent='';$('copilot-forward-status').textContent='';}
 function cpDefaults(){cpReset();$('copilot-rules').value=[LiliumFlow.HEADER,...LiliumCopilot.DEFAULT_RULES.map(r=>r.join(','))].join('\n');}
 for(const [key,label] of Object.entries(LiliumCopilot.TOPICS)){const o=repNode('option',label);o.value=key;$('copilot-topic').append(o);}
 $('copilot-topic').onchange=cpReset;$('copilot-rules').oninput=cpReset;$('copilot-defaults').onclick=cpDefaults;
@@ -286,6 +326,41 @@ function cpRender(report){
  $('copilot-results').hidden=false;
 }
 $('copilot-run').onclick=()=>{cpReset();try{const report=LiliumCopilot.explain($('copilot-topic').value,copilotSources(),copilotDeps,new Date().toISOString(),$('copilot-rules').value);cpRender(report);copilotResponse=report;$('copilot-export').disabled=false;$('copilot-status').textContent=report.sections.length+' fontes exibidas; '+report.evaluated_rules+' regras avaliadas; '+report.suggestions.length+' sugestões.';}catch(e){$('copilot-status').textContent=e.message;}};
+function appendChat(question,topic,mode){
+ const box=$('copilot-chat'),turn=document.createElement('article');
+ turn.append(repNode('h4',question),repNode('p',LiliumCopilot.TOPICS[topic]+' · '+mode+' · veja os indicadores e sugestões abaixo.'));
+ box.append(turn);while(box.children.length>8)box.firstElementChild.remove();
+}
+$('copilot-ask').onclick=async()=>{
+ if(chatBusy)return;
+ const question=$('copilot-question').value.trim(),status=$('copilot-chat-status');
+ let topic;
+ try{topic=LiliumCopilot.routeQuestion(question,chatTopic);}catch(e){status.textContent=e.message;return;}
+ cpReset();const epoch=chatEpoch,initialSources=copilotSources();
+ chatBusy=true;$('copilot-ask').disabled=true;
+ let mode='roteamento por regras';
+ try{
+  if($('copilot-consent').checked){
+   status.textContent='Consultando modelo local para identificar o tópico...';
+   try{
+    const res=await localFetch('/api/v1/copilot/route',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question,model:$('copilot-model').value,consent:true})});
+    if(res.ok){const data=await res.json();const routed=LiliumCopilot.routedTopic(data.topic);if(routed){topic=routed;mode='tópico escolhido pelo modelo local';}else mode='modelo indisponível; regras locais';}
+    else mode='modelo indisponível; regras locais';
+   }catch{mode='modelo indisponível; regras locais';}
+  }
+  if(epoch!==chatEpoch)return;
+  const sources=copilotSources();
+  if(Object.keys(sources).some(k=>sources[k]!==initialSources[k])){status.textContent='Os indicadores mudaram. Pergunte novamente.';return;}
+  if(!topic){status.textContent='Não identifiquei um tópico único. Escolha uma pergunta guiada ou reformule.';return;}
+  const report=LiliumCopilot.explain(topic,sources,copilotDeps,new Date().toISOString(),$('copilot-rules').value);
+  $('copilot-topic').value=topic;cpRender(report);copilotResponse=report;$('copilot-export').disabled=false;
+  chatTopic=topic;appendChat(question,topic,mode);
+  status.textContent=mode+' · resposta determinística · '+report.sections.length+' fontes; '+report.suggestions.length+' sugestões.';
+  $('copilot-question').value='';
+ }catch(e){if(epoch===chatEpoch)status.textContent=e.message||'Não foi possível consultar os indicadores.';}
+ finally{chatBusy=false;$('copilot-ask').disabled=false;$('copilot-consent').checked=false;}
+};
+$('copilot-clear-chat').onclick=()=>{cpReset();chatTopic=null;$('copilot-topic').value='overview';$('copilot-chat').replaceChildren();$('copilot-question').value='';$('copilot-consent').checked=false;$('copilot-chat-status').textContent='Conversa local limpa.';};
 $('copilot-export').onclick=()=>{if(copilotResponse)stExport(copilotResponse,'lilium-copilot-response.json');};
 cpDefaults();
 $('pilot-reset').onclick=()=>{if(confirm("Descartar os dados e resultados em memória? O histórico salvo será mantido."))location.reload();};
@@ -321,7 +396,7 @@ $('backup-merge').onclick=()=>{
 
 function markWorkspaceLocation(hash){
  const links=Array.from($('module-nav').querySelectorAll('a[href^="#"]'));
- const active=hash||'#getting-started';
+ const active=hash||'#overview';
  for(const a of links){
   if(a.getAttribute('href')===active)a.setAttribute('aria-current','location');
   else a.removeAttribute('aria-current');

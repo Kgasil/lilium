@@ -13,6 +13,18 @@ on:
       - 'diagnose-lilium.bat'
       - 'repair-lilium.bat'
       - '.github/workflows/desktop-windows.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'desktop/**'
+      - 'core/**'
+      - 'tests/**'
+      - 'requirements*.txt'
+      - 'build-lilium.bat'
+      - 'start-lilium.bat'
+      - 'diagnose-lilium.bat'
+      - 'repair-lilium.bat'
+      - '.github/workflows/desktop-windows.yml'
 permissions:
   contents: read
 jobs:

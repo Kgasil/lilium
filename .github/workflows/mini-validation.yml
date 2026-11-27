@@ -8,6 +8,13 @@ on:
       - 'tests/browser_mini.py'
       - 'tests/verify_mini_original.py'
       - '.github/workflows/mini-validation.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'extension/**'
+      - 'tests/browser_mini.py'
+      - 'tests/verify_mini_original.py'
+      - '.github/workflows/mini-validation.yml'
 permissions:
   contents: read
 jobs:
@@ -22,8 +29,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Checkout original distributed Mini separately
+        uses: actions/checkout@v4
+        with:
+          ref: 447d7414f20e28f6c0440647f2b7be71fc44e71d
+          path: original-mini
+          persist-credentials: false
       - name: Verify pinned Mini runtime and temporary build
-        run: python tests/verify_mini_original.py
+        run: python tests/verify_mini_original.py original-mini/extension
       - name: Verify JavaScript syntax
         run: node --check extension/math.js && node --check extension/popup.js
       - name: Calculation regression

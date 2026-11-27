@@ -24,6 +24,20 @@ function exportMonthly(view){
   return ["month,revenue_brl,cost_brl,result_brl,margin_pct",...view.months.map(m=>[m.month,decimal(m.revenue_cents),decimal(m.cost_cents),decimal(m.result_cents),m.margin_pct??""].join(","))].join("\r\n")+"\r\n";
 }
 function chartScale(months){return Math.max(1,...months.flatMap(m=>[m.revenue_cents,m.cost_cents]));}
-const api={margin,selectPeriod,decimal,exportMonthly,chartScale};
+function marginTarget(view,raw){
+  if(typeof raw!=="string"||!/^\d{1,3}(?:[.,]\d{1,2})?$/.test(raw.trim()))throw Error("Informe uma meta de 0 a 100%, com até duas casas decimais.");
+  const [a,b=""]=raw.trim().replace(",",".").split(".");
+  const target=BigInt(a)*100n+BigInt((b+"00").slice(0,2));
+  if(target>10000n)throw Error("A meta deve estar entre 0 e 100%.");
+  if(!view.months.length||view.totals.margin_pct===null)return {status:"unavailable",gap:null};
+  const actual=BigInt(view.totals.margin_pct.replace(".",""));
+  return {status:actual>=target?"met":"below",gap:decimal(actual-target)};
+}
+function chartSeries(months,mode="comparison"){
+  if(!["comparison","result"].includes(mode))throw Error("Invalid chart mode");
+  const rows=months.slice(-24).map(m=>({month:m.month,values:mode==="result"?[{value:m.result_cents,kind:m.result_cents<0?"loss":"gain"}]:[{value:m.revenue_cents,kind:"revenue"},{value:m.cost_cents,kind:"cost"}]}));
+  return {rows,scale:Math.max(1,...rows.flatMap(r=>r.values.map(v=>Math.abs(v.value))))};
+}
+const api={margin,selectPeriod,decimal,exportMonthly,chartScale,marginTarget,chartSeries};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;else root.LiliumDashboard=Object.freeze(api);
 })(typeof globalThis!=="undefined"?globalThis:this);

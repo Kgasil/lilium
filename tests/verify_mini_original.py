@@ -4,13 +4,14 @@ from pathlib import Path
 import importlib.util
 import json
 import stat
+import sys
 import struct
 import tempfile
 import zipfile
 import zlib
 
 ROOT = Path(__file__).resolve().parents[1]
-EXT = ROOT / "extension"
+EXT = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else ROOT / "extension"
 EXPECTED = {
     "icon128.png": "1a205af5d49bcb54dc97f5d02b378727391c710e",
     "manifest.json": "e1abd929ef84c5088d6e65a2f02a549b59e5a109",
