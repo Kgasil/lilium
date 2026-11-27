@@ -1,5 +1,6 @@
 """Bounded local spreadsheet ingestion and non-destructive quality diagnostics."""
 from datetime import date, datetime, time
+import re
 from decimal import Decimal
 from io import BytesIO
 from zipfile import ZipFile
@@ -61,8 +62,65 @@ def xlsx_to_csv(raw):
         raise DataError('workbook', 'Invalid or unsupported XLSX workbook.') from None
 
 
+def reorder_canonical(raw):
+    """Reorder only the three unambiguous canonical column names; preserve invalid rows."""
+    if len(raw) > MAX_BYTES:
+        return raw
+    try:
+        lines = raw.decode('utf-8-sig').splitlines()
+    except UnicodeDecodeError:
+        return raw
+    if not lines:
+        return raw
+    names = [v.strip().lower() for v in lines[0].split(',')]
+    fields = SCHEMA.split(',')
+    if names == fields or len(names) != 3 or set(names) != set(fields):
+        return raw
+    order = [names.index(field) for field in fields]
+    converted = [SCHEMA]
+    for line in lines[1:]:
+        cells = line.split(',')
+        converted.append(','.join(cells[i] for i in order) if len(cells) == 3 else line)
+    return ('\n'.join(converted) + '\n').encode('utf-8')
+
+
+def localized_csv(raw):
+    """Explicit Portuguese header marks simple semicolon CSV with decimal comma."""
+    if len(raw) > MAX_BYTES:
+        return raw
+    try:
+        lines = raw.decode('utf-8-sig').splitlines()
+    except UnicodeDecodeError:
+        return raw
+    if not lines:
+        return raw
+    names = [x.strip().lower() for x in lines[0].split(';')]
+    fields = ['data', 'receita', 'custo']
+    if len(names) != 3 or set(names) != set(fields):
+        return raw
+    order = [names.index(field) for field in fields]
+    converted = [SCHEMA]
+    for number, line in enumerate(lines[1:], 2):
+        cells = line.split(';')
+        if len(cells) != 3 or '"' in line:
+            raise DataError('columns', 'Use three unquoted semicolon-separated fields.', number)
+        day, revenue, cost = [cells[i].strip() for i in order]
+        if re.fullmatch(r'[0-9]{2}/[0-9]{2}/[0-9]{4}', day):
+            d, m, y = day.split('/')
+            day = '-'.join((y, m, d))
+        def amount(value):
+            if re.fullmatch(r'[0-9]{1,9}(?:,[0-9]{1,2})?', value):
+                return value.replace(',', '.')
+            # Never interpret thousands separators or dot decimals in the locale format.
+            return 'invalid'
+        converted.append(','.join([day if ',' not in day else 'invalid', amount(revenue), amount(cost)]))
+    return ('\n'.join(converted) + '\n').encode('utf-8')
+
+
 def normalize(raw, media):
-    return xlsx_to_csv(raw) if media == XLSX else raw
+    if media == XLSX:
+        return reorder_canonical(xlsx_to_csv(raw))
+    return reorder_canonical(localized_csv(raw))
 
 
 def quality(raw):

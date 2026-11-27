@@ -32,6 +32,8 @@
 
 ## Current release status / Estado atual da liberação
 
+> **Data Intelligence candidate / Candidato de dados:** [Etapa 03](docs/stage-03-data-2026-11-27.md). CSV brasileiro explícito, colunas canônicas reordenadas, meta de margem, gráfico de resultado e diagnóstico JSON. Desktop source preview only; public Web Lab and Mini downloads unchanged. No release approval.
+
 > **Experience development / Desenvolvimento visual:** [Etapa 02 — escopo e critérios](docs/stage-02-experience-2026-11-27.md). The dark Workspace and Mini 0.1.2 are development candidates, not the approved distributed packages. / Workspace escuro e Mini 0.1.2 são candidatos de desenvolvimento, não os pacotes distribuídos aprovados. Current public links and versions below remain unchanged.
 
 **v0.14.0 — controlled acceptance only / somente aceitação controlada.** The designated Windows artifact is the remediated build from [run 45722415976](https://github.com/Kgasil/lilium/actions/runs/45722415976). Automated build, independent portable verification and focused browser review passed. Manual Windows acceptance, manual security/accessibility review and pilot approval remain open. The unsigned preview must not be used with real data; do not bypass OS warnings.
