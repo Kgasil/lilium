@@ -32,6 +32,16 @@
 
 ## Current release status / Estado atual da liberação
 
+> **Integration candidate / Candidato de integração:** [Etapa 06](docs/stage-06-integration-2026-11-27.md) · [Component matrix](docs/component-matrix.json). Web Lab synthetic dataset JSON → Desktop Connect; Mini 0.1.3 voluntary one-row CSV → Insights. Manual file handoff only; current public versions and pinned links unchanged.
+
+> **Business Intelligence candidate / Candidato empresarial:** [Etapa 05](docs/stage-05-business-2026-11-27.md). Simplified managerial DRE and cash, volume scenarios, separate evidence in Reports and Copilot. Development only; no public package changes.
+
+> **Copilot candidate / Candidato Copilot:** [Etapa 04](docs/stage-04-copilot-2026-11-27.md). Free-text topic routing by rules or optional local Ollama model; deterministic evidence and human-reviewed suggestions. No generative financial claims, external cloud integration or public package change. Local model execution still requires validation.
+
+> **Data Intelligence candidate / Candidato de dados:** [Etapa 03](docs/stage-03-data-2026-11-27.md). CSV brasileiro explícito, colunas canônicas reordenadas, meta de margem, gráfico de resultado e diagnóstico JSON. Desktop source preview only; public Web Lab and Mini downloads unchanged. No release approval.
+
+> **Experience development / Desenvolvimento visual:** [Etapa 02 — escopo e critérios](docs/stage-02-experience-2026-11-27.md). The dark Workspace and Mini 0.1.2 are development candidates, not the approved distributed packages. / Workspace escuro e Mini 0.1.2 são candidatos de desenvolvimento, não os pacotes distribuídos aprovados. Current public links and versions below remain unchanged.
+
 **v0.14.0 — controlled acceptance only / somente aceitação controlada.** The designated Windows artifact is the remediated build from [run 45722415976](https://github.com/Kgasil/lilium/actions/runs/45722415976). Automated build, independent portable verification and focused browser review passed. Manual Windows acceptance, manual security/accessibility review and pilot approval remain open. The unsigned preview must not be used with real data; do not bypass OS warnings.
 
 **Next action / Próxima ação:** [Windows acceptance guide](docs/clean-machine-validation.md) · [23-case manual acceptance matrix](docs/manual-acceptance-matrix.md) · [Release gate tracker #1](https://github.com/Kgasil/lilium/issues/1) · [Pilot handbook](docs/pilot-handbook.md).

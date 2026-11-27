@@ -14,6 +14,10 @@ K&G Vision introduces Lilium Web Lab 1.0, the first public demonstration edition
 
 The lab is for synthetic exercises only, not a commercial service, production SaaS, accounting system or connected AI. Version 1.0 applies solely to the public web lab. The unsigned Windows Desktop remains v0.14.0; detailed manual acceptance and security/accessibility review are open. The owner reported testing the application, without documented case outcomes. Do not distribute Desktop as V1.0 or use real data.
 
+## Candidato de integração / Integration candidate
+
+O candidato da Etapa 06 acrescenta download explícito do pacote `lilium.dataset` v1.0, aceito pelo Connect local. A edição pública atual continua com o CSV; nenhum pacote é enviado automaticamente. / Stage 06 adds explicit dataset download for local Connect; public edition remains unchanged until approval.
+
 ## Validation / Validação
 The [public lab workflow](https://github.com/Kgasil/lilium/actions/runs/45722416065) passed calculation/DOM checks and Chromium acceptance for the earlier lab implementation. This announcement changes documentation and presentation, not the calculation engines. Current deployment and post-announcement CI require separate confirmation. Desktop evidence is tracked in [Issue #1](https://github.com/Kgasil/lilium/issues/1).
 

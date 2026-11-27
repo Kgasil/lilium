@@ -16,6 +16,12 @@ const checks=[
 ["decimal exact",()=>assert.equal(api.decimal(-5),"-0.05")],
 ["CSV filtered",()=>assert.equal(api.exportMonthly(api.selectPeriod(data,"2026-02","2026-02")),"month,revenue_brl,cost_brl,result_brl,margin_pct\r\n2026-02,11200.00,7440.00,3760.00,33.57\r\n")],
 ["chart scale",()=>assert.equal(api.chartScale(data.months),1200000)],
+["target below",()=>assert.deepEqual(api.marginTarget(api.selectPeriod(data),"40,00"),{status:"below",gap:"-3.98"})],
+["target reached",()=>assert.deepEqual(api.marginTarget(api.selectPeriod(data),"36.02"),{status:"met",gap:"0.00"})],
+["target invalid",()=>{for(const v of ["101","-1","1.001","1,000",""])assert.throws(()=>api.marginTarget(api.selectPeriod(data),v));}],
+["target unavailable",()=>assert.equal(api.marginTarget(api.selectPeriod(data,"2025-01","2025-12"),"20").status,"unavailable")],
+["result chart negative",()=>assert.deepEqual(api.chartSeries([m("2026-01",10,20)],"result"),{rows:[{month:"2026-01",values:[{value:-10,kind:"loss"}]}],scale:10})],
+["chart bounded",()=>assert.equal(api.chartSeries(Array(30).fill(m("2026-01",10,2))).rows.length,24)],
 ["source unchanged",()=>{const old=JSON.stringify(data);api.selectPeriod(data,"2026-02","2026-02");assert.equal(JSON.stringify(data),old)}]
 ];
 for(const [name,run] of checks){run();console.log("PASS "+name);}
