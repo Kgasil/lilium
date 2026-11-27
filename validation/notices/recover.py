@@ -20,16 +20,20 @@ def read(url,host,limit):
 def notices(raw,filename,expected):
     require(digest(raw)==expected,"source archive hash mismatch")
     records={}
+    candidates=[]
     with tarfile.open(fileobj=io.BytesIO(raw),mode="r:gz") as z:
         for m in z:
             p=PurePosixPath(m.name)
-            if not m.isfile() or len(p.parts)!=2 or p.parts[0]!=filename.removesuffix(".tar.gz"): continue
-            if not re.fullmatch(r"(LICENSE|COPYING|NOTICE|COPYRIGHT|AUTHORS)([._-].*)?",p.name,re.I): continue
+            if not m.isfile(): continue
+            if re.search(r"licen[cs]e|copying|notice|copyright|authors",p.name,re.I): candidates.append(m.name)
+            if len(p.parts)!=2 or p.parts[0]!=filename.removesuffix(".tar.gz"): continue
+            if not re.fullmatch(r"(LICEN[CS]E|COPYING|NOTICE|COPYRIGHT|AUTHORS)([._-].*)?",p.name,re.I): continue
             require(p.name not in records and 0<m.size<=262144,"invalid notice member")
             data=z.extractfile(m).read()
             require(len(data)==m.size,"truncated notice")
             records[p.name]=data
-    require(any(re.match(r"(LICENSE|COPYING)",n,re.I) for n in records),"no explicit root license text")
+    print(filename,"notice-like paths:",json.dumps(candidates),flush=True)
+    require(any(re.match(r"(LICEN[CS]E|COPYING)",n,re.I) for n in records),"no explicit root license text")
     return records
 def main():
     out=Path(sys.argv[1]);out.mkdir(parents=True,exist_ok=True)
