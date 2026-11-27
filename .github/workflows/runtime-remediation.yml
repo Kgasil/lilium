@@ -16,10 +16,31 @@ jobs:
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.14.10'
-          architecture: x64
+      - name: Install exact upstream CPython after SHA-256 verification
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $installer = Join-Path $env:RUNNER_TEMP 'python-3.14.10-amd64.exe'
+          $target = Join-Path $env:RUNNER_TEMP 'lilium-cpython-31410'
+          Invoke-WebRequest -Uri 'https://www.python.org/ftp/python/3.14.10/python-3.14.10-amd64.exe' -OutFile $installer
+          $hash = (Get-FileHash -LiteralPath $installer -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($hash -ne '92480239264744fe0386a1bd8275786fefa126e3129e56a68e22b52c73329965') { throw 'Official installer SHA-256 mismatch' }
+          $signature = Get-AuthenticodeSignature -LiteralPath $installer
+          if ($signature.Status -ne 'Valid') { throw 'Official installer signature not valid' }
+          $proc = Start-Process -FilePath $installer -ArgumentList @('/quiet','InstallAllUsers=0',"TargetDir=`"$target`"",'Include_pip=1','Include_launcher=0','PrependPath=0','Include_test=0','Shortcuts=0') -Wait -PassThru
+          if ($proc.ExitCode -ne 0) { throw "CPython installer failed: $($proc.ExitCode)" }
+          if (-not (Test-Path (Join-Path $target 'python.exe'))) { throw 'Expected isolated interpreter missing' }
+          New-Item -ItemType Directory -Force runtime-evidence | Out-Null
+          @{installer_sha256=$hash;authenticode="$($signature.Status)";signer=$signature.SignerCertificate.Subject} | ConvertTo-Json | Set-Content -Encoding utf8 runtime-evidence/installer.json
+          $target >> $env:GITHUB_PATH
+          (Join-Path $target 'Scripts') >> $env:GITHUB_PATH
+          "LILIUM_EXPECTED_PYTHON=$target\python.exe" >> $env:GITHUB_ENV
+      - name: Confirm isolated interpreter selection
+        shell: pwsh
+        run: |
+          if ((Get-Command python.exe).Source -ne $env:LILIUM_EXPECTED_PYTHON) { throw 'Wrong interpreter selected' }
+          python -c "import sys,ssl,sqlite3; print(sys.executable,sys.version,ssl.OPENSSL_VERSION,sqlite3.sqlite_version)"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
