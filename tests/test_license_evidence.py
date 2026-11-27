@@ -3,8 +3,14 @@ import tempfile
 import unittest
 import zipfile
 from pathlib import Path
-from desktop.license_evidence import copy_notice, verify_archive, upstream_bytes, git_blob
+from desktop.license_evidence import copy_notice, verify_archive, upstream_bytes, git_blob, is_notice_name
 class NoticeTests(unittest.TestCase):
+    def test_license_spelling_and_authors(self):
+        for name in ('LICENSE.txt','LICENCE.rst','LICENCE.python','AUTHORS.rst','AUTHORS.txt','NOTICE'):
+            self.assertTrue(is_notice_name(name),name)
+        for name in ('LICENSED.py','AUTHORSHIP.py','some_LICENSE.txt','example.py'):
+            self.assertFalse(is_notice_name(name),name)
+
     def test_notice_archive_exact_bytes(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp)

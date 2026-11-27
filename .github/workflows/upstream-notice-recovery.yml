@@ -5,6 +5,8 @@ on:
     branches: [development/lilium-notice-recovery]
     paths:
       - 'validation/notices/**'
+      - 'desktop/license_evidence.py'
+      - 'tests/test_license_evidence.py'
       - '.github/workflows/upstream-notice-recovery.yml'
 permissions:
   contents: read
@@ -16,6 +18,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - name: Targeted collector unit tests (no executable build)
+        run: python3 -m unittest discover -s tests -p test_license_evidence.py -v
       - name: Recover verified source notices without installing or building
         run: python3 validation/notices/recover.py "$RUNNER_TEMP/notice-evidence"
       - uses: actions/upload-artifact@v4

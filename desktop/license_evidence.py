@@ -16,6 +16,9 @@ def sha(data): return hashlib.sha256(data).hexdigest()
 
 def git_blob(data): return hashlib.sha1(b"blob "+str(len(data)).encode()+b"\0"+data).hexdigest()
 
+def is_notice_name(name):
+    return re.fullmatch(r"(LICEN[CS]E|COPYING|NOTICE|COPYRIGHT|AUTHORS)([._-].*)?",name,re.I) is not None
+
 def copy_notice(dest,name,data,origin):
     require(re.fullmatch(r"[A-Za-z0-9._-]+",name) is not None and name not in {".",".."},"unsafe notice name")
     require(0<len(data)<=2*1024*1024,"empty or oversized notice")
@@ -50,7 +53,7 @@ def collect(bundle,evidence):
         for f in sorted(dist.files or [],key=str):
             parts=f.parts
             if not parts or not parts[0].endswith(".dist-info") or any(p in {".",".."} for p in parts): continue
-            if not ("licenses" in parts[1:-1] or re.match(r"^(LICENSE|COPYING|NOTICE|COPYRIGHT)([._-].*)?$",f.name,re.I)): continue
+            if not ("licenses" in parts[1:-1] or is_notice_name(f.name)): continue
             p=Path(dist.locate_file(f))
             require(p.is_file() and not p.is_symlink() and p.resolve().is_relative_to(root),"invalid distribution notice")
             seq+=1
