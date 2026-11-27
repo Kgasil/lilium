@@ -6,6 +6,20 @@ on:
     paths:
       - 'index.html'
       - 'demo.html'
+      - 'mini-privacy.html'
+      - 'assets/**'
+      - 'web/**'
+      - 'core/*.js'
+      - 'tests/public_*.test.js'
+      - 'tests/browser_public.py'
+      - '.github/workflows/public-lab.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'demo.html'
+      - 'mini-privacy.html'
+      - 'assets/**'
       - 'web/**'
       - 'core/*.js'
       - 'tests/public_*.test.js'

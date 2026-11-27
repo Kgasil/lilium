@@ -7,6 +7,12 @@ on:
       - 'requirements*.txt'
       - 'docs/validation/windows-build-*.txt'
       - '.github/workflows/dependency-audit.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'requirements*.txt'
+      - 'docs/validation/windows-build-*.txt'
+      - '.github/workflows/dependency-audit.yml'
 permissions:
   contents: read
 jobs:
