@@ -48,8 +48,16 @@ with local_site() as origin, sync_playwright() as p:
     calculate('profit', ['1000', '600'])
     expect(page.locator('#result-value')).to_contain_text('400,00')
     expect(page.locator('#detail')).to_contain_text('40%')
+    page.locator('#handoff-export').click()
+    expect(page.locator('#handoff-status')).to_contain_text('data válida')
+    page.locator('#handoff-date').fill('2026-11-27')
+    with page.expect_download() as handoff:
+        page.locator('#handoff-export').click()
+    assert handoff.value.suggested_filename == 'lilium-mini-insights.csv'
+    assert Path(handoff.value.path()).read_text(encoding='utf-8') == 'date,revenue,cost\n2026-11-27,1000.00,600.00\n'
     page.locator('#field0').fill('20')
     expect(page.locator('#result')).to_be_hidden()
+    expect(page.locator('#handoff')).to_be_hidden()
     calculate('profit', ['20', '30'])
     expect(page.locator('#result-value')).to_contain_text('10,00')
     expect(page.locator('#detail')).to_contain_text('-50%')

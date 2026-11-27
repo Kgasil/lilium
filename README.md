@@ -32,6 +32,8 @@
 
 ## Current release status / Estado atual da liberação
 
+> **Integration candidate / Candidato de integração:** [Etapa 06](docs/stage-06-integration-2026-11-27.md) · [Component matrix](docs/component-matrix.json). Web Lab synthetic dataset JSON → Desktop Connect; Mini 0.1.3 voluntary one-row CSV → Insights. Manual file handoff only; current public versions and pinned links unchanged.
+
 > **Business Intelligence candidate / Candidato empresarial:** [Etapa 05](docs/stage-05-business-2026-11-27.md). Simplified managerial DRE and cash, volume scenarios, separate evidence in Reports and Copilot. Development only; no public package changes.
 
 > **Copilot candidate / Candidato Copilot:** [Etapa 04](docs/stage-04-copilot-2026-11-27.md). Free-text topic routing by rules or optional local Ollama model; deterministic evidence and human-reviewed suggestions. No generative financial claims, external cloud integration or public package change. Local model execution still requires validation.
@@ -198,7 +200,7 @@ Formação de preços, simulação mensal, ponto de equilíbrio e metas, cinco c
 
 [![K&G Vision — GRAAL](https://raw.githubusercontent.com/Kgasil/kgasil.github.io/main/assets/kg-symbol.svg?v=20261126-2)](https://kgasil.github.io/) **GRAAL · Marco 01** — identidade integrada / integrated identity.
 
-**GRAAL — Construir / Build (Rubedo):** [Rubedo Research Workspace](https://kgasil.github.io/rubedo/research/) · [Precisão / Precision (R06)](https://kgasil.github.io/rubedo/research/#precisao) · [Monte Carlo (R07)](https://kgasil.github.io/rubedo/research/#monte-carlo). Novos modelos experimentais; validação atual pendente / Experimental additions; current validation pending.
+**GRAAL — Construir / Build (Rubedo):** [Rubedo Research Workspace](https://kgasil.github.io/rubedo/research/) · [Precisão / Precision (R06)](https://kgasil.github.io/rubedo/research/#precisao) · [Monte Carlo (R07)](https://kgasil.github.io/rubedo/research/#monte-carlo). Modelos experimentais; CI de integridade e interface registrada em 27/11/2026 ([evidência / evidence](https://github.com/Kgasil/rubedo/actions/runs/46007461543)), sem validação científica ou industrial. / Experimental models; package and interface CI recorded, no scientific or industrial validation.
 
 **Rubedo — edição 1.0 / 1.0 edition:** [Research Workspace 1.0](https://kgasil.github.io/rubedo/research/) · [Mini Lab 1.0.0](https://kgasil.github.io/rubedo/mini/) · [Mini Extension 1.0.0 — instalação manual / manual installation](https://kgasil.github.io/rubedo/#instalar). Edição experimental / Experimental edition.
 

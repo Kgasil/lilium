@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Lilium Mini",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Calculadoras empresariais locais. Sem conta ou permissões de acesso a sites.",
   "action": {
     "default_title": "Lilium Mini",

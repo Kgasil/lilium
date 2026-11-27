@@ -14,7 +14,8 @@ function evaluate(finance,starter,sales,forecast,kind,input){
  }
  throw Error("Unknown tool");
 }
-const api={evaluate};
+function dataset(connect,sales,csv){return connect.serialize(connect.make(csv,'insights',{validDate:sales.validDate}));}
+const api={evaluate,dataset};
 if(typeof module!=="undefined"&&module.exports){module.exports=api;return;}
 const $=id=>document.getElementById(id),deps=[root.LiliumFinance,root.LiliumStarter,root.LiliumSales,root.LiliumForecast];
 const lang=()=>document.documentElement.lang==="en"?"en":"pt";
@@ -39,13 +40,14 @@ function run(){
  try{
   current=evaluate(...deps,"scenario",{scenario:$("lab-scenario").value});
   output("lab-scenario-result",[[tr("Receita · 9 meses","Revenue · 9 months"),fmt(current.revenue_cents)],[tr("Custos estimados","Estimated costs"),fmt(current.cost_cents)],[tr("Resultado","Result"),fmt(current.result_cents)],[tr("Pedidos agregados fictícios","Synthetic aggregate orders"),String(current.orders)],[tr("Próximo mês estimado","Next-month estimate"),new Intl.NumberFormat(lang()==="en"?"en-US":"pt-BR",{style:"currency",currency:"BRL"}).format(current.future[0].value)]]);
-  $("lab-download").disabled=false;
- }catch(e){current=null;$("lab-scenario-result").replaceChildren();$("lab-download").disabled=true;}
+  $("lab-download").disabled=false;$("lab-package").disabled=false;
+ }catch(e){current=null;$("lab-scenario-result").replaceChildren();$("lab-download").disabled=true;$("lab-package").disabled=true;}
 }
 for(const id of ["lab-price-form","lab-monthly-form"])$(id).addEventListener("submit",e=>{e.preventDefault();run();});
 for(const id of ["lab-price-form","lab-monthly-form"])$(id).addEventListener("input",run);
 $("lab-scenario").addEventListener("change",run);
 $("lab-download").addEventListener("click",()=>{if(!current)return;const url=URL.createObjectURL(new Blob([current.csv],{type:"text/csv;charset=utf-8"}));const a=document.createElement("a");a.href=url;a.download="lilium-"+$("lab-scenario").value+"-sample.csv";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
+$("lab-package").addEventListener("click",()=>{if(!current)return;const raw=dataset(root.LiliumConnect,root.LiliumSales,current.csv);const url=URL.createObjectURL(new Blob([raw],{type:"application/json"}));const a=document.createElement("a");a.href=url;a.download="lilium-"+$("lab-scenario").value+"-dataset.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
 document.addEventListener("lilium-language",run);
 run();
 })(typeof globalThis!=="undefined"?globalThis:this);

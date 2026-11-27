@@ -3,6 +3,7 @@ from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 import threading
+import json
 from playwright.sync_api import sync_playwright, expect
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -41,6 +42,12 @@ def main():
             with page.expect_download() as download:
                 page.locator("#lab-download").click()
             assert download.value.suggested_filename == "lilium-restaurant-sample.csv"
+            with page.expect_download() as packet:
+                page.locator("#lab-package").click()
+            assert packet.value.suggested_filename == "lilium-restaurant-dataset.json"
+            payload = json.loads(Path(packet.value.path()).read_text(encoding="utf-8"))
+            assert payload["kind"] == "lilium.dataset" and payload["target"] == "insights"
+            assert payload["csv"] == Path(download.value.path()).read_text(encoding="utf-8")
             page.locator("#en").click()
             expect(page.locator("#lab-price-result")).to_contain_text("Estimated price")
             page.locator("#pt").click()
