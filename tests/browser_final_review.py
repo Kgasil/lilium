@@ -45,6 +45,15 @@ def main():
             # Visible form fields have associated labels or explicit ARIA names.
             unlabeled = page.evaluate("""() => Array.from(document.querySelectorAll('input:not([type=hidden]),select,textarea')).filter(e => e.getClientRects().length && !e.getAttribute('aria-label') && !e.getAttribute('aria-labelledby') && !Array.from(e.labels || []).some(l => l.textContent.trim())).map(e => e.id || e.tagName)""")
             assert not unlabeled, "Unlabelled visible controls: " + str(unlabeled)
+            # A question is displayed as literal text, not HTML, and no model is called by default.
+            question = "<em>margem</em>"
+            page.locator("#copilot-question").fill(question)
+            page.locator("#copilot-ask").click()
+            expect(page.locator("#copilot-chat")).to_contain_text(question)
+            assert page.locator("#copilot-chat em").count() == 0
+            expect(page.locator("#copilot-chat-status")).to_contain_text("resposta determinística")
+            page.locator("#copilot-clear-chat").click()
+            expect(page.locator("#copilot-chat")).to_be_empty()
             page.emulate_media(media="print")
             expect(page.locator("#reports-preview")).to_be_visible()
             expect(page.locator("#finance")).to_be_hidden()

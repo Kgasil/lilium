@@ -1,0 +1,8 @@
+# Etapa 06 — Ecosystem Integration
+Base 38a99e3676a6f8c382f3b93852a158eb8626a0eb; incorpora atualização main d92babb96cd0ad1b514709fdede3ee9ceae95e64. Sem publicação.
+- Web Lab: pacote sintético lilium.dataset/1.0 produzido pelo mesmo Connect, com CSV e contagem validados. Download explícito; abrir Desktop → Connect → Abrir pacote Lilium → Validar → Carregar → calcular no Insights.
+- Mini 0.1.3 candidato: após Resultado e margem, informar data e baixar CSV de uma linha; importar no Insights. Sem nova permissão, armazenamento automático ou chamadas remotas. Arquivo baixado permanece no dispositivo. Versão pública 0.1.1 e seu commit fixado intactos; 0.1.2 foi candidato visual.
+- Matriz de componentes separa edições públicas, prévia controlada e candidatos. GRAAL catálogo e distribuição continuam referência institucional, sem alteração nos demais repositórios.
+- CI anterior: 19/20 workflows passaram; Mini falhou em instalação Chromium por HTTP 403 do apt Microsoft; integridade histórica, sintaxe e cálculo passaram. Solicitado rerun; candidato usa bibliotecas do Ubuntu hospedado, mantém instalação Chromium e teste real obrigatórios. Sem mascarar falha.
+- Novos testes de roundtrip, download, privacidade e invalidação. CI final, instalação real Windows/Chrome/Edge, inferência real Ollama, acessibilidade e nota 9/10 pendentes. Sem sincronização automática, ERP/CRM, API externa ou assinatura digital.
+- PRs anteriores são registros cumulativos, não devem ser mescladas separadamente. A integração candidata incorpora alterações de acessibilidade, governança e evidência histórica Rubedo da main.

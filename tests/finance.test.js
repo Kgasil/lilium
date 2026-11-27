@@ -3,6 +3,11 @@ const f=require("../core/finance.js");
 const sample={price:"100",variable:"40",fixed:"2000",quantity:"100",fee:"5",target:"1000"};
 const sim=(v={})=>f.simulate({...sample,...v});
 const tests=[
+["management separate cash and DRE",()=>{const r=f.management({month:"2026-11",revenue:"10000",deductions:"500",cogs:"4000",expenses:"2000",other_income:"0",other_expense:"0",tax:"500",opening:"1000",receipts:"8000",payments:"7000"});assert.equal(r.dre.result,"300000");assert.equal(r.cash.closing,"200000");assert.equal(r.margin_pct,"31.58");}],
+["management negative cash",()=>{const r=f.management({month:"2026-11",revenue:"0",deductions:"0",cogs:"0",expenses:"1",other_income:"0",other_expense:"0",tax:"0",opening:"0",receipts:"0",payments:"1"});assert.equal(r.cash.closing,"-100");assert.equal(r.margin_pct,null);}],
+["management invalid month",()=>assert.throws(()=>f.management({month:"2026-13"}))],
+["scenario comparison",()=>assert.deepEqual(f.compareScenarios(sample,"80","120").map(x=>x.result_cents),["240000","350000","460000"])],
+["scenario bounds",()=>assert.throws(()=>f.compareScenarios(sample,"101","120"))],
 ["monthly revenue",()=>assert.equal(sim().revenue_cents,"1000000")],
 ["variable cost",()=>assert.equal(sim().variable_cents,"400000")],
 ["fee",()=>assert.equal(sim().fees_cents,"50000")],

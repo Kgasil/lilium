@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "project": "Lilium",
+  "pillar": "Evoluir",
+  "theme": "dark-rose",
+  "release_gate": "blocked-pending-evidence",
+  "components": [
+    {
+      "id": "web-lab",
+      "published_version": "1.0",
+      "candidate": "integration-source",
+      "channel": "https://kgasil.github.io/lilium/#lab"
+    },
+    {
+      "id": "desktop",
+      "published_version": null,
+      "controlled_preview": "0.14.0",
+      "candidate": "integration-source",
+      "channel": "controlled-acceptance",
+      "artifact_run": 45722415976
+    },
+    {
+      "id": "mini",
+      "published_version": "0.1.1",
+      "candidate": "0.1.3",
+      "channel": "manual-experimental",
+      "pinned_source": "447d7414f20e28f6c0440647f2b7be71fc44e71d"
+    }
+  ],
+  "handoffs": [
+    {
+      "from": "web-lab",
+      "to": "desktop-connect",
+      "format": "lilium.dataset/1.0",
+      "mode": "manual-file",
+      "synthetic_only": true
+    },
+    {
+      "from": "mini",
+      "to": "desktop-insights",
+      "format": "date,revenue,cost CSV",
+      "mode": "manual-file",
+      "synthetic_only": true
+    }
+  ],
+  "governance": "https://github.com/Kgasil/kgasil.github.io/blob/main/docs/graal-catalog.md",
+  "distribution": "https://kgasil.github.io/distribuicao.html",
+  "quality_matrix": "docs/quality-gate-2026-11-27.md"
+}

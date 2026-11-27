@@ -1,7 +1,7 @@
 /* Guided deterministic assistant. No language model, external calls, or autonomous execution. */
 (function(root){
 "use strict";
-const TOPICS={overview:"Resumo empresarial",insights:"Como estão receitas e custos?",finance:"O que indica a simulação financeira?",sales:"Como estão as vendas?",operations:"Onde está o gargalo estimado?",strategy:"Como estão as metas?",forecast:"O que indica a previsão?",actions:"Quais ações merecem revisão?"};
+const TOPICS={overview:"Resumo empresarial",insights:"Como estão receitas e custos?",finance:"O que indica a simulação financeira?",management:"Como estão DRE e caixa?",sales:"Como estão as vendas?",operations:"Onde está o gargalo estimado?",strategy:"Como estão as metas?",forecast:"O que indica a previsão?",actions:"Quais ações merecem revisão?"};
 const DEFAULT_RULES=[
  ["C_MARGIN","insights.margin","lt","20","Revisar composição dos custos e margem"],
  ["C_RESULT","finance.result","lt","0","Reavaliar premissas do cenário financeiro"],
@@ -19,6 +19,7 @@ function explain(topic,sources,deps,at,ruleText){
  checkTime(at);
  const {reports,flow}=deps;
  const selected=topic==="overview"?["insights","finance","sales","operations","strategy"]:topic==="actions"?[]:topic==="forecast"?[]:[topic];
+ if(topic==="overview"&&sources.management)selected.push("management");
  const sections=[],missing=[];
  for(const k of selected){
   if(sources[k]==null){missing.push(k);continue;}
@@ -34,7 +35,7 @@ function explain(topic,sources,deps,at,ruleText){
    const fmt=v=>f.unit==="BRL"?new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(v):number(v)+" un.";
    const chosen=f.comparison.find(m=>m.model===f.model);
    sections.push({source:"forecast",title:"Forecast",kind:"estimativa estatística",scope:"Validação "+f.validation.from+" a "+f.validation.to+"; horizonte "+f.horizon+" meses",metrics:[
-    {label:"Modelo",value:f.model_label},{label:"Próximo mês estimado",value:f.future[0].month+" · "+fmt(f.future[0].value)},{label:"MAE histórico de um passo",value:fmt(chosen.mae)},{label:"WAPE histórico",value:chosen.wape_pct===null?"N/A":number(chosen.wape_pct)+"%"}
+    {label:"Modelo",value:f.model_label},{label:"Próximo mês estimado",value:f.future[0].month+" · "+fmt(f.future[0].value)},{label:"MAE histórico de um passo",value:fmt(chosen.mae)},{label:"WAPE histórico",value:chosen.wape_pct===null?"N/A":number(chosen.wape_pct)+"%"},{label:"Último mês estimado",value:f.future.at(-1).month+" · "+fmt(f.future.at(-1).value)}
    ],notes:["Estimativa pontual, sem garantia de resultado ou intervalo de confiança. O erro mede um passo, não o horizonte completo."],details:[]});
   }
  }
@@ -54,6 +55,16 @@ function forward(queue,report,index,currentSources,deps,at,ruleText){
  if(!fresh||fresh.outcome!=="matched"||JSON.stringify(fresh)!==JSON.stringify(old))throw Error("A regra ou evidência mudou. Gere uma nova resposta antes de encaminhar.");
  return deps.flow.enqueue(queue,[fresh],at);
 }
-const api={TOPICS,DEFAULT_RULES,explain,forward};
+function routeQuestion(raw,previous=null){
+ if(typeof raw!=="string"||!raw.trim()||raw.length>240)throw Error("Digite uma pergunta de até 240 caracteres.");
+ const q=raw.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim().replace(/[?!.,]+$/g,"");
+ if(/^(e (por que|como assim)|por que|explique melhor|pode explicar melhor|e agora)$/.test(q))return Object.hasOwn(TOPICS,previous)?previous:null;
+ const groups={overview:/\b(resumo|visao geral|panorama|indicadores gerais)\b/,insights:/\b(margem|receita|receitas|custos|resultado|lucro)\b/,finance:/\b(preco|precificacao|simulacao|ponto de equilibrio|financas|finance)\b/,management:/\b(dre|caixa|saldo de caixa)\b/,sales:/\b(venda|vendas|pedidos|ticket|sales)\b/,operations:/\b(gargalo|capacidade|operacao|operacoes|operations)\b/,strategy:/\b(meta|metas|okr|estrategia|strategy)\b/,forecast:/\b(previsao|previsoes|forecast|projecao|tendencia)\b/,actions:/\b(acoes|sugestoes|recomendacoes|melhorias|o que fazer)\b/};
+ const matches=Object.keys(groups).filter(key=>groups[key].test(q));
+ // Ambiguous questions need an explicit topic or the optional model router.
+ return matches.length===1?matches[0]:null;
+}
+function routedTopic(value){return typeof value==="string"&&Object.hasOwn(TOPICS,value)?value:null;}
+const api={TOPICS,DEFAULT_RULES,explain,forward,routeQuestion,routedTopic};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;else root.LiliumCopilot=Object.freeze(api);
 })(typeof globalThis!=="undefined"?globalThis:this);
