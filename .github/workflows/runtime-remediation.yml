@@ -1,0 +1,129 @@
+name: Lilium isolated runtime remediation
+on:
+  workflow_dispatch:
+  push:
+    branches: [development/lilium-cycle03-runtime-remediation]
+    paths:
+      - 'desktop/**'
+      - 'tests/**'
+      - 'requirements*.txt'
+      - '.github/workflows/runtime-remediation.yml'
+permissions:
+  contents: read
+jobs:
+  windows-preview:
+    runs-on: windows-2022
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14.10'
+          architecture: x64
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify exact runtime before dependency installation
+        run: python -m desktop.runtime_evidence runtime-evidence/source.json
+      - name: Install build dependencies
+        shell: pwsh
+        run: |
+          python -m pip install pip==26.3
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -m pip install -r requirements-build.txt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -m pip check
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Audit actual build environment before packaging
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path audit-evidence
+          python -m pip freeze --all | Set-Content -Encoding utf8 audit-evidence/resolved.txt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -m venv .venv-audit
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & .venv-audit/Scripts/python.exe -m pip install pip==26.3 pip-audit==2.10.1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & .venv-audit/Scripts/python.exe -m pip_audit --no-deps --disable-pip -r audit-evidence/resolved.txt --format json --output audit-evidence/build.json
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $audit = Get-Content audit-evidence/build.json -Raw | ConvertFrom-Json
+          if (-not $audit.dependencies -or @($audit.dependencies | Where-Object { $_.skip_reason }).Count -ne 0) { throw "Incomplete dependency audit" }
+      - name: Preserve build dependency evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Lilium-build-dependency-evidence
+          path: audit-evidence/
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Python regression
+        run: python -m unittest discover -s tests -v
+      - name: JavaScript regression
+        shell: pwsh
+        run: |
+          Get-ChildItem tests/*.test.js | ForEach-Object {
+            node $_.FullName
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
+      - name: Live source smoke test
+        run: python tests/smoke_desktop.py
+      - name: Live source lifecycle and recovery
+        run: python tests/smoke_lifecycle.py
+      - name: Build portable preview and run executable self-test
+        run: python -m desktop.build_windows
+      - name: Verify actual bundled DLL hashes against approved build runtime
+        run: python -m desktop.runtime_evidence runtime-evidence/bundle.json --bundle dist/Lilium
+      - name: Bundled readiness diagnostics
+        shell: pwsh
+        run: |
+          $env:LOCALAPPDATA = Join-Path $env:RUNNER_TEMP "lilium-diagnostics"
+          & dist/Lilium/Lilium.exe --diagnostics
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Live bundled smoke test
+        run: python tests/smoke_desktop.py dist/Lilium/Lilium.exe
+      - name: Live bundled lifecycle and recovery
+        run: python tests/smoke_lifecycle.py dist/Lilium/Lilium.exe
+      - name: Install browser test dependency
+        run: python -m pip install playwright==1.56.0
+      - name: Install Chromium
+        run: python -m playwright install chromium
+      - name: Browser pilot smoke test against source
+        run: python tests/browser_pilot.py
+      - name: Browser pilot smoke test against bundled application
+        run: python tests/browser_pilot.py dist/Lilium/Lilium.exe
+      - name: Package versioned preview and verify staged copy
+        shell: pwsh
+        run: |
+          python -m desktop.release_manager package --source dist/Lilium --output release-preview --commit "$env:GITHUB_SHA"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $manifest = Get-Content release-preview/manifest.json -Raw | ConvertFrom-Json
+          $archive = Join-Path release-preview $manifest.filename
+          python -m desktop.release_manager verify --archive $archive --manifest release-preview/manifest.json --sha256 $manifest.sha256
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $parent = Join-Path $env:RUNNER_TEMP ("lilium-staged-" + [guid]::NewGuid())
+          New-Item -ItemType Directory -Path $parent | Out-Null
+          $staged = python -m desktop.release_manager stage --archive $archive --manifest release-preview/manifest.json --sha256 $manifest.sha256 --parent $parent
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $folder = ($staged | ConvertFrom-Json).staged_folder
+          python tests/smoke_desktop.py (Join-Path $folder "Lilium.exe")
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          "### Lilium preview integrity" >> $env:GITHUB_STEP_SUMMARY
+          "- Commit: $($manifest.commit)" >> $env:GITHUB_STEP_SUMMARY
+          "- Archive: $($manifest.filename)" >> $env:GITHUB_STEP_SUMMARY
+          "- SHA-256: $($manifest.sha256)" >> $env:GITHUB_STEP_SUMMARY
+      - name: Preserve manifest and evidence only, not binaries
+        shell: pwsh
+        run: |
+          Copy-Item release-preview/manifest.json runtime-evidence/manifest.json
+          $manifest = Get-Content release-preview/manifest.json -Raw | ConvertFrom-Json
+          $zip = Join-Path release-preview $manifest.filename
+          Get-FileHash -LiteralPath $zip -Algorithm SHA256 | ConvertTo-Json | Set-Content -Encoding utf8 runtime-evidence/archive-hash.json
+          "No binaries uploaded. No release approval. AV and license clearance NOT_TESTED." >> $env:GITHUB_STEP_SUMMARY
+      - name: Upload evidence only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Lilium-runtime-remediation-evidence
+          path: runtime-evidence/
+          if-no-files-found: warn
+          retention-days: 14
