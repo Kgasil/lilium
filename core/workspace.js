@@ -360,7 +360,7 @@ $('copilot-ask').onclick=async()=>{
  }catch(e){if(epoch===chatEpoch)status.textContent=e.message||'Não foi possível consultar os indicadores.';}
  finally{chatBusy=false;$('copilot-ask').disabled=false;$('copilot-consent').checked=false;}
 };
-$('copilot-clear-chat').onclick=()=>{cpReset();chatTopic=null;$('copilot-chat').replaceChildren();$('copilot-question').value='';$('copilot-consent').checked=false;$('copilot-chat-status').textContent='Conversa local limpa.';};
+$('copilot-clear-chat').onclick=()=>{cpReset();chatTopic=null;$('copilot-topic').value='overview';$('copilot-chat').replaceChildren();$('copilot-question').value='';$('copilot-consent').checked=false;$('copilot-chat-status').textContent='Conversa local limpa.';};
 $('copilot-export').onclick=()=>{if(copilotResponse)stExport(copilotResponse,'lilium-copilot-response.json');};
 cpDefaults();
 $('pilot-reset').onclick=()=>{if(confirm("Descartar os dados e resultados em memória? O histórico salvo será mantido."))location.reload();};
