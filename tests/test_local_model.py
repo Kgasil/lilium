@@ -44,6 +44,31 @@ class LocalModelTests(unittest.TestCase):
             connection.assert_not_called()
             self.assertIsNone(classify("hi", BODY["model"]))
 
+    def test_adversarial_output_rejected(self):
+        for content in ('{"topic":"sales","topic":"finance"}', '{"topic":"sales","value":123}', '{"topic":NaN}', '["sales"]', 'sales'):
+            raw = json.dumps({"done": True, "message": {"content": content}}).encode()
+            self.assertIsNone(parse_topic(raw))
+        self.assertIsNone(parse_topic(b'{"done":true,"done":true,"message":{}}'))
+        self.assertIsNone(parse_topic(json.dumps({"done": True, "message": {"content": '{"topic":"sales"}', "tool_calls": [{"name": "anything"}]}}).encode()))
+        self.assertIsNone(parse_topic(b"[" * 2000 + b"]" * 2000))
+
+    def test_adversarial_request_rejected_before_model(self):
+        client = TestClient(app, base_url="http://localhost")
+        headers = {**HEADERS, "Content-Type": "application/json"}
+        with patch.object(app.state, "session_token", TOKEN), patch("core.api.classify") as fn:
+            for raw in (b'{"question":"hi","model":"qwen2.5:1.5b","consent":false,"consent":true}', b"[" * 1000 + b"]" * 1000, json.dumps({**BODY, "question": "x" + chr(0)}).encode(), json.dumps({**BODY, "question": chr(0xD800)}).encode()):
+                self.assertEqual(client.post("/api/v1/copilot/route", content=raw, headers=headers).status_code, 422)
+            self.assertEqual(client.post("/api/v1/copilot/route", content=b"x" * 2049, headers=headers).status_code, 413)
+            fn.assert_not_called()
+
+    def test_oversized_model_response(self):
+        with patch("core.local_model.http.client.HTTPConnection") as connection:
+            response = connection.return_value.getresponse.return_value
+            response.status = 200
+            response.read.return_value = b"x" * 16385
+            self.assertIsNone(classify(BODY["question"], BODY["model"]))
+            response.read.assert_called_once_with(16385)
+
     def test_busy(self):
         with LOCK:
             self.assertIsNone(classify("hi", BODY["model"]))

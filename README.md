@@ -32,6 +32,8 @@
 
 ## Current release status / Estado atual da liberação
 
+> **Quality assurance candidate / Candidato em homologação:** [Etapa 07](docs/stage-07-assurance-2026-11-27.md) · [Quality matrix](docs/quality-gate-2026-11-27.md). Release blocked pending exact-candidate CI, independent package review and manual acceptance. No score or production approval implied.
+
 > **Integration candidate / Candidato de integração:** [Etapa 06](docs/stage-06-integration-2026-11-27.md) · [Component matrix](docs/component-matrix.json). Web Lab synthetic dataset JSON → Desktop Connect; Mini 0.1.3 voluntary one-row CSV → Insights. Manual file handoff only; current public versions and pinned links unchanged.
 
 > **Business Intelligence candidate / Candidato empresarial:** [Etapa 05](docs/stage-05-business-2026-11-27.md). Simplified managerial DRE and cash, volume scenarios, separate evidence in Reports and Copilot. Development only; no public package changes.

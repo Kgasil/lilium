@@ -31,6 +31,9 @@ def xlsx_to_csv(raw):
     try:
         with ZipFile(BytesIO(raw)) as archive:
             parts = archive.infolist()
+            names = [p.filename.casefold() for p in parts]
+            if len(names) != len(set(names)):
+                raise DataError('unsafe_workbook', 'Duplicate workbook archive entries are not supported.')
             if len(parts) > 100 or sum(p.file_size for p in parts) > MAX_EXPANDED:
                 raise DataError('archive_limit', 'Workbook exceeds archive limits.')
             if any('externallinks/' in p.filename.lower() or 'vbaproject' in p.filename.lower() for p in parts):
@@ -76,6 +79,8 @@ def reorder_canonical(raw):
     fields = SCHEMA.split(',')
     if names == fields or len(names) != 3 or set(names) != set(fields):
         return raw
+    if not 1 <= len(lines) - 1 <= MAX_ROWS:
+        raise DataError('row_limit', 'Use 1–10,000 data rows.')
     order = [names.index(field) for field in fields]
     converted = [SCHEMA]
     for line in lines[1:]:
@@ -98,6 +103,8 @@ def localized_csv(raw):
     fields = ['data', 'receita', 'custo']
     if len(names) != 3 or set(names) != set(fields):
         return raw
+    if not 1 <= len(lines) - 1 <= MAX_ROWS:
+        raise DataError('row_limit', 'Use 1–10,000 data rows.')
     order = [names.index(field) for field in fields]
     converted = [SCHEMA]
     for number, line in enumerate(lines[1:], 2):

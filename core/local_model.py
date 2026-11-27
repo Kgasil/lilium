@@ -10,22 +10,43 @@ LOCK = threading.Lock()
 MAX_RESPONSE = 16384
 
 
+def strict_json(raw):
+    def unique(pairs):
+        obj = {}
+        for key, value in pairs:
+            if key in obj:
+                raise ValueError("Duplicate JSON key")
+            obj[key] = value
+        return obj
+    def invalid_constant(value):
+        raise ValueError("Nonfinite JSON constant")
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid_constant)
+
+
+def valid_question(question):
+    return (isinstance(question, str) and bool(question.strip()) and len(question) <= 240
+            and not any(ord(c) < 32 or 127 <= ord(c) <= 159 or 0xD800 <= ord(c) <= 0xDFFF for c in question))
+
+
 def parse_topic(raw):
     try:
-        response = json.loads(raw)
-        if response.get("done") is not True:
+        response = strict_json(raw)
+        if not isinstance(response, dict) or response.get("done") is not True:
             return None
-        answer = json.loads(response["message"]["content"])
+        message = response["message"]
+        if not isinstance(message, dict) or message.get("tool_calls") or message.get("role", "assistant") != "assistant":
+            return None
+        answer = strict_json(message["content"])
         if not isinstance(answer, dict) or set(answer) != {"topic"}:
             return None
         topic = answer["topic"]
         return topic if isinstance(topic, str) and topic in TOPICS and topic != "unknown" else None
-    except (ValueError, TypeError, KeyError, AttributeError, UnicodeError):
+    except (ValueError, TypeError, KeyError, AttributeError, UnicodeError, RecursionError):
         return None
 
 
 def classify(question, model):
-    if not isinstance(question, str) or not question.strip() or len(question) > 240:
+    if not valid_question(question):
         return None
     if not isinstance(model, str) or model not in MODELS or not LOCK.acquire(blocking=False):
         return None
@@ -54,6 +75,8 @@ def classify(question, model):
     except (OSError, http.client.HTTPException, ValueError):
         return None
     finally:
-        if conn is not None:
-            conn.close()
-        LOCK.release()
+        try:
+            if conn is not None:
+                conn.close()
+        finally:
+            LOCK.release()

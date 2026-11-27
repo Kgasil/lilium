@@ -3,7 +3,7 @@
   "project": "Lilium",
   "pillar": "Evoluir",
   "theme": "dark-rose",
-  "release_gate": "unapproved",
+  "release_gate": "blocked-pending-evidence",
   "components": [
     {
       "id": "web-lab",
@@ -44,5 +44,6 @@
     }
   ],
   "governance": "https://github.com/Kgasil/kgasil.github.io/blob/main/docs/graal-catalog.md",
-  "distribution": "https://kgasil.github.io/distribuicao.html"
+  "distribution": "https://kgasil.github.io/distribuicao.html",
+  "quality_matrix": "docs/quality-gate-2026-11-27.md"
 }

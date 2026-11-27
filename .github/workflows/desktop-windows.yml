@@ -131,3 +131,34 @@ jobs:
           path: release-preview/
           if-no-files-found: error
           retention-days: 14
+
+  independent-candidate-review:
+    needs: windows-preview
+    runs-on: windows-2025
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: Lilium-Desktop-0.14.0-windows-x64-preview
+          path: candidate
+      - name: Verify candidate manifest, commit and SHA-256
+        shell: pwsh
+        run: |
+          $manifest = Get-Content candidate/manifest.json -Raw | ConvertFrom-Json
+          if ($manifest.commit -ne $env:GITHUB_SHA) { throw "Candidate commit mismatch" }
+          $zip = Join-Path candidate $manifest.filename
+          python -m desktop.release_manager verify --archive $zip --manifest candidate/manifest.json --sha256 $manifest.sha256
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ((Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash.ToLowerInvariant() -ne $manifest.sha256) { throw "SHA-256 mismatch" }
+          Expand-Archive -LiteralPath $zip -DestinationPath candidate/extracted
+          "Verified inner ZIP SHA-256: $($manifest.sha256)" >> $env:GITHUB_STEP_SUMMARY
+      - name: Install browser test dependency
+        run: |
+          python -m pip install playwright==1.56.0
+          python -m playwright install chromium
+      - name: Independent downloaded executable review
+        run: python tests/browser_final_review.py candidate/extracted/Lilium.exe

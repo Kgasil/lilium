@@ -53,6 +53,24 @@ class ImportTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['totals']['result_cents'], 4008)
 
+    def test_localized_row_limit(self):
+        raw = b'data;receita;custo\n' + b'01/01/2026;1;0\n' * 10001
+        with self.assertRaises(DataError) as e:
+            normalize(raw, 'text/csv')
+        self.assertEqual(e.exception.code, 'row_limit')
+
+    def test_duplicate_archive_entry(self):
+        import warnings
+        f = BytesIO()
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', UserWarning)
+            with ZipFile(f, 'w') as z:
+                z.writestr('duplicate.xml', 'x')
+                z.writestr('duplicate.xml', 'y')
+        with self.assertRaises(DataError) as e:
+            xlsx_to_csv(f.getvalue())
+        self.assertEqual(e.exception.code, 'unsafe_workbook')
+
     def test_excel_exact(self):
         self.assertEqual(analyze_csv(xlsx_to_csv(GOOD))['totals']['result_cents'], 4008)
 
