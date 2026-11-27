@@ -1,0 +1,26 @@
+name: Lilium exact upstream notice recovery
+on:
+  workflow_dispatch:
+  push:
+    branches: [development/lilium-notice-recovery]
+    paths:
+      - 'validation/notices/**'
+      - '.github/workflows/upstream-notice-recovery.yml'
+permissions:
+  contents: read
+jobs:
+  notices:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Recover verified source notices without installing or building
+        run: python3 validation/notices/recover.py "$RUNNER_TEMP/notice-evidence"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lilium-upstream-notice-evidence
+          path: ${{ runner.temp }}/notice-evidence/
+          retention-days: 14
+          if-no-files-found: error
