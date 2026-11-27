@@ -1,6 +1,6 @@
 # Lilium Mini v0.1.1 — extensão experimental
 
-**Strategy & Growth · Estratégia e Crescimento**  
+**Strategy & Evolution · Estratégia e Evolução**  
 *Make smarter decisions. Grow with confidence.*
 
 > Distribuição experimental exclusivamente pelo GitHub. A extensão é gratuita, não está publicada na Chrome Web Store nem no Microsoft Edge Add-ons e não requer conta ou pagamento. A instalação manual destina-se a testes com dados fictícios; não é uma certificação de segurança.
