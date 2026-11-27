@@ -7,6 +7,8 @@
 
 **Marco 1.0 do Project Lilium:** corresponde ao [Web Lab público](https://kgasil.github.io/lilium/#lab), não à extensão Mini, que permanece v0.1.1. [Visão geral](../README.md).
 
+**Prévia em desenvolvimento:** a branch de experiência contém Mini 0.1.2 com tema escuro rosé; o download público fixado abaixo continua sendo 0.1.1. O novo candidato requer CI e aceitação instalada antes de substituir o pacote. Nenhuma permissão ou cálculo foi alterado.
+
 ## Como instalar no Chrome ou Edge (Windows)
 
 ### 1. Baixar e extrair

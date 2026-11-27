@@ -22,7 +22,7 @@ const checks=[
  const links=targets.map(id=>({href:"#"+id,current:null,getAttribute(){return this.href},setAttribute(k,v){this.current=v},removeAttribute(){this.current=null}}));
  const fn=js.slice(js.indexOf("function markWorkspaceLocation("),js.indexOf("markWorkspaceLocation(location.hash);"));
  const mark=new Function("$",fn+"\nreturn markWorkspaceLocation;")(()=>({querySelectorAll:()=>links}));
- mark("");assert.equal(links.filter(a=>a.current).map(a=>a.href).join(),"#getting-started");
+ mark("");assert.equal(links.filter(a=>a.current).map(a=>a.href).join(),"#overview");
  mark("#finance");assert.equal(links.filter(a=>a.current).map(a=>a.href).join(),"#finance");
  mark("#history");assert.equal(links.filter(a=>a.current).map(a=>a.href).join(),"#history");
  mark("#main-content");assert.equal(links.filter(a=>a.current).length,0);

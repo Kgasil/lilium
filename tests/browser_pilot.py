@@ -63,7 +63,11 @@ def main():
                 expect(page.locator("#getting-started")).to_be_visible()
                 expect(page.locator("#workspace-loading")).to_be_hidden()
                 expect(page.locator("#results")).to_be_hidden()
-                expect(page.locator('#module-nav a[aria-current="location"]')).to_have_attribute("href", "#getting-started")
+                expect(page.locator('#module-nav a[aria-current="location"]')).to_have_attribute("href", "#overview")
+                expect(page.locator("#overview-empty")).to_be_visible()
+                expect(page.locator("#overview-empty .kpi")).to_have_count(4)
+                assert page.locator("body").evaluate("e => getComputedStyle(e).backgroundColor") == "rgb(48, 36, 47)"
+                assert page.locator("html").evaluate("e => getComputedStyle(e).colorScheme") == "dark"
                 page.locator(".skip-link").focus()
                 page.keyboard.press("Enter")
                 expect(page.locator("#main-content")).to_be_focused()
@@ -77,6 +81,14 @@ def main():
                 page.locator("#run").click()
                 expect(page.locator("#results")).to_be_visible()
                 expect(page.locator("#metrics")).to_contain_text("11.960,00")
+                expect(page.locator("#overview-empty")).to_be_hidden()
+                page.locator("#margin-target").fill("40,00")
+                expect(page.locator("#margin-target-status")).to_contain_text("-3,98")
+                page.locator("#chart-mode").select_option("result")
+                expect(page.locator("#chart-heading")).to_contain_text("Resultado mensal")
+                with page.expect_download() as quality_download:
+                    page.locator("#quality-export").click()
+                assert quality_download.value.suggested_filename == "lilium-quality.json"
                 page.locator("#from").select_option("2026-02")
                 page.locator("#to").select_option("2026-02")
                 page.locator("#apply").click()

@@ -1,6 +1,6 @@
 # Lilium Core v0.14.0 — local development preview
 
-**Strategy & Growth · Estratégia e Crescimento**
+**Strategy & Evolution · Estratégia e Evolução**
 
 **Version scope:** Lilium Web Lab 1.0 is the public milestone; Core and Desktop remain v0.14.0 development previews. Historical test notes below reflect their respective checkpoints. See [current project status](../README.md).
 
@@ -15,6 +15,10 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 .\.venv\Scripts\python.exe -m desktop.launcher
 ```
+
+## Data Intelligence — candidato da Etapa 03
+
+API local aceita três cabeçalhos canônicos em qualquer ordem (CSV/XLSX), e CSV simples UTF-8 com `data;receita;custo` em qualquer ordem, data ISO ou DD/MM/AAAA, valores inteiros ou vírgula decimal sem milhares. A normalização não modifica o arquivo original; erros impedem análise, duplicatas são alertas. O contrato de métricas permanece idêntico. Meta de margem usa a margem arredondada exibida, não muda a análise; gráfico alterna receita/custo e resultado; diagnóstico JSON contém contagens e códigos de linha, sem valores originais. Candidato ainda sujeito a CI.
 
 ## API contract
 - GET /health — service status and version.

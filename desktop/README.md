@@ -4,6 +4,8 @@ This is a development preview, not a signed installer or a commercial release. T
 
 **Version scope:** Lilium's 1.0 public milestone applies to [Web Lab](https://kgasil.github.io/lilium/#lab); Desktop remains v0.14.0. The remediated Windows CI build passed; manual clean-machine acceptance remains pending. See [current release status](../README.md).
 
+**Experience branch:** dark rosé Workspace, executive view first and preserved local calculations. A build from this source is a new development candidate, not the designated historical v0.14.0 artifact. Do not substitute its ZIP or hash without repeat acceptance.
+
 ## Run from source (Windows)
 1. Install 64-bit Python 3.12 with the Windows Python launcher.
 2. Download/extract the repository and double-click `start-lilium.bat`.
