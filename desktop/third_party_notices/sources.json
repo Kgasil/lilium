@@ -1,0 +1,17 @@
+[
+  {
+    "name": "openssl-3.5.9.txt",
+    "blob": "49cc83d2ee29d13453188217f0e4edd70c7f842f",
+    "source": "https://github.com/python/cpython-source-deps/blob/openssl-3.5.9/LICENSE.txt"
+  },
+  {
+    "name": "libffi-3.4.4.txt",
+    "blob": "75d1bce11f9118ccfd96b24a2e49af078da1b469",
+    "source": "https://github.com/python/cpython-source-deps/blob/libffi-3.4.4/LICENSE"
+  },
+  {
+    "name": "pyinstaller-6.16.0.txt",
+    "blob": "51bf4bd138e68f0ccafce4fbf7723842dceaa1d1",
+    "source": "https://github.com/pyinstaller/pyinstaller/blob/v6.16.0/COPYING.txt"
+  }
+]

@@ -66,6 +66,13 @@ class SetupTests(unittest.TestCase):
 
 
 class DiagnosticTests(unittest.TestCase):
+    def test_remediated_runtime(self):
+        self.assertTrue(diagnostics.supported_runtime((3,14,10),'AMD64',2**63-1))
+        self.assertFalse(diagnostics.supported_runtime((3,12,10),'AMD64',2**63-1))
+        self.assertFalse(diagnostics.supported_runtime((3,14,9),'AMD64',2**63-1))
+        self.assertFalse(diagnostics.supported_runtime((3,14,10),'ARM64',2**63-1))
+        self.assertFalse(diagnostics.supported_runtime((3,14,10),'AMD64',2**31-1))
+
     def test_dependencies(self):
         self.assertEqual(diagnostics.dependency_versions(), diagnostics.EXPECTED)
 

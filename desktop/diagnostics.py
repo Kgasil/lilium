@@ -17,6 +17,10 @@ EXPECTED = {"fastapi": "0.165.0", "starlette": "1.10.0", "uvicorn": "0.48.0", "h
             "openpyxl": "3.1.5", "defusedxml": "0.7.1"}
 
 
+def supported_runtime(version, machine, maxsize):
+    return tuple(version) == (3, 14, 10) and machine.upper() in {"AMD64", "X86_64"} and maxsize > 2**32
+
+
 def report(version, assets, directory, reserve, self_test):
     checks = []
 
@@ -28,8 +32,8 @@ def report(version, assets, directory, reserve, self_test):
             checks.append({"id": name, "status": "fail"})
 
     windows = sys.platform == "win32"
-    supported = windows and sys.version_info[:2] == (3, 12) and platform.machine().upper() in {"AMD64", "X86_64"} and sys.maxsize > 2**32
-    checks.append({"id": "windows_x64_python312", "status": "pass" if supported else "fail" if windows else "warning"})
+    supported = windows and supported_runtime(sys.version_info[:3], platform.machine(), sys.maxsize)
+    checks.append({"id": "windows_x64_python314", "status": "pass" if supported else "fail" if windows else "warning"})
     check("dependencies", lambda: dependency_versions() == EXPECTED)
     core = Path(__file__).resolve().parent.parent / "core"
     check("workspace_assets", lambda: all(p.is_file() and p.stat().st_size > 0 for p in [core / "workspace.html", *(core / (n + ".js") for n in assets)]))

@@ -112,6 +112,8 @@ jobs:
         run: python tests/browser_pilot.py
       - name: Browser pilot smoke test against bundled application
         run: python tests/browser_pilot.py dist/Lilium/Lilium.exe
+      - name: Collect third-party notices before packaging
+        run: python -m desktop.license_evidence collect dist/Lilium runtime-evidence/license-index.json
       - name: Package versioned preview and verify staged copy
         shell: pwsh
         run: |
@@ -119,6 +121,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $manifest = Get-Content release-preview/manifest.json -Raw | ConvertFrom-Json
           $archive = Join-Path release-preview $manifest.filename
+          python -m desktop.license_evidence verify $archive runtime-evidence/license-index.json
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -m desktop.release_manager verify --archive $archive --manifest release-preview/manifest.json --sha256 $manifest.sha256
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $parent = Join-Path $env:RUNNER_TEMP ("lilium-staged-" + [guid]::NewGuid())
