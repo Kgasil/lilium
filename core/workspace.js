@@ -321,7 +321,7 @@ $('backup-merge').onclick=()=>{
 
 function markWorkspaceLocation(hash){
  const links=Array.from($('module-nav').querySelectorAll('a[href^="#"]'));
- const active=hash||'#getting-started';
+ const active=hash||'#overview';
  for(const a of links){
   if(a.getAttribute('href')===active)a.setAttribute('aria-current','location');
   else a.removeAttribute('aria-current');

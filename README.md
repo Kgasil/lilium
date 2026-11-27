@@ -32,6 +32,8 @@
 
 ## Current release status / Estado atual da liberação
 
+> **Experience development / Desenvolvimento visual:** [Etapa 02 — escopo e critérios](docs/stage-02-experience-2026-11-27.md). The dark Workspace and Mini 0.1.2 are development candidates, not the approved distributed packages. / Workspace escuro e Mini 0.1.2 são candidatos de desenvolvimento, não os pacotes distribuídos aprovados. Current public links and versions below remain unchanged.
+
 **v0.14.0 — controlled acceptance only / somente aceitação controlada.** The designated Windows artifact is the remediated build from [run 45722415976](https://github.com/Kgasil/lilium/actions/runs/45722415976). Automated build, independent portable verification and focused browser review passed. Manual Windows acceptance, manual security/accessibility review and pilot approval remain open. The unsigned preview must not be used with real data; do not bypass OS warnings.
 
 **Next action / Próxima ação:** [Windows acceptance guide](docs/clean-machine-validation.md) · [23-case manual acceptance matrix](docs/manual-acceptance-matrix.md) · [Release gate tracker #1](https://github.com/Kgasil/lilium/issues/1) · [Pilot handbook](docs/pilot-handbook.md).

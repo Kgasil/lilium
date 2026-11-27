@@ -27,6 +27,7 @@ def main():
             # External images/links are not needed for calculator behavior.
             page.route("**/*", lambda route: route.continue_() if route.request.url.startswith(base + "/") else route.abort())
             page.goto(base + "/index.html#lab", wait_until="networkidle")
+            assert page.locator("html").evaluate("e => getComputedStyle(e).colorScheme") == "dark"
             expect(page.locator("#lab-price-result")).to_contain_text("R$ 100,00")
             expect(page.locator("#lab-monthly-result")).to_contain_text("R$ 3.500,00")
             page.locator("#lab-price-margin").fill("100")
