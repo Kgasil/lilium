@@ -1,9 +1,14 @@
 import tempfile
 import unittest
 from pathlib import Path
-from desktop.runtime_evidence import NAMES,source_files,compare_bundle
+from desktop.runtime_evidence import NAMES,source_files,compare_bundle,openssl_version
 
 class RuntimeEvidenceTests(unittest.TestCase):
+    def test_openssl_3_patch_encoding(self):
+        self.assertEqual(openssl_version(0x30500090,'OpenSSL 3.5.9 29 Sep 2026'),'3.5.9')
+        self.assertEqual(openssl_version(0x30500000,'OpenSSL 3.5.0 1 Jan 2026'),'3.5.0')
+        with self.assertRaises(ValueError): openssl_version(0x30500000,'OpenSSL 3.5.9 29 Sep 2026')
+        with self.assertRaises(ValueError): openssl_version(0x1010100f,'OpenSSL 1.1.1 1 Jan 2026')
     def test_bundle_equal_and_reject_changed(self):
         with tempfile.TemporaryDirectory() as folder:
             root=Path(folder);source=root/"source";bundle=root/"bundle";source.mkdir();bundle.mkdir()

@@ -15,8 +15,20 @@ def require(condition, message):
     if not condition:
         raise ValueError(message)
 
+def openssl_version(number, text):
+    # OpenSSL 3 uses 0xMNN00PP0; CPython's legacy five-field tuple puts
+    # the patch in index 3, not index 2. Require numeric and text agreement.
+    import re
+    major=(number>>28)&0xf
+    minor=(number>>20)&0xff
+    patch=(number>>4)&0xff
+    require(major==3 and (number&0x000ff00f)==0,"unsupported OpenSSL version encoding")
+    match=re.match(r"^OpenSSL (\d+)\.(\d+)\.(\d+) ",text)
+    require(match is not None and tuple(map(int,match.groups()))==(major,minor,patch),"OpenSSL numeric/text disagreement")
+    return f"{major}.{minor}.{patch}"
+
 def runtime():
-    observed={"python":platform.python_version(),"openssl":".".join(map(str,ssl.OPENSSL_VERSION_INFO[:3])),"sqlite":sqlite3.sqlite_version}
+    observed={"python":platform.python_version(),"openssl":openssl_version(ssl.OPENSSL_VERSION_NUMBER,ssl.OPENSSL_VERSION),"sqlite":sqlite3.sqlite_version}
     require(sys.platform=="win32" and platform.machine().upper() in {"AMD64","X86_64"} and sys.maxsize>2**32,"Windows x64 required")
     require(observed==EXPECTED,"unexpected runtime: "+str(observed))
     with sqlite3.connect(":memory:") as db:
