@@ -8,6 +8,13 @@ on:
       - 'tests/browser_mini.py'
       - 'tests/verify_mini_original.py'
       - '.github/workflows/mini-validation.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'extension/**'
+      - 'tests/browser_mini.py'
+      - 'tests/verify_mini_original.py'
+      - '.github/workflows/mini-validation.yml'
 permissions:
   contents: read
 jobs:

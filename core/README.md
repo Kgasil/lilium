@@ -1,6 +1,6 @@
 # Lilium Core v0.14.0 — local development preview
 
-**Strategy & Growth · Estratégia e Crescimento**
+**Strategy & Evolution · Estratégia e Evolução**
 
 **Version scope:** Lilium Web Lab 1.0 is the public milestone; Core and Desktop remain v0.14.0 development previews. Historical test notes below reflect their respective checkpoints. See [current project status](../README.md).
 
