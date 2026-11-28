@@ -34,6 +34,24 @@ def upstream_bytes(path,expected):
     require(git_blob(raw)==expected,"upstream notice blob mismatch")
     return raw
 
+# Exact official wheel notice hashes, verified against pinned source archives.
+PINNED_WHEEL_NOTICES={
+    ("openpyxl","3.1.5"): {"0c84bb42f5d367e5ebf9fc2dde35b16141df5ee0fdc189250858bc6c5560f69e"},
+    ("et-xmlfile","2.0.0"): {"0c84bb42f5d367e5ebf9fc2dde35b16141df5ee0fdc189250858bc6c5560f69e","7f038029ea5463605dd2278d300099a381bce9e90dda83ccab2042346b6c8107","4ccdaaebc0f44b83720ec0399bb7ab329adce067dd62f73c5535a2dc05628ab2"},
+}
+OPENPYXL_AUTHORS_SHA="9ccfc29ea6e6ff9c7be152e803f55da35ea969f97f3cc82e068a4391db644457"
+def complete_pinned_notices(dest,name,version,rows):
+    key=(re.sub(r"[-_.]+","-",name).lower(),version)
+    if key[0] not in {"openpyxl","et-xmlfile"}: return []
+    require(key in PINNED_WHEEL_NOTICES,"unreviewed notice package version")
+    observed={r["sha256"] for r in rows}
+    require(PINNED_WHEEL_NOTICES[key]<=observed,"missing or changed pinned wheel notice")
+    if key[0]=="openpyxl" and OPENPYXL_AUTHORS_SHA not in observed:
+        raw=upstream_bytes(UPSTREAM/"openpyxl-3.1.5-AUTHORS.rst","32d8129a9cb7e53769b5eaa007fde2191b794729")
+        require(sha(raw)==OPENPYXL_AUTHORS_SHA,"supplemental authors digest mismatch")
+        return [copy_notice(dest,"openpyxl-3.1.5-AUTHORS.rst",raw,"openpyxl 3.1.5 source archive cf0e3cf56142039133628b5acffe8ef0c12bc902d2aadd3e0fe5878dc08d1050:AUTHORS.rst (not in wheel)")]
+    return []
+
 def collect(bundle,evidence):
     require((bundle/"Lilium.exe").is_file() and (bundle/"_internal").is_dir(),"bundle missing")
     require(sys.version_info[:3]==(3,14,10),"unexpected Python version")
@@ -50,6 +68,7 @@ def collect(bundle,evidence):
         name=dist.metadata.get("Name","")
         root=Path(dist.locate_file("")).resolve()
         found=[]
+        package_rows=[]
         for f in sorted(dist.files or [],key=str):
             parts=f.parts
             if not parts or not parts[0].endswith(".dist-info") or any(p in {".",".."} for p in parts): continue
@@ -58,6 +77,8 @@ def collect(bundle,evidence):
             require(p.is_file() and not p.is_symlink() and p.resolve().is_relative_to(root),"invalid distribution notice")
             seq+=1
             row=copy_notice(dest,f"package-{seq:04d}.txt",p.read_bytes(),f"{name}=={dist.version}:{f.as_posix()}")
+            records.append(row);found.append(row["path"]);package_rows.append(row)
+        for row in complete_pinned_notices(dest,name,dist.version,package_rows):
             records.append(row);found.append(row["path"])
         packages.append({"name":name,"version":dist.version,"license_expression":dist.metadata.get("License-Expression"),"license_files":found,"status":"TEXT_COLLECTED" if found else "REVIEW_REQUIRED"})
     index={"schema":"lilium.notice-evidence.v1","scope":"Installed CPython and upstream reference notices plus available build-environment distribution notices; not proof all packages shipped or all embedded licenses covered","notices":records,"build_environment":packages,"outstanding":["complete embedded component/license mapping","SQLite provenance/public-domain dedication and extensions","Microsoft runtime redistribution entitlement","XZ and other applicable source/notice obligations","first-party terms"],"license_clearance":"NOT_TESTED","release_approved":False}
