@@ -6,8 +6,13 @@ on:
       - 'validation/candidate-authorization.json'
 permissions:
   contents: read
+concurrency:
+  group: lilium-controlled-handoff
+  cancel-in-progress: false
 jobs:
   windows-preview:
+    permissions:
+      contents: write
     runs-on: windows-2022
     timeout-minutes: 40
     steps:
@@ -19,6 +24,7 @@ jobs:
         shell: pwsh
         run: |
           python validation/candidate_build_gate.py
+          if (-not (Test-Path -LiteralPath 'validation/microsoft-reviewed-files.json' -PathType Leaf)) { throw 'Reviewed exact Microsoft source rights missing' }
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Verify official signed ClamAV definitions before compiling
         id: preflight
@@ -59,6 +65,8 @@ jobs:
           $report['definition_age_seconds']=[math]::Round($age)
           if ($age -lt 0 -or $age -gt 86400) { $report.status='STALE_DEFINITIONS'; throw 'Official definitions stale; no compilation or release' }
           $report.status='FRESH_DEFINITIONS'
+          "LILIUM_CLAM_ENGINE=$($fresh[0].DirectoryName)" >> $env:GITHUB_ENV
+          "LILIUM_CLAM_DB=$db" >> $env:GITHUB_ENV
           Write-Host 'Signed daily definitions fresh; normal build and complete scans still required.'
           } catch {
             $report['error']=$_.Exception.Message
@@ -191,15 +199,59 @@ jobs:
           "- Commit: $($manifest.commit)" >> $env:GITHUB_STEP_SUMMARY
           "- Archive: $($manifest.filename)" >> $env:GITHUB_STEP_SUMMARY
           "- SHA-256: $($manifest.sha256)" >> $env:GITHUB_STEP_SUMMARY
-      - name: Preserve manifest and evidence only, not binaries
+      - name: Check exact reviewed Microsoft runtime and candidate inventory
         shell: pwsh
         run: |
+          python -m desktop.final_candidate rights runtime-evidence/microsoft-inventory.json validation/microsoft-reviewed-files.json validation/microsoft-source-evidence.json
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $m=Get-Content release-preview/manifest.json -Raw | ConvertFrom-Json
+          $archive=Join-Path release-preview $m.filename
+          python -m desktop.final_candidate snapshot dist/Lilium $archive release-preview/manifest.json $env:GITHUB_SHA runtime-evidence/before-scan.json
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           Copy-Item release-preview/manifest.json runtime-evidence/manifest.json
-          $manifest = Get-Content release-preview/manifest.json -Raw | ConvertFrom-Json
-          $zip = Join-Path release-preview $manifest.filename
-          Get-FileHash -LiteralPath $zip -Algorithm SHA256 | ConvertTo-Json | Set-Content -Encoding utf8 runtime-evidence/archive-hash.json
-          "No binaries uploaded. No release approval. AV and license clearance NOT_TESTED." >> $env:GITHUB_STEP_SUMMARY
-      - name: Upload evidence only
+          Copy-Item release-preview/SHA256SUMS.txt runtime-evidence/SHA256SUMS.txt
+      - name: Scan exact archive, executable and full bundle
+        shell: pwsh
+        run: |
+          $m=Get-Content release-preview/manifest.json -Raw | ConvertFrom-Json
+          ./desktop/scan_candidate.ps1 -Bundle dist/Lilium -Archive (Join-Path release-preview $m.filename) -Evidence runtime-evidence
+      - name: Preserve exact verified candidate in unpublished draft only
+        if: success()
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $m=Get-Content release-preview/manifest.json -Raw | ConvertFrom-Json
+          $archive=Join-Path release-preview $m.filename
+          python -m desktop.final_candidate snapshot dist/Lilium $archive release-preview/manifest.json $env:GITHUB_SHA runtime-evidence/after-scan.json
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ((Get-FileHash runtime-evidence/before-scan.json).Hash -cne (Get-FileHash runtime-evidence/after-scan.json).Hash) { throw 'Candidate inventory changed' }
+          $scan=Get-Content runtime-evidence/candidate-scans.json -Raw | ConvertFrom-Json
+          if ($scan.status -ne 'COMPLETE_NO_THREATS_REPORTED' -or $scan.release_approved -ne $false -or $scan.commit -cne $env:GITHUB_SHA -or $scan.archive_sha256 -cne $m.sha256 -or $scan.defender.Count -ne 3 -or $scan.clamav.Count -ne 3) { throw 'Incomplete scan evidence' }
+          $tag='lilium-controlled-'+$env:GITHUB_RUN_ID
+          gh release create $tag --repo $env:GITHUB_REPOSITORY --target $env:GITHUB_SHA --title 'Lilium controlled candidate — DO NOT PUBLISH' --notes 'Unpublished candidate for exact native acceptance. No release authorization.' --draft --prerelease
+          if ($LASTEXITCODE -ne 0) { throw 'Draft creation failed' }
+          $draft=gh release view $tag --repo $env:GITHUB_REPOSITORY --json isDraft | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0 -or $draft.isDraft -ne $true) { throw 'Unpublished draft not verified' }
+          gh release upload $tag $archive runtime-evidence/manifest.json runtime-evidence/SHA256SUMS.txt runtime-evidence/before-scan.json runtime-evidence/after-scan.json runtime-evidence/candidate-scans.json runtime-evidence/license-index.json runtime-evidence/microsoft-inventory.json --repo $env:GITHUB_REPOSITORY
+          if ($LASTEXITCODE -ne 0) { throw 'Draft asset retention failed' }
+          $draft=gh release view $tag --repo $env:GITHUB_REPOSITORY --json isDraft,assets | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0 -or $draft.isDraft -ne $true -or @($draft.assets|Where-Object {$_.name -ceq $m.filename -and $_.size -eq $m.bytes}).Count -ne 1) { throw 'Draft retention verification failed' }
+          $download=Join-Path $env:RUNNER_TEMP ('lilium-draft-check-'+[guid]::NewGuid())
+          New-Item -ItemType Directory -Path $download | Out-Null
+          try {
+            gh release download $tag --repo $env:GITHUB_REPOSITORY --pattern $m.filename --dir $download
+            if ($LASTEXITCODE -ne 0) { throw 'Draft asset download failed; retention unverified' }
+            $received=Join-Path $download $m.filename
+            python -m desktop.release_manager verify --archive $received --manifest release-preview/manifest.json --sha256 $m.sha256
+            if ($LASTEXITCODE -ne 0) { throw 'Retained bytes differ from scanned candidate' }
+            $draft=gh release view $tag --repo $env:GITHUB_REPOSITORY --json isDraft | ConvertFrom-Json
+            if ($LASTEXITCODE -ne 0 -or $draft.isDraft -ne $true) { throw 'Draft state changed; manual review required' }
+            [ordered]@{commit=$env:GITHUB_SHA;tag=$tag;sha256=$m.sha256;bytes=$m.bytes;download_integrity='PASS';is_draft=$true;release_approved=$false} | ConvertTo-Json | Set-Content runtime-evidence/retention-verification.json
+            'Controlled draft retained and re-downloaded SHA-256 verified; no public release.' >> $env:GITHUB_STEP_SUMMARY
+          } finally { Remove-Item -LiteralPath $download -Recurse -Force }
+      - name: Upload diagnostic evidence only (never binaries)
         if: always()
         uses: actions/upload-artifact@v4
         with:

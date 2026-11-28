@@ -1,0 +1,24 @@
+name: Lilium final handoff focused source checks
+on:
+  push:
+    branches: [development/lilium-final-handoff]
+    paths: ['desktop/final_candidate.py','desktop/scan_candidate.ps1','tests/test_final_candidate.py','.github/workflows/runtime-remediation.yml','.github/workflows/final-handoff-check.yml']
+permissions:
+  contents: read
+jobs:
+  focused:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: python3 -m unittest discover -s tests -p test_final_candidate.py -v
+      - run: python3 -m compileall -q desktop/final_candidate.py
+      - name: Parse workflow without running it
+        run: ruby -ryaml -e 'd=YAML.load_file(".github/workflows/runtime-remediation.yml"); t=d["on"] || d[true]; abort unless t["push"]["paths"]==["validation/candidate-authorization.json"]'
+      - name: Parse scanner script without running it
+        shell: pwsh
+        run: |
+          $tokens=$null; $errors=$null
+          [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $PWD 'desktop/scan_candidate.ps1'),[ref]$tokens,[ref]$errors) | Out-Null
+          if ($errors.Count) { throw ($errors | Out-String) }
