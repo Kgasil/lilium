@@ -2,7 +2,7 @@ name: Lilium local terms and retention policy checks
 on:
   push:
     branches: [development/lilium-notice-recovery]
-    paths: ['desktop/retention_acl.ps1','tests/retention_acl_fixture.ps1','desktop/controlled_retention.py','tests/test_controlled_retention.py','desktop/terms.py','desktop/launcher.py','desktop/build_windows.py','desktop/microsoft_inventory.ps1','tests/test_terms.py','tests/smoke_desktop.py','tests/smoke_lifecycle.py','tests/browser_pilot.py','.github/workflows/terms-review.yml']
+    paths: ['validation/candidate_build_gate.py','validation/test_candidate_build_gate.py','desktop/retention_acl.ps1','tests/retention_acl_fixture.ps1','desktop/controlled_retention.py','tests/test_controlled_retention.py','desktop/terms.py','desktop/launcher.py','desktop/build_windows.py','desktop/microsoft_inventory.ps1','tests/test_terms.py','tests/smoke_desktop.py','tests/smoke_lifecycle.py','tests/browser_pilot.py','.github/workflows/terms-review.yml']
 permissions:
   contents: read
 jobs:
@@ -12,6 +12,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - run: python3 validation/test_candidate_build_gate.py -v
       - run: python3 -m unittest discover -s tests -p test_terms.py -v
       - run: python3 -m unittest discover -s tests -p test_controlled_retention.py -v
       - run: python3 -m compileall -q desktop tests
