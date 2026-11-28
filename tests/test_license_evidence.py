@@ -5,6 +5,16 @@ import zipfile
 from pathlib import Path
 from desktop.license_evidence import copy_notice, verify_archive, upstream_bytes, git_blob, is_notice_name, complete_pinned_notices, PINNED_WHEEL_NOTICES, OPENPYXL_AUTHORS_SHA
 class NoticeTests(unittest.TestCase):
+    def test_all_pinned_upstream_reference_texts(self):
+        from desktop.license_evidence import UPSTREAM
+        sources=json.loads((UPSTREAM/'sources.json').read_text(encoding='utf-8'))
+        self.assertEqual(len({x['name'] for x in sources}),len(sources))
+        expected={'cpython-3.14.10-crt.txt','xz-5.2.5-COPYING.txt','xz-5.2.5-COPYING.LGPLv2.1.txt'}
+        self.assertTrue(expected <= {x['name'] for x in sources})
+        for item in sources:
+            with self.subTest(name=item['name']):
+                self.assertTrue(upstream_bytes(UPSTREAM/item['name'],item['blob']))
+
     def test_license_spelling_and_authors(self):
         for name in ('LICENSE.txt','LICENCE.rst','LICENCE.python','AUTHORS.rst','AUTHORS.txt','NOTICE'):
             self.assertTrue(is_notice_name(name),name)
