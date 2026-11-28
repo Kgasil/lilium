@@ -10,3 +10,26 @@ class RightsTests(unittest.TestCase):
             with self.assertRaises(ValueError):rights({"files":[changed]},review)
         with self.assertRaises(ValueError):rights({"files":[row,row]},review)
         with self.assertRaises(ValueError):rights({"files":[row]},dict(review,release_approved=True))
+
+class SnapshotTests(unittest.TestCase):
+    def test_exact_archive_and_post_scan_mutation(self):
+        import tempfile,json
+        from pathlib import Path
+        from desktop.release_manager import package
+        from desktop.final_candidate import snapshot
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);bundle=root/"bundle";bundle.mkdir()
+            for name in ("Lilium.exe","_internal/sample.dll","TERMS-REVIEW.txt","NOTICES/index.json"):
+                p=bundle/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(b"synthetic bytes "+name.encode())
+            out=root/"out";commit="a"*40
+            m=package(bundle,out,commit)
+            archive=out/m["filename"]
+            before=snapshot(bundle,archive,out/"manifest.json",commit,root/"before.json")
+            after=snapshot(bundle,archive,out/"manifest.json",commit,root/"after.json")
+            self.assertEqual(before,after)
+            self.assertEqual((root/"before.json").read_bytes(),(root/"after.json").read_bytes())
+            with self.assertRaises(ValueError):
+                snapshot(bundle,archive,out/"manifest.json","b"*40,root/"bad.json")
+            (bundle/"_internal/sample.dll").write_bytes(b"changed after scan")
+            with self.assertRaises(ValueError):
+                snapshot(bundle,archive,out/"manifest.json",commit,root/"bad.json")

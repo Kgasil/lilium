@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "status": "EXACT_SOURCE_MATCH",
+  "scope": "Two signed Microsoft runtime source DLLs; not final candidate inventory or independent legal certification",
+  "python_version": "3.14.10",
+  "runtime_version": "14.51.36247.0",
+  "source_commit": "6366dd598ce582cc30effc94aa9a6baf6e9a62bd",
+  "workflow": "https://github.com/Kgasil/aeris/actions/runs/46139207345",
+  "artifact_id": 15261460820,
+  "artifact_sha256": "3ae069412bf5b194a2a37da6f3dfb595a8dfc0e3ed5a896b028d3bd0bc38759f",
+  "package_url": "https://aka.ms/vs/18/release/14.51.36247/VC_redist.x64.exe",
+  "package_sha256": "843068991daaa1f73ad9f6239bce4d0f6a07a51f18c37ea2a867e9beca71295c",
+  "minimum_msi_sha256": "bab5d0257e6a18a4a008e683442e3077b38172dd61af3cb1c588b46724a714e2",
+  "files": {
+    "vcruntime140.dll": "d1f4225df2cd877dbf130d5668a021dce3f94118455ff5ec952061c30afc9ce7",
+    "vcruntime140_1.dll": "a7146c08f89fe5b04541ab507cdb59ff7b44534d4ba3c668a426c6450a03434e"
+  },
+  "owner_eligibility_and_terms": "DECLARED_BY_OWNER; conditional authorization recorded",
+  "redistribution_conditions": "Validly licensed Visual Studio user; distribute unchanged with application; comply with Microsoft and upstream CPython terms; verify all other components independently",
+  "redist_list": "https://learn.microsoft.com/en-us/visualstudio/releases/2026/redistribution",
+  "license": "https://visualstudio.microsoft.com/license-terms/vs2026-ga-community/",
+  "release_approved": false
+}

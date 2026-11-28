@@ -238,7 +238,19 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Draft asset retention failed' }
           $draft=gh release view $tag --repo $env:GITHUB_REPOSITORY --json isDraft,assets | ConvertFrom-Json
           if ($LASTEXITCODE -ne 0 -or $draft.isDraft -ne $true -or @($draft.assets|Where-Object {$_.name -ceq $m.filename -and $_.size -eq $m.bytes}).Count -ne 1) { throw 'Draft retention verification failed' }
-          'Controlled draft retained; no public release; verify downloaded SHA-256 before native acceptance.' >> $env:GITHUB_STEP_SUMMARY
+          $download=Join-Path $env:RUNNER_TEMP ('lilium-draft-check-'+[guid]::NewGuid())
+          New-Item -ItemType Directory -Path $download | Out-Null
+          try {
+            gh release download $tag --repo $env:GITHUB_REPOSITORY --pattern $m.filename --dir $download
+            if ($LASTEXITCODE -ne 0) { throw 'Draft asset download failed; retention unverified' }
+            $received=Join-Path $download $m.filename
+            python -m desktop.release_manager verify --archive $received --manifest release-preview/manifest.json --sha256 $m.sha256
+            if ($LASTEXITCODE -ne 0) { throw 'Retained bytes differ from scanned candidate' }
+            $draft=gh release view $tag --repo $env:GITHUB_REPOSITORY --json isDraft | ConvertFrom-Json
+            if ($LASTEXITCODE -ne 0 -or $draft.isDraft -ne $true) { throw 'Draft state changed; manual review required' }
+            [ordered]@{commit=$env:GITHUB_SHA;tag=$tag;sha256=$m.sha256;bytes=$m.bytes;download_integrity='PASS';is_draft=$true;release_approved=$false} | ConvertTo-Json | Set-Content runtime-evidence/retention-verification.json
+            'Controlled draft retained and re-downloaded SHA-256 verified; no public release.' >> $env:GITHUB_STEP_SUMMARY
+          } finally { Remove-Item -LiteralPath $download -Recurse -Force }
       - name: Upload diagnostic evidence only (never binaries)
         if: always()
         uses: actions/upload-artifact@v4
