@@ -1,13 +1,9 @@
 name: Lilium isolated runtime remediation
 on:
-  workflow_dispatch:
   push:
     branches: [development/lilium-cycle03-runtime-remediation]
     paths:
-      - 'desktop/**'
-      - 'tests/**'
-      - 'requirements*.txt'
-      - '.github/workflows/runtime-remediation.yml'
+      - 'validation/candidate-authorization.json'
 permissions:
   contents: read
 jobs:
@@ -16,6 +12,60 @@ jobs:
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+      - name: Require exact source owner authorization before build
+        shell: pwsh
+        run: |
+          python validation/candidate_build_gate.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Verify official signed ClamAV definitions before compiling
+        id: preflight
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $evidence = Join-Path $PWD 'runtime-evidence'
+          New-Item -ItemType Directory -Path $evidence -Force | Out-Null
+          $report = [ordered]@{commit=$env:GITHUB_SHA; utc=[DateTimeOffset]::UtcNow.ToString('o'); status='INCONCLUSIVE'; release_approved=$false}
+          try {
+          $tmp = Join-Path $env:RUNNER_TEMP ('lilium-preflight-' + [guid]::NewGuid().ToString('N'))
+          New-Item -ItemType Directory -Path $tmp | Out-Null
+          $zip = Join-Path $tmp 'clamav.zip'
+          Invoke-WebRequest -Uri 'https://github.com/Cisco-Talos/clamav/releases/download/clamav-1.5.5/clamav-1.5.5.win.x64.zip' -OutFile $zip -TimeoutSec 300
+          if ((Get-Item -LiteralPath $zip).Length -ne 225800047 -or (Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash.ToLowerInvariant() -cne '90169f5e551010bfbd0208b50d9b2fa8988ef396cccbd46b0cc8cae03e22a4a4') { throw 'Scanner archive mismatch' }
+          Expand-Archive -LiteralPath $zip -DestinationPath (Join-Path $tmp 'engine')
+          $fresh = @(Get-ChildItem -LiteralPath (Join-Path $tmp 'engine') -Recurse -File -Filter freshclam.exe)
+          if ($fresh.Count -ne 1) { throw 'Expected exactly one FreshClam' }
+          $db = Join-Path $tmp 'database'
+          New-Item -ItemType Directory -Path $db | Out-Null
+          $conf = Join-Path $tmp 'freshclam.conf'
+          @(('DatabaseDirectory "'+$db+'"'),'DatabaseMirror database.clamav.net','Checks 1') | Set-Content -LiteralPath $conf -Encoding ascii
+          & $fresh[0].FullName "--config-file=$conf" --stdout 2>&1 | Tee-Object -FilePath (Join-Path $evidence 'preflight-freshclam.log')
+          if ($LASTEXITCODE -ne 0) { throw 'Official update failed; no build' }
+          $daily = @(Get-ChildItem -LiteralPath $db -File | Where-Object { $_.Name -in @('daily.cvd','daily.cld') })
+          if ($daily.Count -ne 1) { throw 'Daily definitions missing or ambiguous' }
+          $sig = Join-Path $fresh[0].DirectoryName 'sigtool.exe'
+          $info = (& $sig --info $daily[0].FullName | Out-String)
+          if ($LASTEXITCODE -ne 0 -or $info -notmatch '(?m)^Verification OK\.?\s*$') { throw 'Signed database verification failed' }
+          $info | Set-Content -LiteralPath (Join-Path $evidence 'preflight-daily-info.txt') -Encoding utf8
+          $m = [regex]::Match($info,'(?m)^Build time:\s*(.+)$')
+          if (-not $m.Success) { throw 'Missing signature timestamp' }
+          Write-Host $info
+          $raw = $m.Groups[1].Value.Trim() -replace '([+-]\d{2})(\d{2})$','$1:$2'
+          $date = [DateTimeOffset]::ParseExact($raw,'dd MMM yyyy HH:mm zzz',[Globalization.CultureInfo]::InvariantCulture)
+          $age = ([DateTimeOffset]::UtcNow-$date).TotalSeconds
+          $report['definition_build_utc']=$date.ToUniversalTime().ToString('o')
+          $report['definition_age_seconds']=[math]::Round($age)
+          if ($age -lt 0 -or $age -gt 86400) { $report.status='STALE_DEFINITIONS'; throw 'Official definitions stale; no compilation or release' }
+          $report.status='FRESH_DEFINITIONS'
+          Write-Host 'Signed daily definitions fresh; normal build and complete scans still required.'
+          } catch {
+            $report['error']=$_.Exception.Message
+            throw
+          } finally {
+            $report | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $evidence 'preflight.json') -Encoding utf8
+          }
       - name: Install exact upstream CPython after SHA-256 verification
         shell: pwsh
         run: |
@@ -94,6 +144,11 @@ jobs:
         run: python -m desktop.build_windows
       - name: Verify actual bundled DLL hashes against approved build runtime
         run: python -m desktop.runtime_evidence runtime-evidence/bundle.json --bundle dist/Lilium
+      - name: Record Microsoft runtime DLL provenance (not entitlement)
+        shell: pwsh
+        run: |
+          $root = Split-Path -Parent $env:LILIUM_EXPECTED_PYTHON
+          ./desktop/microsoft_inventory.ps1 -Bundle dist/Lilium -PythonRoot $root -Output runtime-evidence/microsoft-inventory.json
       - name: Bundled readiness diagnostics
         shell: pwsh
         run: |

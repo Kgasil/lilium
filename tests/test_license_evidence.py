@@ -3,8 +3,39 @@ import tempfile
 import unittest
 import zipfile
 from pathlib import Path
-from desktop.license_evidence import copy_notice, verify_archive, upstream_bytes, git_blob
+from desktop.license_evidence import copy_notice, verify_archive, upstream_bytes, git_blob, is_notice_name, complete_pinned_notices, PINNED_WHEEL_NOTICES, OPENPYXL_AUTHORS_SHA
 class NoticeTests(unittest.TestCase):
+    def test_all_pinned_upstream_reference_texts(self):
+        from desktop.license_evidence import UPSTREAM
+        sources=json.loads((UPSTREAM/'sources.json').read_text(encoding='utf-8'))
+        self.assertEqual(len({x['name'] for x in sources}),len(sources))
+        expected={'cpython-3.14.10-crt.txt','xz-5.2.5-COPYING.txt','xz-5.2.5-COPYING.LGPLv2.1.txt'}
+        self.assertTrue(expected <= {x['name'] for x in sources})
+        for item in sources:
+            with self.subTest(name=item['name']):
+                self.assertTrue(upstream_bytes(UPSTREAM/item['name'],item['blob']))
+
+    def test_license_spelling_and_authors(self):
+        for name in ('LICENSE.txt','LICENCE.rst','LICENCE.python','AUTHORS.rst','AUTHORS.txt','NOTICE'):
+            self.assertTrue(is_notice_name(name),name)
+        for name in ('LICENSED.py','AUTHORSHIP.py','some_LICENSE.txt','example.py'):
+            self.assertFalse(is_notice_name(name),name)
+
+    def test_pinned_source_supplement_and_fail_closed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            rows=[{"sha256":h} for h in PINNED_WHEEL_NOTICES[("openpyxl","3.1.5")]]
+            added=complete_pinned_notices(root,"openpyxl","3.1.5",rows)
+            self.assertEqual(len(added),1)
+            self.assertEqual(added[0]["sha256"],OPENPYXL_AUTHORS_SHA)
+            self.assertTrue((root/"openpyxl-3.1.5-AUTHORS.rst").is_file())
+            self.assertEqual(complete_pinned_notices(root,"openpyxl","3.1.5",rows+added),[])
+            with self.assertRaises(ValueError): complete_pinned_notices(root,"openpyxl","3.1.5",[])
+            with self.assertRaises(ValueError): complete_pinned_notices(root,"openpyxl","3.1.6",rows)
+            et=[{"sha256":h} for h in PINNED_WHEEL_NOTICES[("et-xmlfile","2.0.0")]]
+            self.assertEqual(complete_pinned_notices(root,"et_xmlfile","2.0.0",et),[])
+            with self.assertRaises(ValueError): complete_pinned_notices(root,"et_xmlfile","2.0.0",et[:-1])
+
     def test_notice_archive_exact_bytes(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp)

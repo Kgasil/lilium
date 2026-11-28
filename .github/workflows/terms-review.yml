@@ -1,0 +1,45 @@
+name: Lilium local terms and retention policy checks
+on:
+  push:
+    branches: [development/lilium-notice-recovery]
+    paths: ['.github/workflows/runtime-remediation.yml','validation/candidate_build_gate.py','validation/test_candidate_build_gate.py','desktop/retention_acl.ps1','tests/retention_acl_fixture.ps1','desktop/controlled_retention.py','tests/test_controlled_retention.py','desktop/terms.py','desktop/launcher.py','desktop/build_windows.py','desktop/microsoft_inventory.ps1','tests/test_terms.py','tests/smoke_desktop.py','tests/smoke_lifecycle.py','tests/browser_pilot.py','.github/workflows/terms-review.yml']
+permissions:
+  contents: read
+jobs:
+  local-terms:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: python3 validation/test_candidate_build_gate.py -v
+      - run: python3 -m unittest discover -s tests -p test_terms.py -v
+      - run: python3 -m unittest discover -s tests -p test_controlled_retention.py -v
+      - run: python3 -m compileall -q desktop tests
+      - run: python3 -m desktop.launcher --show-terms
+      - name: Parse gated build YAML and copied preflight without executing
+        shell: bash
+        run: |
+          ruby -ryaml -e 'd=YAML.load_file(".github/workflows/runtime-remediation.yml"); t=d["on"] || d[true]; abort "unexpected trigger" unless t.keys==["push"] && t["push"]["paths"]==["validation/candidate-authorization.json"]; s=d["jobs"]["windows-preview"]["steps"]; abort "missing gate" unless s[1]["name"].include?("authorization") && s[2]["id"]=="preflight"; File.write(File.join(ENV.fetch("RUNNER_TEMP"),"preflight-check.ps1"),s[2].fetch("run"))'
+      - name: Parse preflight PowerShell only
+        shell: pwsh
+        run: |
+          $tokens=$null; $errors=$null
+          [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $env:RUNNER_TEMP 'preflight-check.ps1'),[ref]$tokens,[ref]$errors) | Out-Null
+          if ($errors.Count) { throw ($errors | Out-String) }
+      - name: Parse PowerShell inventory script without Windows binaries
+        shell: pwsh
+        run: |
+          $tokens=$null; $errors=$null
+          [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $PWD 'desktop/microsoft_inventory.ps1'),[ref]$tokens,[ref]$errors) | Out-Null
+          if ($errors.Count) { throw ($errors | Out-String) }
+  windows-retention:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s tests -p test_controlled_retention.py -v

@@ -21,6 +21,8 @@ def main():
     args.append(str(root / "desktop" / "launcher.py"))
     subprocess.run(args, cwd=root, check=True)
     subprocess.run([str(root / "dist" / "Lilium" / "Lilium.exe"), "--self-test"], check=True, cwd=root)
+    from desktop.terms import TERMS_BYTES
+    (root / "dist" / "Lilium" / "TERMS-REVIEW.txt").write_bytes(TERMS_BYTES)
     print("Portable folder: dist/Lilium (keep all files together).")
 
 

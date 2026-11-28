@@ -13,5 +13,20 @@
     "name": "pyinstaller-6.16.0.txt",
     "blob": "51bf4bd138e68f0ccafce4fbf7723842dceaa1d1",
     "source": "https://github.com/pyinstaller/pyinstaller/blob/v6.16.0/COPYING.txt"
+  },
+  {
+    "name": "cpython-3.14.10-crt.txt",
+    "blob": "f86841f263efe824f4336d162a6662881a7aad10",
+    "source": "https://github.com/python/cpython/blob/v3.14.10/PC/crtlicense.txt"
+  },
+  {
+    "name": "xz-5.2.5-COPYING.txt",
+    "blob": "20e60d5b2427334e1fec6701e7c5ad0da0bc8a5d",
+    "source": "https://github.com/python/cpython-source-deps/blob/xz-5.2.5/COPYING"
+  },
+  {
+    "name": "xz-5.2.5-COPYING.LGPLv2.1.txt",
+    "blob": "4362b49151d7b34ef83b3067a8f9c9f877d72a0e",
+    "source": "https://github.com/python/cpython-source-deps/blob/xz-5.2.5/COPYING.LGPLv2.1"
   }
 ]
