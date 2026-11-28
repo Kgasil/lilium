@@ -143,6 +143,9 @@ def main(argv=None):
     modes = parser.add_mutually_exclusive_group()
     modes.add_argument("--self-test", action="store_true")
     modes.add_argument("--diagnostics", action="store_true")
+    modes.add_argument("--show-terms", action="store_true")
+    modes.add_argument("--forget-terms", action="store_true")
+    parser.add_argument("--accept-terms", metavar="SHA256", help="Explicit acceptance of the exact text shown by --show-terms")
     args = parser.parse_args(argv)
     try:
         if args.diagnostics:
@@ -154,6 +157,17 @@ def main(argv=None):
         if args.self_test:
             self_test()
             return 0
+        from desktop.terms import TERMS, TERMS_SHA256, forget, require_acceptance
+        if args.show_terms:
+            print(TERMS)
+            print("SHA-256: " + TERMS_SHA256)
+            return 0
+        if args.forget_terms:
+            forget(data_directory())
+            return 0
+        if not require_acceptance(data_directory(), args.accept_terms):
+            print("Termos nao aceitos / Terms not accepted.", file=sys.stderr)
+            return 2
         return serve(args.no_browser)
     except KeyboardInterrupt:
         return 0

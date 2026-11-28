@@ -18,7 +18,7 @@ CSV = b'date,revenue,cost\n2026-01-01,100,60'
 @contextmanager
 def running(command, folder):
     env = dict(os.environ, LOCALAPPDATA=folder, XDG_DATA_HOME=folder)
-    process = subprocess.Popen(command + ['--no-browser'], env=env, stdout=subprocess.PIPE,
+    process = subprocess.Popen(command + ["--no-browser", "--accept-terms", __import__("desktop.terms", fromlist=["TERMS_SHA256"]).TERMS_SHA256], env=env, stdout=subprocess.PIPE,
                                stderr=subprocess.STDOUT, text=True, encoding='utf-8', errors='replace')
     lines = queue.Queue()
     def read():

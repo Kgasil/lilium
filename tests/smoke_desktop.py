@@ -18,7 +18,7 @@ def main(command):
         command = [sys.executable, "-m", "desktop.launcher"]
     with tempfile.TemporaryDirectory(prefix="lilium-smoke-") as folder:
         env = dict(os.environ, LOCALAPPDATA=folder, XDG_DATA_HOME=folder)
-        process = subprocess.Popen(command + ["--no-browser"], env=env,
+        process = subprocess.Popen(command + ["--no-browser", "--accept-terms", __import__("desktop.terms", fromlist=["TERMS_SHA256"]).TERMS_SHA256], env=env,
                                    stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                    text=True, encoding="utf-8", errors="replace")
         lines = queue.Queue()

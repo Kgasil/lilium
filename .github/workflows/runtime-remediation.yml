@@ -94,6 +94,11 @@ jobs:
         run: python -m desktop.build_windows
       - name: Verify actual bundled DLL hashes against approved build runtime
         run: python -m desktop.runtime_evidence runtime-evidence/bundle.json --bundle dist/Lilium
+      - name: Record Microsoft runtime DLL provenance (not entitlement)
+        shell: pwsh
+        run: |
+          $root = Split-Path -Parent $env:LILIUM_EXPECTED_PYTHON
+          ./desktop/microsoft_inventory.ps1 -Bundle dist/Lilium -PythonRoot $root -Output runtime-evidence/microsoft-inventory.json
       - name: Bundled readiness diagnostics
         shell: pwsh
         run: |
