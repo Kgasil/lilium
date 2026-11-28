@@ -8,6 +8,7 @@ import re
 import shutil
 import tempfile
 import subprocess
+import uuid
 from datetime import datetime, timezone
 
 HEX=re.compile(r"[0-9a-f]{64}")
@@ -57,7 +58,14 @@ def retain(archive,review,root,expected):
         files.append((role,p,row["sha256"]))
     final=root/expected
     require(not final.exists() and not final.is_symlink(),"existing retained candidate; never overwrite")
-    temp=Path(tempfile.mkdtemp(prefix=".handoff-",dir=root))
+    if os.name=="nt":
+        # Windows Python 0o700 may create an explicit DACL rather than inherit
+        # the verified restricted parent. Use a fresh random child with normal
+        # NTFS inheritance, then check its actual ACL before writing any bytes.
+        temp=root/(".handoff-"+uuid.uuid4().hex)
+        temp.mkdir(exist_ok=False)
+    else:
+        temp=Path(tempfile.mkdtemp(prefix=".handoff-",dir=root))
     try:
         if os.name=="nt": verify_windows_acl(temp)
         def copy_checked(p,to,h):
