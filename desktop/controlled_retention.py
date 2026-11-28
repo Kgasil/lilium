@@ -7,6 +7,7 @@ import os
 import re
 import shutil
 import tempfile
+import subprocess
 from datetime import datetime, timezone
 
 HEX=re.compile(r"[0-9a-f]{64}")
@@ -19,13 +20,27 @@ def digest(p):
     require(p.is_file() and not p.is_symlink(),"regular non-link file required")
     with p.open("rb") as f: return hashlib.file_digest(f,"sha256").hexdigest()
 
+def verify_windows_acl(path, root=False):
+    # Read-only check. No execution-policy override, ACL modification or network access.
+    system=Path(os.environ.get("SystemRoot", r"C:\\Windows"))
+    exe=system/"System32"/"WindowsPowerShell"/"v1.0"/"powershell.exe"
+    script=Path(__file__).with_name("retention_acl.ps1")
+    args=[str(exe),"-NoProfile","-NonInteractive","-File",str(script),"-Path",str(path)]
+    if root: args.append("-Root")
+    proc=subprocess.run(args,capture_output=True,text=True,timeout=30)
+    require(proc.returncode==0 and proc.stdout.strip()=="ACL_PASS","Windows retention ACL check failed")
+
 def retain(archive,review,root,expected):
     archive,review,root=map(Path,(archive,review,root))
     require(isinstance(expected,str) and HEX.fullmatch(expected),"trusted SHA-256 required")
     require(root.is_dir() and not root.is_symlink(),"existing owner-controlled directory required")
     require(not hasattr(root,"is_junction") or not root.is_junction(),"junction refused")
-    if os.name=="posix":
+    if os.name=="nt":
+        verify_windows_acl(root,root=True)
+    elif os.name=="posix":
         require(root.stat().st_uid==os.getuid() and root.stat().st_mode&0o077==0,"directory must be owner-only")
+    else:
+        raise ValueError("Unsupported retention OS")
     require(review.is_file() and not review.is_symlink() and review.stat().st_size<=65536,"review record required")
     raw=review.read_bytes()
     r=json.loads(raw)
@@ -44,6 +59,7 @@ def retain(archive,review,root,expected):
     require(not final.exists() and not final.is_symlink(),"existing retained candidate; never overwrite")
     temp=Path(tempfile.mkdtemp(prefix=".handoff-",dir=root))
     try:
+        if os.name=="nt": verify_windows_acl(temp)
         def copy_checked(p,to,h):
             with p.open("rb") as src,to.open("xb") as dst: shutil.copyfileobj(src,dst)
             require(digest(to)==h and digest(p)==h,"copy/source hash mismatch")
@@ -51,6 +67,9 @@ def retain(archive,review,root,expected):
         for role,p,h in files: copy_checked(p,temp/(role+".evidence"),h)
         (temp/"review.json").write_bytes(raw)
         (temp/"retention.json").write_text(json.dumps({"schema":1,"sha256":expected,"retained_utc":datetime.now(timezone.utc).isoformat(),"release_approved":False,"scope":"owner attestations and byte integrity only; not independent AV or legal verification"},indent=2),encoding="utf-8")
+        if os.name=="nt":
+            verify_windows_acl(root,root=True)
+            for p in temp.iterdir(): verify_windows_acl(p)
         require(not final.exists(),"candidate already retained")
         temp.rename(final)
     except BaseException:
