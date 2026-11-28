@@ -11,7 +11,7 @@ while ($null -ne $cursor) {
 }
 $me=[Security.Principal.WindowsIdentity]::GetCurrent().User
 $allowed=@($me.Value,'S-1-5-18','S-1-5-32-544')
-$acl=Get-Acl -LiteralPath $full
+$acl=$item.GetAccessControl([Security.AccessControl.AccessControlSections]'Access,Owner')
 if ($acl.GetOwner([Security.Principal.SecurityIdentifier]).Value -ne $me.Value) { throw 'Current user must own destination' }
 if ($Root -and (-not $item.PSIsContainer -or -not $acl.AreAccessRulesProtected)) { throw 'Root must be directory with protected DACL' }
 $rules=@($acl.GetAccessRules($true,$true,[Security.Principal.SecurityIdentifier]))

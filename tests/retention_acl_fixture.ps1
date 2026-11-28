@@ -14,4 +14,4 @@ foreach ($sid in @($me.Value,'S-1-5-18','S-1-5-32-544')) {
     $acl.AddAccessRule($rule)
 }
 if ($Foreign) { $acl.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new([Security.Principal.SecurityIdentifier]::new('S-1-1-0'),'ReadAndExecute',$flags,'None','Allow')) }
-Set-Acl -LiteralPath $full -AclObject $acl
+[System.IO.DirectoryInfo]::new($full).SetAccessControl($acl)

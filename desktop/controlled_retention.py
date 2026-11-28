@@ -28,7 +28,7 @@ def verify_windows_acl(path, root=False):
     args=[str(exe),"-NoProfile","-NonInteractive","-File",str(script),"-Path",str(path)]
     if root: args.append("-Root")
     proc=subprocess.run(args,capture_output=True,text=True,timeout=30)
-    require(proc.returncode==0 and proc.stdout.strip()=="ACL_PASS","Windows retention ACL check failed")
+    require(proc.returncode==0 and proc.stdout.strip()=="ACL_PASS","Windows retention ACL check failed: "+proc.stderr.strip()[:500])
 
 def retain(archive,review,root,expected):
     archive,review,root=map(Path,(archive,review,root))
