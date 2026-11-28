@@ -2,7 +2,7 @@ name: Lilium local terms and retention policy checks
 on:
   push:
     branches: [development/lilium-notice-recovery]
-    paths: ['desktop/terms.py','desktop/launcher.py','desktop/build_windows.py','desktop/microsoft_inventory.ps1','tests/test_terms.py','.github/workflows/terms-review.yml']
+    paths: ['desktop/terms.py','desktop/launcher.py','desktop/build_windows.py','desktop/microsoft_inventory.ps1','tests/test_terms.py','tests/smoke_desktop.py','tests/smoke_lifecycle.py','tests/browser_pilot.py','.github/workflows/terms-review.yml']
 permissions:
   contents: read
 jobs:

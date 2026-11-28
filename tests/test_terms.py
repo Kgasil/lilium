@@ -1,6 +1,9 @@
 import json
 from pathlib import Path
 import tempfile
+import os
+import subprocess
+import sys
 import unittest
 from desktop.terms import accepted, forget, require_acceptance, TERMS_SHA256, receipt_path
 
@@ -35,3 +38,15 @@ class TermsTests(unittest.TestCase):
             def eof(_): raise EOFError()
             self.assertFalse(require_acceptance(root,input_fn=eof,output_fn=lambda _: None))
             self.assertTrue(require_acceptance(root,input_fn=lambda _: "ACEITO",output_fn=lambda _: None))
+
+    def test_launcher_decline_and_show_terms(self):
+        with tempfile.TemporaryDirectory() as root:
+            env=dict(os.environ, LOCALAPPDATA=root, XDG_DATA_HOME=root, PYTHONIOENCODING="utf-8")
+            cmd=[sys.executable,"-m","desktop.launcher"]
+            show=subprocess.run(cmd+["--show-terms"],env=env,capture_output=True,text=True,encoding="utf-8",timeout=15)
+            self.assertEqual(show.returncode,0,show.stderr)
+            self.assertIn(TERMS_SHA256,show.stdout)
+            no=subprocess.run(cmd+["--no-browser"],input="no\n",env=env,capture_output=True,text=True,encoding="utf-8",timeout=15)
+            self.assertEqual(no.returncode,2,no.stderr)
+            self.assertNotIn("LILIUM_READY",no.stdout)
+            self.assertEqual(list(Path(root).iterdir()),[])

@@ -4,6 +4,9 @@ import queue
 import re
 import subprocess
 import sys
+from pathlib import Path as _TermsPath
+sys.path.insert(0, str(_TermsPath(__file__).resolve().parent.parent))
+from desktop.terms import TERMS_SHA256
 import tempfile
 import threading
 import time
@@ -14,7 +17,7 @@ def main():
     command = sys.argv[1:] or [sys.executable, "-m", "desktop.launcher"]
     with tempfile.TemporaryDirectory(prefix="lilium-browser-") as folder:
         env = dict(os.environ, LOCALAPPDATA=folder, XDG_DATA_HOME=folder)
-        process = subprocess.Popen(command + ["--no-browser", "--accept-terms", __import__("desktop.terms", fromlist=["TERMS_SHA256"]).TERMS_SHA256], env=env,
+        process = subprocess.Popen(command + ["--no-browser", "--accept-terms", TERMS_SHA256], env=env,
                                    stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                    text=True, encoding="utf-8", errors="replace")
         output = queue.Queue()
