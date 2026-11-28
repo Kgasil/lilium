@@ -19,6 +19,11 @@ def inventory(bundle):
         result[name]={"sha256":sha(p),"bytes":p.stat().st_size}
     require("Lilium.exe" in result and "TERMS-REVIEW.txt" in result and "NOTICES/index.json" in result,"missing candidate components")
     return result
+def reviewed_source(review,source):
+    require(source.get("status")=="EXACT_SOURCE_MATCH" and source.get("release_approved") is False and source.get("artifact_id")==15261460820 and source.get("artifact_sha256")=="3ae069412bf5b194a2a37da6f3dfb595a8dfc0e3ed5a896b028d3bd0bc38759f","source evidence identity mismatch")
+    require(review.get("source_evidence_sha256")==source["artifact_sha256"] and review.get("files")==source.get("files"),"reviewed files not bound to exact source evidence")
+    require(source.get("files")=={"vcruntime140.dll":"d1f4225df2cd877dbf130d5668a021dce3f94118455ff5ec952061c30afc9ce7","vcruntime140_1.dll":"a7146c08f89fe5b04541ab507cdb59ff7b44534d4ba3c668a426c6450a03434e"},"unexpected Microsoft source file map")
+
 def rights(inventory_report,review):
     require(review.get("schema")==1 and review.get("owner_reviewed_applicable_rights") is True and review.get("release_approved") is False,"reviewed source rights record required")
     expected=review.get("files")
@@ -49,7 +54,9 @@ def main():
     p=argparse.ArgumentParser();p.add_argument("mode",choices=["rights","snapshot"])
     p.add_argument("paths",nargs="+");a=p.parse_args()
     if a.mode=="rights":
-        rights(read(a.paths[0]),read(a.paths[1]))
+        review=read(a.paths[1])
+        reviewed_source(review,read(a.paths[2]))
+        rights(read(a.paths[0]),review)
         print("Actual named Microsoft runtime bytes match owner-reviewed sources; not legal certification")
     else:
         bundle,archive,manifest,commit,output=a.paths

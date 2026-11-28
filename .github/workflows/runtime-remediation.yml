@@ -202,7 +202,7 @@ jobs:
       - name: Check exact reviewed Microsoft runtime and candidate inventory
         shell: pwsh
         run: |
-          python -m desktop.final_candidate rights runtime-evidence/microsoft-inventory.json validation/microsoft-reviewed-files.json
+          python -m desktop.final_candidate rights runtime-evidence/microsoft-inventory.json validation/microsoft-reviewed-files.json validation/microsoft-source-evidence.json
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $m=Get-Content release-preview/manifest.json -Raw | ConvertFrom-Json
           $archive=Join-Path release-preview $m.filename

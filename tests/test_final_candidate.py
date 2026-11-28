@@ -33,3 +33,15 @@ class SnapshotTests(unittest.TestCase):
             (bundle/"_internal/sample.dll").write_bytes(b"changed after scan")
             with self.assertRaises(ValueError):
                 snapshot(bundle,archive,out/"manifest.json",commit,root/"bad.json")
+
+class SourceBindingTests(unittest.TestCase):
+    def test_exact_source_and_review_binding(self):
+        import json
+        from pathlib import Path
+        from desktop.final_candidate import reviewed_source
+        root=Path(__file__).resolve().parents[1]/"validation"
+        source=json.loads((root/"microsoft-source-evidence.json").read_text())
+        review=json.loads((root/"microsoft-reviewed-files.json").read_text())
+        reviewed_source(review,source)
+        with self.assertRaises(ValueError): reviewed_source(dict(review,files={"unknown.dll":"0"*64}),source)
+        with self.assertRaises(ValueError): reviewed_source(review,dict(source,artifact_id=1))

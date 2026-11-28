@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "owner_reviewed_applicable_rights": true,
+  "owner_attestation_scope": "Owner declared eligibility and acceptance of applicable Visual Studio Community terms and approved draft use terms; authorization conditional on proof and safety. No independent certification.",
+  "source_evidence_sha256": "3ae069412bf5b194a2a37da6f3dfb595a8dfc0e3ed5a896b028d3bd0bc38759f",
+  "files": {
+    "vcruntime140.dll": "d1f4225df2cd877dbf130d5668a021dce3f94118455ff5ec952061c30afc9ce7",
+    "vcruntime140_1.dll": "a7146c08f89fe5b04541ab507cdb59ff7b44534d4ba3c668a426c6450a03434e"
+  },
+  "release_approved": false
+}
